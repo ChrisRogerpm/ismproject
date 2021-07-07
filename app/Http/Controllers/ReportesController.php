@@ -24,14 +24,16 @@ class ReportesController extends Controller
         $respuesta = false;
         $mensaje = "";
         $data = "";
+        $msj = "";
         try {
             $data = Excel::GenerarExcelPedidoCorregido($request);
             $respuesta = true;
             $mensaje = "Se ha importado exitosamente";
         } catch (Exception $ex) {
+            $msj = $ex->getMessage();
             $mensaje = "Ah ocurrido un error, revíse los archivos e intente nuevamente";
         }
-        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje, 'data' => $data]);
+        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje, 'data' => $data, 'msj' => $msj]);
     }
     #endregion
 }
