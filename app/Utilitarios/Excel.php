@@ -1,0 +1,368 @@
+<?php
+
+namespace App\Utilitarios;
+
+use Carbon\Carbon;
+use App\Model\Reporte;
+use App\Model\Solicitud;
+use App\Model\Liquidacion;
+use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Exception;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+
+class Excel
+{
+    public static function ImportarDataTB_UNI(Request $request)
+    {
+        $archivoPlantilla = $request->file('archivoPlantilla');
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader->setReadDataOnly(true);
+        $reader->setLoadSheetsOnly(["TB_UNI"]);
+        $spreadSheet = $reader->load($archivoPlantilla);
+        $workSheet = $spreadSheet->getActiveSheet();
+        $startRow = 2;
+        $max = $spreadSheet->getActiveSheet()->getHighestRow();
+        $columns = [
+            "A" => "CODALT",
+            "B" => "SABOR",
+            "C" => "CAJA",
+            "D" => "PAQUETE",
+            "E" => "CAJAXPAQUETE",
+            "F" => "CODIGO PADRE",
+            "G" => "CODIGO HIJO",
+            "H" => "LINEA",
+        ];
+        $dataImportada = [];
+        for ($i = $startRow; $i <= $max; $i++) {
+            $data_row = [];
+            foreach ($columns as $col => $field) {
+                $val = $workSheet->getCell("$col$i")->getValue();
+                $data_row[$field] = $val;
+            }
+            $dataImportada[] = $data_row;
+        }
+        return collect($dataImportada);
+    }
+    public static function ImportarDataGGVVRUTA(Request $request)
+    {
+        $archivoPlantilla = $request->file('archivoPlantilla');
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader->setReadDataOnly(true);
+        $reader->setLoadSheetsOnly(["GGVVRUTA"]);
+        $spreadSheet = $reader->load($archivoPlantilla);
+        $workSheet = $spreadSheet->getActiveSheet();
+        $startRow = 2;
+        $max = $spreadSheet->getActiveSheet()->getHighestRow();
+        $columns = [
+            "A" => "RUTA",
+            "B" => "LINEA",
+            "C" => "MESA",
+            "D" => "GESTORES",
+            "E" => "SUPERVISOR",
+            "F" => "TELEFONO",
+            "G" => "DNI",
+            "H" => "CODIGO",
+            "I" => "MARCAS",
+            "J" => "SUPERVISOR",
+        ];
+        $dataImportada = [];
+        for ($i = $startRow; $i <= $max; $i++) {
+            $data_row = [];
+            foreach ($columns as $col => $field) {
+                $val = $workSheet->getCell("$col$i")->getValue();
+                $data_row[$field] = $val;
+            }
+            $dataImportada[] = $data_row;
+        }
+        return collect($dataImportada);
+    }
+    public static function ImportarDataCLIENTEPEDIDO(Request $request)
+    {
+        $archivoPedido = $request->file('archivoPedido');
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader->setReadDataOnly(true);
+        $reader->setLoadSheetsOnly(["CLIENTE"]);
+        $spreadSheet = $reader->load($archivoPedido);
+        $workSheet = $spreadSheet->getActiveSheet();
+        $startRow = 2;
+        $max = $spreadSheet->getActiveSheet()->getHighestRow();
+        $columns = [
+            'A' => 'NROPEDIDO',
+            'B' => 'COD_CLIE',
+            'C' => 'CLIENTE',
+            'D' => 'DIRECCION',
+            'E' => 'REFERENCIA',
+            'F' => 'TIPO_DOC',
+            'G' => 'NRO_DOC',
+            'H' => 'RUTA',
+            'I' => 'MODULO',
+            'J' => 'VISITA',
+            'K' => 'LATITUD',
+            'L' => 'LONGITUD',
+            'M' => 'GIRO',
+            'N' => 'EMAIL',
+            'O' => 'TELEFONO',
+            'P' => 'LUGAR',
+            'Q' => 'SUCURSAL',
+            'R' => 'CANAL',
+            'S' => 'LPRECIO',
+        ];
+        $dataImportada = [];
+        for ($i = $startRow; $i <= $max; $i++) {
+            $data_row = [];
+            foreach ($columns as $col => $field) {
+                $val = $workSheet->getCell("$col$i")->getValue();
+                $data_row[$field] = $val;
+            }
+            $dataImportada[] = $data_row;
+        }
+        return collect($dataImportada);
+    }
+    public static function ImportarDataBONIFICACIONES(Request $request)
+    {
+        $archivoPedido = $request->file('archivoBonificaciones');
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader->setReadDataOnly(true);
+        $reader->setLoadSheetsOnly(["CUADRO DE BONIFICACIONES"]);
+        $spreadSheet = $reader->load($archivoPedido);
+        $workSheet = $spreadSheet->getActiveSheet();
+        $startRow = 2;
+        $max = $spreadSheet->getActiveSheet()->getHighestRow();
+        $columns = [
+            'F' => 'Caja X',
+            'H' => 'SKU',
+            'I' => 'Bonif (Botellas)',
+        ];
+        $dataImportada = [];
+        for ($i = $startRow; $i <= $max; $i++) {
+            $data_row = [];
+            foreach ($columns as $col => $field) {
+                $val = $workSheet->getCell("$col$i")->getValue();
+                $data_row[$field] = $val;
+            }
+            $dataImportada[] = $data_row;
+        }
+        return collect($dataImportada);
+    }
+    public static function ImportarDataPEDIDO(Request $request)
+    {
+        $archivoPedido = $request->file('archivoPedido');
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader->setReadDataOnly(true);
+        $reader->setLoadSheetsOnly(["PEDIDO"]);
+        $spreadSheet = $reader->load($archivoPedido);
+        $workSheet = $spreadSheet->getActiveSheet();
+        $startRow = 2;
+        $max = $spreadSheet->getActiveSheet()->getHighestRow();
+        $columns = [
+            "A" => "NROPEDIDO",
+            "B" => "FEPVTA",
+            "C" => "FEMOVI",
+            "D" => "CODALT",
+            "E" => "CANTIDAD",
+            "F" => "PRECIO",
+            "G" => "PDSCTO",
+            "H" => "DESCTO",
+            "I" => "TDOCTO",
+        ];
+        $dataImportada = [];
+        for ($i = $startRow; $i <= $max; $i++) {
+            $data_row = [];
+            foreach ($columns as $col => $field) {
+                $val = $workSheet->getCell("$col$i")->getValue();
+                $data_row[$field] = $val;
+            }
+            $dataImportada[] = $data_row;
+        }
+        return collect($dataImportada);
+    }
+    public static function ProcesarDataImportadaPedidoExcel(Request $request)
+    {
+        $DataTB_UNI = Excel::ImportarDataTB_UNI($request);
+        $DataPEDIDO = Excel::ImportarDataPEDIDO($request);
+        $DataBONIFICACIONES = Excel::ImportarDataBONIFICACIONES($request);
+        $nuevaData = [];
+        foreach ($DataPEDIDO as $dp) {
+            $objPlantilla = $DataTB_UNI->where('CODALT', $dp['CODALT'])->first();
+            $objBonificaciones = $DataBONIFICACIONES->where('SKU', $dp['CODALT'])->first();
+            if ($objBonificaciones != null) {
+                $numeroBonificaciones = Excel::CalcularBonificacionProducto($objBonificaciones, $dp['CANTIDAD']);
+                $nuevaData[] = [
+                    'NROPEDIDO' => $dp['NROPEDIDO'],
+                    'FEPVTA' => $dp['FEPVTA'],
+                    'FEMOVI' => $dp['FEMOVI'],
+                    'CODALT' => $dp['CODALT'],
+                    'CANTIDAD' => Excel::CalcularCantidadPaqueteProducto($objPlantilla['PAQUETE'], $dp['CANTIDAD']),
+                    'PRECIO' => $dp['PRECIO'],
+                    'PDSCTO' => $dp['PDSCTO'],
+                    'DESCTO' => $dp['DESCTO'],
+                    'TDOCTO' => $dp['TDOCTO'],
+                ];
+                if ($numeroBonificaciones > 0) {
+                    $cantidad = ($numeroBonificaciones * $objBonificaciones['Bonif (Botellas)']) / 100;
+                    $nuevaData[] = [
+                        'NROPEDIDO' => $dp['NROPEDIDO'],
+                        'FEPVTA' => $dp['FEPVTA'],
+                        'FEMOVI' => $dp['FEMOVI'],
+                        'CODALT' => $dp['CODALT'],
+                        'CANTIDAD' => $cantidad,
+                        'PRECIO' => 0,
+                        'PDSCTO' => 0,
+                        'DESCTO' => 0,
+                        'TDOCTO' => 207,
+                    ];
+                }
+            } else {
+                $nuevaData[] = [
+                    'NROPEDIDO' => $dp['NROPEDIDO'],
+                    'FEPVTA' => $dp['FEPVTA'],
+                    'FEMOVI' => $dp['FEMOVI'],
+                    'CODALT' => $dp['CODALT'],
+                    'CANTIDAD' => Excel::CalcularCantidadPaqueteProducto($objPlantilla['PAQUETE'], $dp['CANTIDAD']),
+                    'PRECIO' => $dp['PRECIO'],
+                    'PDSCTO' => $dp['PDSCTO'],
+                    'DESCTO' => $dp['DESCTO'],
+                    'TDOCTO' => $dp['TDOCTO'],
+                ];
+            }
+        }
+        return collect($nuevaData);
+    }
+    public static function ImportarDataDATA_CLI(Request $request)
+    {
+        $archivoPlantilla = $request->file('archivoPlantilla');
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader->setReadDataOnly(true);
+        $reader->setLoadSheetsOnly(["DATA_CLI"]);
+        $spreadSheet = $reader->load($archivoPlantilla);
+        $workSheet = $spreadSheet->getActiveSheet();
+        $startRow = 2;
+        $max = $spreadSheet->getActiveSheet()->getHighestRow();
+        $columns = [
+            "A" => "DNI",
+            "B" => "MODULO",
+            "C" => "RUTA",
+        ];
+        $dataImportada = [];
+        for ($i = $startRow; $i <= $max; $i++) {
+            $data_row = [];
+            foreach ($columns as $col => $field) {
+                $val = $workSheet->getCell("$col$i")->getValue();
+                $data_row[$field] = $val;
+            }
+            $dataImportada[] = $data_row;
+        }
+        return collect($dataImportada);
+    }
+    public static function ProcesarDataImportadaClientePedidoExcel(Request $request)
+    {
+        $DataGGVVRUTA = Excel::ImportarDataGGVVRUTA($request);
+        $DataCLIENTEPEDIDO = Excel::ImportarDataCLIENTEPEDIDO($request);
+        $DataDATA_CLI = Excel::ImportarDataDATA_CLI($request);
+        $nuevaData = [];
+        foreach ($DataCLIENTEPEDIDO as $cp) {
+            $pdv = $DataGGVVRUTA->where('RUTA', $cp['RUTA'])->first();
+            $tipoDocumento = strlen($cp['NRO_DOC']) <= 8 ? 0 : 1;
+            $nroDocumento = $tipoDocumento == 1 ? Excel::CompletadorCerosDNI($cp['NRO_DOC']) : $cp['NRO_DOC'];
+            $Cli = $DataDATA_CLI->where('DNI', $cp['NRO_DOC'])->first();
+            $nuevaData[] = [
+                'NROPEDIDO' => $cp['NROPEDIDO'],
+                'COD_CLIE' => $cp['COD_CLIE'],
+                'CLIENTE' => $cp['CLIENTE'],
+                'DIRECCION' => $cp['DIRECCION'],
+                'TIPO_DOC' => $tipoDocumento,
+                'NRO_DOC' => $nroDocumento,
+                'RUTA' => $Cli['RUTA'], //$cp['RUTA'],
+                'MODULO' => $Cli['MODULO'],
+                'VISITA' => $cp['VISITA'],
+                'LATITUD' => $cp['LATITUD'],
+                'LONGITUD' => $cp['LONGITUD'],
+                'GIRO' => $cp['GIRO'],
+                'EMAIL' => $cp['EMAIL'],
+                'TELEFONO' => $cp['TELEFONO'],
+                'LUGAR' => $cp['LUGAR'],
+                'SUCURSAL' => $cp['SUCURSAL'],
+                'CANAL' => $cp['CANAL'],
+                'REFERENCIA' => $cp['REFERENCIA'],
+                'LPRECIO' => $cp['LPRECIO'],
+                'PDV' => $pdv['CODIGO'],
+            ];
+        }
+        return collect($nuevaData);
+    }
+    public static function CalcularCantidadPaqueteProducto($CantidadPaquete, $CantidadUnidad)
+    {
+        $calculado = $CantidadUnidad / $CantidadPaquete;
+        return $calculado;
+    }
+    public static function GenerarExcelPedidoCorregido(Request $request)
+    {
+        $DataPEDIDOProcesada = Excel::ProcesarDataImportadaPedidoExcel($request);
+        $DataCLIENTEPEDIDOProcesada = Excel::ProcesarDataImportadaClientePedidoExcel($request);
+
+        $nombreArchivo = 'Pedidos' . '_' . time() . '.xlsx';
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $headerCliente = ['NROPEDIDO', 'COD_CLIE', 'CLIENTE', 'DIRECCION', 'TIPO_DOC', 'NRO_DOC', 'RUTA', 'MODULO', 'VISITA', 'LATITUD', 'LONGITUD', 'GIRO', 'EMAIL', 'TELEFONO', 'LUGAR', 'SUCURSAL', 'CANAL', 'REFERENCIA', 'LPRECIO', 'PDV'];
+        $arrayKeys = array_keys($DataCLIENTEPEDIDOProcesada[0]);
+        $columnsCli = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'];
+        $fila = "";
+        $sheet->setTitle('CLIENTE');
+        //Cabeceras
+        for ($i = 0; $i < count($headerCliente); $i++) {
+            $celda = $columnsCli[$i] . '1';
+            $sheet->setCellValue($celda, $headerCliente[$i]);
+            $sheet->getStyle($celda)->getFont()->setBold(true);
+        }
+        $fila = 2;
+        //Cuerpo Columnas Data
+        for ($x = 0; $x < count($DataCLIENTEPEDIDOProcesada); $x++) {
+            for ($i = 0; $i < count($arrayKeys); $i++) {
+                $sheet->setCellValue($columnsCli[$i] . $fila, $DataCLIENTEPEDIDOProcesada[$x][$arrayKeys[$i]]);
+            }
+            $fila++;
+        }
+
+        $spreadsheet->createSheet();
+        $spreadsheet->setActiveSheetIndex(1);
+        $spreadsheet->getActiveSheet()->setTitle('CLIENTE');
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $header = ['NROPEDIDO', 'FEPVTA', 'FEMOVI', 'CODALT', 'CANTIDAD', 'PRECIO', 'PDSCTO', 'DESCTO', 'TDOCTO'];
+        $arrayKeys = array_keys($DataPEDIDOProcesada[0]);
+        $columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        $fila = "";
+        $sheet->setTitle('PEDIDO');
+        //Cabeceras
+        for ($i = 0; $i < count($header); $i++) {
+            $celda = $columns[$i] . '1';
+            $sheet->setCellValue($celda, $header[$i]);
+            $sheet->getStyle($celda)->getFont()->setBold(true);
+        }
+        $fila = 2;
+        //Cuerpo Columnas Data
+        for ($x = 0; $x < count($DataPEDIDOProcesada); $x++) {
+            for ($i = 0; $i < count($arrayKeys); $i++) {
+                $sheet->setCellValue($columns[$i] . $fila, $DataPEDIDOProcesada[$x][$arrayKeys[$i]]);
+            }
+            $fila++;
+        }
+
+        $archivo = "Excels/" . $nombreArchivo;
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($archivo);
+        return $nombreArchivo;
+    }
+    public static function CompletadorCerosDNI($valor)
+    {
+        return str_pad($valor, 8, '0', STR_PAD_LEFT);
+    }
+    public static function CalcularBonificacionProducto($objBonificaciones, $cantidadUnidades)
+    {
+        $cantidadUnidadesCaja = $objBonificaciones['Caja X'];
+        return floor($cantidadUnidadesCaja / $cantidadUnidades);
+    }
+}
