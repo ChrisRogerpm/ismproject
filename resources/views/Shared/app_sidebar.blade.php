@@ -1,10 +1,6 @@
-<li class="nav-item-header">
-    <div class="text-uppercase font-size-xs line-height-xs">Menu Navegación</div>
-    <i class="icon-menu" title="Main"></i>
-</li>
-<li class="nav-item">
-    <a href="javascript:void(0)" class="nav-link">
-        <i class="icon-file-stats"></i>
-        <span>CONVERSIÓN DE ARCHIVO DE PEDIDO</span>
-    </a>
-</li>
+<ul class="kt-menu__nav ">
+    <li class="kt-menu__item"><a href="{{route('Conversion.Pedido')}}" class="kt-menu__link ">
+            <i class="kt-menu__link-icon la fas fa-binoculars"></i>
+            <span class="kt-menu__link-text">CONVERSIÓN DE ARCHIVO DE PEDIDO</span></a>
+    </li>
+</ul>

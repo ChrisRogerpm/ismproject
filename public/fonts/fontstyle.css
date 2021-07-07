@@ -1,0 +1,77 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap");
+body {
+    font-family: "Source Sans Pro", sans-serif;
+    color: black;
+    font-size: 14px;
+}
+.btnBlueDark {
+    background-color: #1e1e2d;
+    color: #ffffff;
+    border-color: #1e1e2d;
+}
+.btnBlueDark:hover {
+    background-color: #1e1e2d;
+    color: #ffffff;
+    border-color: #1e1e2d;
+}
+.dataTables_empty {
+    text-transform: uppercase;
+}
+
+.btnFau {
+    background-color: #fc8004;
+    color: #ffffff;
+    border-color: #fc8004;
+}
+.btnFau:hover {
+    background-color: #fc8004;
+    color: #ffffff;
+    border-color: #fc8004;
+}
+.btnFau > i {
+    color: #ffffff;
+}
+
+.dataTables_wrapper .pagination .page-item.active > .page-link {
+    background-color: #fc8004;
+    color: #ffffff;
+    border-color: #fc8004;
+}
+.dataTables_wrapper .pagination .page-item.active > .page-link :hover {
+    background-color: #fc8004;
+    color: #ffffff;
+    border-color: #fc8004;
+}
+a {
+    color: black !important;
+    font-weight: bold !important;
+}
+/* table.dataTable thead { */
+.table thead th {
+    color: #000000;
+    font-weight: bold;
+    background-color: #d8d8d8;
+}
+
+.kt-widget1 .kt-widget1__item .kt-widget1__info .kt-widget1__title {
+    color: #000000;
+    font-weight: bold;
+}
+.custom-file-input ~ .custom-file-label::after {
+    content: "Buscar";
+}
+.scrollbar-table {
+    position: relative;
+    height: 300px;
+    overflow: auto;
+}
+.table-wrapper-scroll-y {
+    display: block;
+}
+
+.select2-container--default.select2-container--disabled
+    .select2-selection--multiple,
+.select2-container--default.select2-container--disabled
+    .select2-selection--single {
+    border: 1px solid #e2e5ec;
+}

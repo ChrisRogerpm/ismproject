@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'ReportesController@ReportePedidosListarVista');
+Route::get('/', 'ReportesController@ReportePedidosListarVista')->name('Conversion.Pedido');
