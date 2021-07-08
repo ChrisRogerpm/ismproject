@@ -308,7 +308,7 @@ class Excel
                 'CANAL' => $cp['CANAL'],
                 'REFERENCIA' => $cp['REFERENCIA'],
                 'LPRECIO' => $cp['LPRECIO'],
-                'PDV' => $pdv['CODIGO'],
+                'PDV' => $pdv != null ? $pdv['CODIGO'] : '',
             ];
         }
         return collect($nuevaData);
