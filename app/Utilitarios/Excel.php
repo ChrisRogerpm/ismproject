@@ -284,10 +284,10 @@ class Excel
         $DataDATA_CLI = Excel::ImportarDataDATA_CLI($request);
         $nuevaData = [];
         foreach ($DataCLIENTEPEDIDO as $cp) {
-            $pdv = $DataGGVVRUTA->where('RUTA', $cp['RUTA'])->first();
+            $Cli = $DataDATA_CLI->where('DNI', $cp['NRO_DOC'])->first();
+            $pdv = $Cli != null ? $DataGGVVRUTA->where('RUTA', $Cli['RUTA'])->first() : null;
             $tipoDocumento = strlen($cp['NRO_DOC']) <= 8 ? 0 : 1;
             $nroDocumento = $tipoDocumento == 1 ? Excel::CompletadorCerosDNI($cp['NRO_DOC']) : $cp['NRO_DOC'];
-            $Cli = $DataDATA_CLI->where('DNI', $cp['NRO_DOC'])->first();
             $nuevaData[] = [
                 'NROPEDIDO' => $cp['NROPEDIDO'],
                 'COD_CLIE' => $cp['COD_CLIE'],
