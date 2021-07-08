@@ -26,6 +26,9 @@ class ReportesController extends Controller
         $data = "";
         $msj = "";
         try {
+            $request->request->add(['archivoPlantilla' => Excel::CopiarArchivosTmp($request->file('archivoPlantilla'))]);
+            $request->request->add(['archivoPedido' => Excel::CopiarArchivosTmp($request->file('archivoPedido'))]);
+            $request->request->add(['archivoBonificaciones' => Excel::CopiarArchivosTmp($request->file('archivoBonificaciones'))]);
             $data = Excel::GenerarExcelPedidoCorregido($request);
             $respuesta = true;
             $mensaje = "Se ha importado exitosamente";

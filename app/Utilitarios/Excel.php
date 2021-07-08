@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Model\Reporte;
 use App\Model\Solicitud;
 use App\Model\Liquidacion;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -14,9 +15,19 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class Excel
 {
+    public static function CopiarArchivosTmp($archivo)
+    {
+        $rutaDirectorio = public_path('Excels');
+        $extension = $archivo->getClientOriginalExtension();
+        $ArchivoNombre = Str::random(8) . "." . $extension;
+        $archivo->move($rutaDirectorio, $ArchivoNombre);
+        return $ArchivoNombre;
+    }
     public static function ImportarDataTB_UNI(Request $request)
     {
-        $archivoPlantilla = $request->file('archivoPlantilla');
+        $path = public_path('Excels' . DIRECTORY_SEPARATOR);
+        $archivoPlantilla = $path . $request->input('archivoPlantilla');
+
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $reader->setReadDataOnly(true);
         $reader->setLoadSheetsOnly(["TB_UNI"]);
@@ -47,7 +58,9 @@ class Excel
     }
     public static function ImportarDataGGVVRUTA(Request $request)
     {
-        $archivoPlantilla = $request->file('archivoPlantilla');
+        $path = public_path('Excels' . DIRECTORY_SEPARATOR);
+        $archivoPlantilla = $path . $request->input('archivoPlantilla');
+
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $reader->setReadDataOnly(true);
         $reader->setLoadSheetsOnly(["GGVVRUTA"]);
@@ -80,7 +93,9 @@ class Excel
     }
     public static function ImportarDataCLIENTEPEDIDO(Request $request)
     {
-        $archivoPedido = $request->file('archivoPedido');
+        $path = public_path('Excels' . DIRECTORY_SEPARATOR);
+        $archivoPedido = $path . $request->input('archivoPedido');
+
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $reader->setReadDataOnly(true);
         $reader->setLoadSheetsOnly(["CLIENTE"]);
@@ -122,11 +137,13 @@ class Excel
     }
     public static function ImportarDataBONIFICACIONES(Request $request)
     {
-        $archivoPedido = $request->file('archivoBonificaciones');
+        $path = public_path('Excels' . DIRECTORY_SEPARATOR);
+        $archivoBonificaciones = $path . $request->input('archivoBonificaciones');
+
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $reader->setReadDataOnly(true);
         $reader->setLoadSheetsOnly(["CUADRO DE BONIFICACIONES"]);
-        $spreadSheet = $reader->load($archivoPedido);
+        $spreadSheet = $reader->load($archivoBonificaciones);
         $workSheet = $spreadSheet->getActiveSheet();
         $startRow = 2;
         $max = $spreadSheet->getActiveSheet()->getHighestRow();
@@ -148,7 +165,9 @@ class Excel
     }
     public static function ImportarDataPEDIDO(Request $request)
     {
-        $archivoPedido = $request->file('archivoPedido');
+        $path = public_path('Excels' . DIRECTORY_SEPARATOR);
+        $archivoPedido = $path . $request->input('archivoPedido');
+
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $reader->setReadDataOnly(true);
         $reader->setLoadSheetsOnly(["PEDIDO"]);
@@ -232,7 +251,9 @@ class Excel
     }
     public static function ImportarDataDATA_CLI(Request $request)
     {
-        $archivoPlantilla = $request->file('archivoPlantilla');
+        $path = public_path('Excels' . DIRECTORY_SEPARATOR);
+        $archivoPlantilla = $path . $request->input('archivoPlantilla');
+
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $reader->setReadDataOnly(true);
         $reader->setLoadSheetsOnly(["DATA_CLI"]);
