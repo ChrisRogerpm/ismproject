@@ -263,8 +263,8 @@ class Excel
         $max = $spreadSheet->getActiveSheet()->getHighestRow();
         $columns = [
             "A" => "DNI",
-            "B" => "MODULO",
-            "C" => "RUTA",
+            "B" => "RUTA",
+            "C" => "MODULO",
         ];
         $dataImportada = [];
         for ($i = $startRow; $i <= $max; $i++) {
@@ -284,6 +284,7 @@ class Excel
         $DataDATA_CLI = Excel::ImportarDataDATA_CLI($request);
         $nuevaData = [];
         foreach ($DataCLIENTEPEDIDO as $cp) {
+            //Ruta y Modulo están
             $Cli = $DataDATA_CLI->where('DNI', $cp['NRO_DOC'])->first();
             $pdv = $Cli != null ? $DataGGVVRUTA->where('RUTA', $Cli['RUTA'])->first() : null;
             $tipoDocumento = strlen($cp['NRO_DOC']) <= 8 ? 0 : 1;
@@ -384,6 +385,6 @@ class Excel
     public static function CalcularBonificacionProducto($objBonificaciones, $cantidadUnidades)
     {
         $cantidadUnidadesCaja = $objBonificaciones['Caja X'];
-        return floor($cantidadUnidadesCaja / $cantidadUnidades);
+        return floor($cantidadUnidades / $cantidadUnidadesCaja);
     }
 }
