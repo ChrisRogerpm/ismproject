@@ -217,9 +217,9 @@ class Excel
                 $objPlantilla = $DataTB_UNI->where('CODALT', $dp['CODALT'])->first();
                 $obBonificaciones = $DataBONIFICACIONES->where('SKU', $dp['CODALT'])->first();
                 $CodigosCOD[] = [
-                    'COD' => $obBonificaciones['COD'],
-                    'Caja X' => $obBonificaciones['Caja X'],
-                    'Boni' => $obBonificaciones['Bonif (Botellas)'],
+                    'COD' => $obBonificaciones != null ? $obBonificaciones['COD'] : '',
+                    'Caja X' => $obBonificaciones != null ? $obBonificaciones['Caja X'] : '',
+                    'Boni' => $obBonificaciones != null ? $obBonificaciones['Bonif (Botellas)'] : '',
                     'CantidadPedido' => $dp['CANTIDAD'],
                     'CODALT' => $dp['CODALT'],
                     'NROPEDIDO' => $dp['NROPEDIDO'],
