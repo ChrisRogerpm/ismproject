@@ -231,7 +231,7 @@ class Excel
                     'FEPVTA' => $dp['FEPVTA'],
                     'FEMOVI' => $dp['FEMOVI'],
                     'CODALT' => $dp['CODALT'],
-                    'CANTIDAD' => Excel::CalcularCantidadPaqueteProducto($objPlantilla['PAQUETE'], $dp['CANTIDAD']),
+                    'CANTIDAD' => $objPlantilla != null ? Excel::CalcularCantidadPaqueteProducto($objPlantilla['PAQUETE'], $dp['CANTIDAD']) : '',
                     'PRECIO' => $dp['PRECIO'],
                     'PDSCTO' => $dp['PDSCTO'],
                     'DESCTO' => $dp['DESCTO'],
