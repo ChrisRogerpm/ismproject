@@ -151,6 +151,8 @@ class Excel
         $startRow = 2;
         $max = $spreadSheet->getActiveSheet()->getHighestRow();
         $columns = [
+            'C' => 'MARCA',
+            'D' => 'FORMATO',
             'E' => 'COD',
             'F' => 'Caja X',
             'H' => 'SKU',
@@ -216,10 +218,16 @@ class Excel
                 $CodigosCODALT[] = $dp['CODALT'];
                 $objPlantilla = $DataTB_UNI->where('CODALT', $dp['CODALT'])->first();
                 $obBonificaciones = $DataBONIFICACIONES->where('SKU', $dp['CODALT'])->first();
+                if ($dp['NROPEDIDO'] = "P001627") {
+                    $demo = 1;
+                    $clean = 2;
+                }
                 $CodigosCOD[] = [
                     'COD' => $obBonificaciones != null ? $obBonificaciones['COD'] : '',
                     'Caja X' => $obBonificaciones != null ? $obBonificaciones['Caja X'] : '',
                     'Boni' => $obBonificaciones != null ? $obBonificaciones['Bonif (Botellas)'] : '',
+                    'MARCA' => $obBonificaciones != null ? $obBonificaciones['MARCA'] : '',
+                    'FORMATO' => $obBonificaciones != null ? $obBonificaciones['FORMATO'] : '',
                     'CantidadPedido' => $dp['CANTIDAD'],
                     'CODALT' => $dp['CODALT'],
                     'NROPEDIDO' => $dp['NROPEDIDO'],
@@ -238,10 +246,14 @@ class Excel
                     'TDOCTO' => $dp['TDOCTO'],
                 ];
             }
-            $ProductosBonificaciones = $DataBONIFICACIONES->whereIn('SKU', $CodigosCODALT)->groupBy('COD');
+            // Obtiene los n productos en bonificaciones
+
+            // $ProductosBonificaciones = $DataBONIFICACIONES->whereIn('SKU', $CodigosCODALT)->groupBy('COD');
+            $ProductosBonificaciones = $DataBONIFICACIONES->whereIn('SKU', $CodigosCODALT)->groupBy(['MARCA', 'FORMATO']);
             $CodigosCOD = collect($CodigosCOD);
             foreach ($ProductosBonificaciones as $boni) {
-                $cantidadProductosHijos = $CodigosCOD->where('COD', $boni[0]['COD']);
+                // Cada objeto es son los items del pedido
+                $cantidadProductosHijos = $boni;
                 $sumaCantidades = 0;
                 $cantidadCajaX = 0;
                 $boniCaja = 0;
@@ -250,13 +262,16 @@ class Excel
                 $FEMOVI = 0;
                 $CODALT = 0;
                 foreach ($cantidadProductosHijos as $cph) {
-                    $sumaCantidades += $cph['CantidadPedido'];
-                    $cantidadCajaX = $cph['Caja X'];
-                    $boniCaja =  $cph['Boni'];
-                    $NROPEDIDO = $cph['NROPEDIDO'];
-                    $FEPVTA = $cph['FEPVTA'];
-                    $FEMOVI = $cph['FEMOVI'];
-                    $CODALT = $cph['CODALT'];
+                    $midata = $CodigosCOD->where('MARCA', $cph[0]['MARCA'])->where('FORMATO', $cph[0]['FORMATO'])->all();
+                    foreach ($midata as $lp) {
+                        $sumaCantidades += $lp['CantidadPedido'];
+                        $cantidadCajaX = $lp['Caja X'];
+                        $boniCaja =  $lp['Boni'];
+                        $NROPEDIDO = $lp['NROPEDIDO'];
+                        $FEPVTA = $lp['FEPVTA'];
+                        $FEMOVI = $lp['FEMOVI'];
+                        $CODALT = $lp['CODALT'];
+                    }
                 }
                 $numeroBonificaciones = Excel::CalcularBonificacionProducto($cantidadCajaX, $sumaCantidades);
                 if ($numeroBonificaciones > 0) {
