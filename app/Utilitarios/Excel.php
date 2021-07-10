@@ -218,10 +218,6 @@ class Excel
                 $CodigosCODALT[] = $dp['CODALT'];
                 $objPlantilla = $DataTB_UNI->where('CODALT', $dp['CODALT'])->first();
                 $obBonificaciones = $DataBONIFICACIONES->where('SKU', $dp['CODALT'])->first();
-                if ($dp['NROPEDIDO'] = "P001627") {
-                    $demo = 1;
-                    $clean = 2;
-                }
                 $CodigosCOD[] = [
                     'COD' => $obBonificaciones != null ? $obBonificaciones['COD'] : '',
                     'Caja X' => $obBonificaciones != null ? $obBonificaciones['Caja X'] : '',
