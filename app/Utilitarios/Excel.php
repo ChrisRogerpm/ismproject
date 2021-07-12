@@ -18,8 +18,9 @@ class Excel
     public static function CopiarArchivosTmp($archivo)
     {
         $rutaDirectorio = public_path('Excels');
+        $nombre = pathinfo($archivo->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $archivo->getClientOriginalExtension();
-        $ArchivoNombre = Str::random(8) . "." . $extension;
+        $ArchivoNombre = $nombre . "_" . time() . "." . $extension;
         $archivo->move($rutaDirectorio, $ArchivoNombre);
         return $ArchivoNombre;
     }
@@ -157,6 +158,7 @@ class Excel
             'F' => 'Caja X',
             'H' => 'SKU',
             'I' => 'Bonif (Botellas)',
+            'K' => 'SABOR A BONIFICAR',
         ];
         $dataImportada = [];
         for ($i = $startRow; $i <= $max; $i++) {
@@ -214,16 +216,23 @@ class Excel
         foreach ($DataPedidogroupBy as $dpg) {
             $CodigosCODALT = [];
             $CodigosCOD = [];
+            $CodigosIndependienteCOD = [];
             foreach ($dpg as $dp) {
                 $CodigosCODALT[] = $dp['CODALT'];
                 $objPlantilla = $DataTB_UNI->where('CODALT', $dp['CODALT'])->first();
                 $obBonificaciones = $DataBONIFICACIONES->where('SKU', $dp['CODALT'])->first();
+                //$nroPedido = $dp['NROPEDIDO'];
+                $codigoIndp = $obBonificaciones != null ? $obBonificaciones['COD'] : '';
+                if ($codigoIndp != "") {
+                    $CodigosIndependienteCOD[] = $codigoIndp;
+                }
                 $CodigosCOD[] = [
                     'COD' => $obBonificaciones != null ? $obBonificaciones['COD'] : '',
                     'Caja X' => $obBonificaciones != null ? $obBonificaciones['Caja X'] : '',
                     'Boni' => $obBonificaciones != null ? $obBonificaciones['Bonif (Botellas)'] : '',
                     'MARCA' => $obBonificaciones != null ? $obBonificaciones['MARCA'] : '',
                     'FORMATO' => $obBonificaciones != null ? $obBonificaciones['FORMATO'] : '',
+                    'SABOR A BONIFICAR' => $obBonificaciones != null ? $obBonificaciones['SABOR A BONIFICAR'] : '',
                     'CantidadPedido' => $dp['CANTIDAD'],
                     'CODALT' => $dp['CODALT'],
                     'NROPEDIDO' => $dp['NROPEDIDO'],
@@ -246,43 +255,74 @@ class Excel
 
             // $ProductosBonificaciones = $DataBONIFICACIONES->whereIn('SKU', $CodigosCODALT)->groupBy('COD');
             $ProductosBonificaciones = $DataBONIFICACIONES->whereIn('SKU', $CodigosCODALT)->groupBy(['MARCA', 'FORMATO']);
-            $CodigosCOD = collect($CodigosCOD);
+            $CodigosCOD = collect($CodigosCOD)->whereIn('COD', $CodigosIndependienteCOD);
             foreach ($ProductosBonificaciones as $boni) {
                 // Cada objeto es son los items del pedido
                 $cantidadProductosHijos = $boni;
-                $sumaCantidades = 0;
                 $cantidadCajaX = 0;
                 $boniCaja = 0;
                 $NROPEDIDO = 0;
                 $FEPVTA = 0;
                 $FEMOVI = 0;
                 $CODALT = 0;
+                $sumaCantidades = 0;
+                // for ($i = 0; $i < count($cantidadProductosHijos); $i++) {
+                //     $midata = $CodigosCOD->where('MARCA', $cantidadProductosHijos[$i]['MARCA'])->where('FORMATO', $cantidadProductosHijos[$i]['FORMATO'])->all();
+                //     $sumaCantidades = 0;
+                //     foreach ($midata as $lp) {
+                //         $sumaCantidades += $lp['CantidadPedido'];
+                //         $cantidadCajaX = $lp['Caja X'];
+                //         $boniCaja =  $lp['Boni'];
+                //         $NROPEDIDO = $lp['NROPEDIDO'];
+                //         $FEPVTA = $lp['FEPVTA'];
+                //         $FEMOVI = $lp['FEMOVI'];
+                //         $CODALT = $lp['SABOR A BONIFICAR'];
+                //     }
+                //     $numeroBonificaciones = Excel::CalcularBonificacionProducto($cantidadCajaX, $sumaCantidades);
+                //     if ($numeroBonificaciones > 0) {
+                //         $cantidad = ($numeroBonificaciones * $boniCaja) / 100;
+                //         $nuevaData[] = [
+                //             'NROPEDIDO' => $NROPEDIDO,
+                //             'FEPVTA' => $FEPVTA,
+                //             'FEMOVI' => $FEMOVI,
+                //             'CODALT' => $CODALT,
+                //             'CANTIDAD' => $cantidad,
+                //             'PRECIO' => 0,
+                //             'PDSCTO' => 0,
+                //             'DESCTO' => 0,
+                //             'TDOCTO' => 207,
+                //         ];
+                //     }
+                // }
                 foreach ($cantidadProductosHijos as $cph) {
-                    $midata = $CodigosCOD->where('MARCA', $cph[0]['MARCA'])->where('FORMATO', $cph[0]['FORMATO'])->all();
-                    foreach ($midata as $lp) {
-                        $sumaCantidades += $lp['CantidadPedido'];
-                        $cantidadCajaX = $lp['Caja X'];
-                        $boniCaja =  $lp['Boni'];
-                        $NROPEDIDO = $lp['NROPEDIDO'];
-                        $FEPVTA = $lp['FEPVTA'];
-                        $FEMOVI = $lp['FEMOVI'];
-                        $CODALT = $lp['CODALT'];
+                    foreach ($cph as $pp) {
+                        $midata = $CodigosCOD->where('MARCA', $pp['MARCA'])->where('FORMATO', $pp['FORMATO'])->all();
+                        $sumaCantidades = 0;
+                        foreach ($midata as $lp) {
+                            $sumaCantidades += $lp['CantidadPedido'];
+                            $cantidadCajaX = $lp['Caja X'];
+                            $boniCaja =  $lp['Boni'];
+                            $NROPEDIDO = $lp['NROPEDIDO'];
+                            $FEPVTA = $lp['FEPVTA'];
+                            $FEMOVI = $lp['FEMOVI'];
+                            $CODALT = $lp['SABOR A BONIFICAR'];
+                        }
                     }
-                }
-                $numeroBonificaciones = Excel::CalcularBonificacionProducto($cantidadCajaX, $sumaCantidades);
-                if ($numeroBonificaciones > 0) {
-                    $cantidad = ($numeroBonificaciones * $boniCaja) / 100;
-                    $nuevaData[] = [
-                        'NROPEDIDO' => $NROPEDIDO,
-                        'FEPVTA' => $FEPVTA,
-                        'FEMOVI' => $FEMOVI,
-                        'CODALT' => $CODALT,
-                        'CANTIDAD' => $cantidad,
-                        'PRECIO' => 0,
-                        'PDSCTO' => 0,
-                        'DESCTO' => 0,
-                        'TDOCTO' => 207,
-                    ];
+                    $numeroBonificaciones = Excel::CalcularBonificacionProducto($cantidadCajaX, $sumaCantidades);
+                    if ($numeroBonificaciones > 0) {
+                        $cantidad = ($numeroBonificaciones * $boniCaja) / 100;
+                        $nuevaData[] = [
+                            'NROPEDIDO' => $NROPEDIDO,
+                            'FEPVTA' => $FEPVTA,
+                            'FEMOVI' => $FEMOVI,
+                            'CODALT' => $CODALT,
+                            'CANTIDAD' => $cantidad,
+                            'PRECIO' => 0,
+                            'PDSCTO' => 0,
+                            'DESCTO' => 0,
+                            'TDOCTO' => 207,
+                        ];
+                    }
                 }
             }
         }
