@@ -29,7 +29,22 @@ class ReportesController extends Controller
             $request->request->add(['archivoPlantilla' => Excel::CopiarArchivosTmp($request->file('archivoPlantilla'))]);
             $request->request->add(['archivoPedido' => Excel::CopiarArchivosTmp($request->file('archivoPedido'))]);
             $request->request->add(['archivoBonificaciones' => Excel::CopiarArchivosTmp($request->file('archivoBonificaciones'))]);
-            $data = Excel::GenerarExcelPedidoCorregido($request);
+
+            $DataTB_UNI = Excel::ImportarDataTB_UNI($request);
+            $DataGGVVRUTA = Excel::ImportarDataGGVVRUTA($request);
+            $DataCLIENTEPEDIDO = Excel::ImportarDataCLIENTEPEDIDO($request);
+            $DataBONIFICACIONES = Excel::ImportarDataBONIFICACIONES($request);
+            $DataPEDIDO = Excel::ImportarDataPEDIDO($request);
+            $DataDATA_CLI = Excel::ImportarDataDATA_CLI($request);
+
+            $data = Excel::GenerarExcelPedidoCorregido(
+                $DataTB_UNI,
+                $DataGGVVRUTA,
+                $DataCLIENTEPEDIDO,
+                $DataBONIFICACIONES,
+                $DataPEDIDO,
+                $DataDATA_CLI
+            );
             $respuesta = true;
             $mensaje = "Se ha importado exitosamente";
         } catch (Exception $ex) {
