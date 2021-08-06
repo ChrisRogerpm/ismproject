@@ -395,16 +395,41 @@ class Excel
             foreach ($listaPDV as $pdv) {
                 $listaPDVNueva[] = $pdv;
             }
-            foreach ($listaPDVNueva as $key => $pdv) {
+            if (count($listaPDVNueva) > 0) {
+                foreach ($listaPDVNueva as $key => $pdv) {
+                    $nuevaData[] = [
+                        'NROPEDIDO' => $key > 0 ? $cp['NROPEDIDO'] . 'e' : $cp['NROPEDIDO'],
+                        'COD_CLIE' => $cp['COD_CLIE'],
+                        'CLIENTE' => $cp['CLIENTE'],
+                        'DIRECCION' => $cp['DIRECCION'],
+                        'TIPO_DOC' => $tipoDocumento,
+                        'NRO_DOC' => $nroDocumento,
+                        'RUTA' => $Cli == null ? '' : $Cli['RUTA'],
+                        'MODULO' => $Cli == null ? '' : $Cli['MODULO'],
+                        'VISITA' => $cp['VISITA'],
+                        'LATITUD' => $cp['LATITUD'],
+                        'LONGITUD' => $cp['LONGITUD'],
+                        'GIRO' => $cp['GIRO'],
+                        'EMAIL' => $cp['EMAIL'],
+                        'TELEFONO' => $cp['TELEFONO'],
+                        'LUGAR' => $cp['LUGAR'],
+                        'SUCURSAL' => $cp['SUCURSAL'],
+                        'CANAL' => $cp['CANAL'],
+                        'REFERENCIA' => $cp['REFERENCIA'],
+                        'LPRECIO' => $cp['LPRECIO'],
+                        'PDV' => $pdv
+                    ];
+                }
+            } else {
                 $nuevaData[] = [
-                    'NROPEDIDO' => $key > 0 ? $cp['NROPEDIDO'] . 'e' : $cp['NROPEDIDO'],
+                    'NROPEDIDO' => $cp['NROPEDIDO'],
                     'COD_CLIE' => $cp['COD_CLIE'],
                     'CLIENTE' => $cp['CLIENTE'],
                     'DIRECCION' => $cp['DIRECCION'],
                     'TIPO_DOC' => $tipoDocumento,
                     'NRO_DOC' => $nroDocumento,
-                    'RUTA' => $Cli['RUTA'],
-                    'MODULO' => $Cli['MODULO'],
+                    'RUTA' => $Cli == null ? '' : $Cli['RUTA'],
+                    'MODULO' => $Cli == null ? '' : $Cli['MODULO'],
                     'VISITA' => $cp['VISITA'],
                     'LATITUD' => $cp['LATITUD'],
                     'LONGITUD' => $cp['LONGITUD'],
@@ -416,7 +441,7 @@ class Excel
                     'CANAL' => $cp['CANAL'],
                     'REFERENCIA' => $cp['REFERENCIA'],
                     'LPRECIO' => $cp['LPRECIO'],
-                    'PDV' => $pdv
+                    'PDV' => ''
                 ];
             }
         }
