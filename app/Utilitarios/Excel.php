@@ -234,27 +234,32 @@ class Excel
         }
         return collect($dataImportada);
     }
-    public static function ProcesarDataImportadaPedidoExcel($DataTB_UNI, $DataPEDIDO, $DataBONIFICACIONES)
-    {
+    public static function ProcesarDataImportadaPedidoExcel(
+        $DataTB_UNI,
+        $DataPEDIDO,
+        $DataBONIFICACIONES,
+        $DataGGVVRUTA,
+        $DataCLIENTEPEDIDOProcesada
+    ) {
         $DataPedidogroupBy = $DataPEDIDO->groupBy('NROPEDIDO');
         $nuevaData = [];
         foreach ($DataPedidogroupBy as $dpg) {
             $CodigosCODALT = [];
             $CodigosCOD = [];
             $CodigosIndependienteCOD = [];
-            $listaCODALTProducto = $dpg->map(function ($item, $key) {
-                return $item['CODALT'];
-            });
-            $listaCODALTProductoNueva = [];
-            foreach ($listaCODALTProducto as $lp) {
-                $listaCODALTProductoNueva[] = $lp;
-            }
-            $listaLineaProducto = $DataTB_UNI->whereIn('CODALT', $listaCODALTProductoNueva);
-            $lineasProducto = [];
-            foreach ($listaLineaProducto as $lcp) {
-                $lineasProducto[]  = $lcp['LINEA'];
-            }
-            $lineasProducto = array_unique($lineasProducto);
+            // $listaCODALTProducto = $dpg->map(function ($item, $key) {
+            //     return $item['CODALT'];
+            // });
+            // $listaCODALTProductoNueva = [];
+            // foreach ($listaCODALTProducto as $lp) {
+            //     $listaCODALTProductoNueva[] = $lp;
+            // }
+            // $listaLineaProducto = $DataTB_UNI->whereIn('CODALT', $listaCODALTProductoNueva);
+            // $lineasProducto = [];
+            // foreach ($listaLineaProducto as $lcp) {
+            //     $lineasProducto[]  = $lcp['LINEA'];
+            // }
+            // $lineasProducto = array_unique($lineasProducto);
             foreach ($dpg as $key => $dp) {
                 $CodigosCODALT[] = $dp['CODALT'];
                 $objPlantilla = $DataTB_UNI->where('CODALT', $dp['CODALT'])->first();
@@ -277,12 +282,21 @@ class Excel
                     'FEMOVI' => $dp['FEMOVI'],
                 ];
                 $nroPedidoEspejo = $dp['NROPEDIDO'];
-                if (count($lineasProducto) > 1) {
-                    $lineaProducto = $DataTB_UNI->where('CODALT', $dp['CODALT'])->first();
-                    if ($lineaProducto != null) {
-                        $nroPedidoEspejo = $lineaProducto['LINEA'] == 2 ? $dp['NROPEDIDO'] . 'e' : $dp['NROPEDIDO'];
-                    }
+                // if (count($lineasProducto) > 1) {
+                //     $lineaProducto = $DataTB_UNI->where('CODALT', $dp['CODALT'])->first();
+                //     if ($lineaProducto != null) {
+                //         $nroPedidoEspejo = $lineaProducto['LINEA'] == 2 ? $dp['NROPEDIDO'] . 'e' : $dp['NROPEDIDO'];
+                //     }
+                // }
+                $objCliente = $DataCLIENTEPEDIDOProcesada->where('NROPEDIDO', $dp['NROPEDIDO'])->first();
+                $objGGVVRUTA = $DataGGVVRUTA->where([
+                    'SKU' => $dp['CODALT'],
+                    'RUTA' => $objCliente['RUTA']
+                ])->first();
+                if ($objGGVVRUTA['LINEA'] == 2) {
+                    $nroPedidoEspejo = $dp['NROPEDIDO'] . 'e';
                 }
+
                 $nuevaData[] = [
                     'NROPEDIDO' => $nroPedidoEspejo,
                     'FEPVTA' => $dp['FEPVTA'],
@@ -309,34 +323,6 @@ class Excel
                 $FEMOVI = 0;
                 $CODALT = 0;
                 $sumaCantidades = 0;
-                // for ($i = 0; $i < count($cantidadProductosHijos); $i++) {
-                //     $midata = $CodigosCOD->where('MARCA', $cantidadProductosHijos[$i]['MARCA'])->where('FORMATO', $cantidadProductosHijos[$i]['FORMATO'])->all();
-                //     $sumaCantidades = 0;
-                //     foreach ($midata as $lp) {
-                //         $sumaCantidades += $lp['CantidadPedido'];
-                //         $cantidadCajaX = $lp['Caja X'];
-                //         $boniCaja =  $lp['Boni'];
-                //         $NROPEDIDO = $lp['NROPEDIDO'];
-                //         $FEPVTA = $lp['FEPVTA'];
-                //         $FEMOVI = $lp['FEMOVI'];
-                //         $CODALT = $lp['SABOR A BONIFICAR'];
-                //     }
-                //     $numeroBonificaciones = Excel::CalcularBonificacionProducto($cantidadCajaX, $sumaCantidades);
-                //     if ($numeroBonificaciones > 0) {
-                //         $cantidad = ($numeroBonificaciones * $boniCaja) / 100;
-                //         $nuevaData[] = [
-                //             'NROPEDIDO' => $NROPEDIDO,
-                //             'FEPVTA' => $FEPVTA,
-                //             'FEMOVI' => $FEMOVI,
-                //             'CODALT' => $CODALT,
-                //             'CANTIDAD' => $cantidad,
-                //             'PRECIO' => 0,
-                //             'PDSCTO' => 0,
-                //             'DESCTO' => 0,
-                //             'TDOCTO' => 207,
-                //         ];
-                //     }
-                // }
                 foreach ($cantidadProductosHijos as $cph) {
                     foreach ($cph as $pp) {
                         $midata = $CodigosCOD->where('MARCA', $pp['MARCA'])->where('FORMATO', $pp['FORMATO'])->all();
@@ -460,16 +446,19 @@ class Excel
         $DataPEDIDO,
         $DataDATA_CLI
     ) {
-        $DataPEDIDOProcesada = Excel::ProcesarDataImportadaPedidoExcel(
-            $DataTB_UNI,
-            $DataPEDIDO,
-            $DataBONIFICACIONES
-        );
         $DataCLIENTEPEDIDOProcesada = Excel::ProcesarDataImportadaClientePedidoExcel(
             $DataGGVVRUTA,
             $DataCLIENTEPEDIDO,
             $DataDATA_CLI,
             $DataPEDIDO,
+        );
+
+        $DataPEDIDOProcesada = Excel::ProcesarDataImportadaPedidoExcel(
+            $DataTB_UNI,
+            $DataPEDIDO,
+            $DataBONIFICACIONES,
+            $DataGGVVRUTA,
+            $DataCLIENTEPEDIDOProcesada
         );
 
         $nombreArchivo = 'Pedidos' . '_' . time() . '.xlsx';
