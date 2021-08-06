@@ -247,19 +247,26 @@ class Excel
             $CodigosCODALT = [];
             $CodigosCOD = [];
             $CodigosIndependienteCOD = [];
-            // $listaCODALTProducto = $dpg->map(function ($item, $key) {
-            //     return $item['CODALT'];
-            // });
-            // $listaCODALTProductoNueva = [];
-            // foreach ($listaCODALTProducto as $lp) {
-            //     $listaCODALTProductoNueva[] = $lp;
-            // }
+
+            $listaCODALTProducto = $dpg->map(function ($item, $key) {
+                return $item['CODALT'];
+            });
+            $listaCODALTProductoNueva = [];
+            foreach ($listaCODALTProducto as $lp) {
+                $listaCODALTProductoNueva[] = $lp;
+            }
             // $listaLineaProducto = $DataTB_UNI->whereIn('CODALT', $listaCODALTProductoNueva);
-            // $lineasProducto = [];
-            // foreach ($listaLineaProducto as $lcp) {
-            //     $lineasProducto[]  = $lcp['LINEA'];
-            // }
-            // $lineasProducto = array_unique($lineasProducto);
+            $objCliente = $DataCLIENTEPEDIDOProcesada->where('NROPEDIDO', $dpg[0]['NROPEDIDO'])->first();
+
+            $listaLineaProducto = $DataGGVVRUTA
+                ->where('RUTA', $objCliente['RUTA'])
+                ->whereIn('SKU', $listaCODALTProductoNueva);
+            $lineasProducto = [];
+            foreach ($listaLineaProducto as $lcp) {
+                $lineasProducto[]  = $lcp['LINEA'];
+            }
+            $lineasProducto = array_unique($lineasProducto);
+
             foreach ($dpg as $key => $dp) {
                 $CodigosCODALT[] = $dp['CODALT'];
                 $objPlantilla = $DataTB_UNI->where('CODALT', $dp['CODALT'])->first();
@@ -282,21 +289,18 @@ class Excel
                     'FEMOVI' => $dp['FEMOVI'],
                 ];
                 $nroPedidoEspejo = $dp['NROPEDIDO'];
-                // if (count($lineasProducto) > 1) {
-                //     $lineaProducto = $DataTB_UNI->where('CODALT', $dp['CODALT'])->first();
-                //     if ($lineaProducto != null) {
-                //         $nroPedidoEspejo = $lineaProducto['LINEA'] == 2 ? $dp['NROPEDIDO'] . 'e' : $dp['NROPEDIDO'];
-                //     }
-                // }
-                $objCliente = $DataCLIENTEPEDIDOProcesada->where('NROPEDIDO', $dp['NROPEDIDO'])->first();
-                $objGGVVRUTA = $DataGGVVRUTA->where([
-                    'SKU' => $dp['CODALT'],
-                    'RUTA' => $objCliente['RUTA']
-                ])->first();
-                if ($objGGVVRUTA['LINEA'] == 2) {
-                    $nroPedidoEspejo = $dp['NROPEDIDO'] . 'e';
-                }
 
+                if (count($lineasProducto) > 1) {
+                    // $objCliente = $DataCLIENTEPEDIDOProcesada->where('NROPEDIDO', $dp['NROPEDIDO'])->first();
+                    $objGGVVRUTA = $DataGGVVRUTA
+                        ->where('SKU', $dp['CODALT'])
+                        ->where('RUTA', $objCliente['RUTA'])
+                        ->first();
+
+                    if ($objGGVVRUTA['LINEA'] == 2) {
+                        $nroPedidoEspejo = $dp['NROPEDIDO'] . 'e';
+                    }
+                }
                 $nuevaData[] = [
                     'NROPEDIDO' => $nroPedidoEspejo,
                     'FEPVTA' => $dp['FEPVTA'],
