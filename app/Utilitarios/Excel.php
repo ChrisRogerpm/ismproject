@@ -341,7 +341,10 @@ class Excel
                             $CODALT = $lp['SABOR A BONIFICAR'];
                         }
                     }
-                    $numeroBonificaciones = Excel::CalcularBonificacionProducto($cantidadCajaX, $sumaCantidades);
+                    $numeroBonificaciones = 0;
+                    if ($cantidadCajaX > 0) {
+                        $numeroBonificaciones = Excel::CalcularBonificacionProducto($cantidadCajaX, $sumaCantidades);
+                    }
                     if ($numeroBonificaciones > 0) {
                         $cantidad = ($numeroBonificaciones * $boniCaja) / 100;
                         $nuevaData[] = [
