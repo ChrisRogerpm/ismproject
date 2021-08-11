@@ -316,7 +316,12 @@ class Excel
             // Obtiene los n productos en bonificaciones
             // $ProductosBonificaciones = $DataBONIFICACIONES->whereIn('SKU', $CodigosCODALT)->groupBy('COD');
             $ProductosBonificaciones = $DataBONIFICACIONES->whereIn('SKU', $CodigosCODALT)->groupBy(['MARCA', 'FORMATO']);
-            $CodigosCOD = collect($CodigosCOD)->whereIn('COD', $CodigosIndependienteCOD);
+            if (count($CodigosIndependienteCOD) > 0) {
+                $CodigosCOD = collect($CodigosCOD)->whereIn('COD', $CodigosIndependienteCOD);
+            } else {
+                $CodigosCOD = collect([]);
+            }
+
             foreach ($ProductosBonificaciones as $boni) {
                 // Cada objeto es son los items del pedido
                 $cantidadProductosHijos = $boni;
@@ -378,10 +383,15 @@ class Excel
             $listaCodigoProducto = $nuevaDataImportarDataPEDIDO->map(function ($item, $key) {
                 return $item['CODALT'];
             });
-            $nuevaDataGGVVRUTA = $DataGGVVRUTA->whereIn('SKU', $listaCodigoProducto)->where('RUTA', $Cli['RUTA']);
-            $listaPDV = $nuevaDataGGVVRUTA->map(function ($item, $key) {
-                return $item['CODIGO'];
-            })->unique();
+
+            $listaPDV = [];
+            if ($Cli != null) {
+                $nuevaDataGGVVRUTA = $DataGGVVRUTA->whereIn('SKU', $listaCodigoProducto)->where('RUTA', $Cli['RUTA']);
+                $listaPDV = $nuevaDataGGVVRUTA->map(function ($item, $key) {
+                    return $item['CODIGO'];
+                })->unique();
+            }
+
             $tipoDocumento = strlen($cp['NRO_DOC']) <= 8 ? 0 : 1;
             $nroDocumento = $tipoDocumento == 1 ? Excel::CompletadorCerosDNI($cp['NRO_DOC']) : $cp['NRO_DOC'];
             $listaPDVNueva = [];
