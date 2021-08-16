@@ -257,15 +257,21 @@ class Excel
             }
             // $listaLineaProducto = $DataTB_UNI->whereIn('CODALT', $listaCODALTProductoNueva);
             $objCliente = $DataCLIENTEPEDIDOProcesada->where('NROPEDIDO', $dpg[0]['NROPEDIDO'])->first();
-
-            $listaLineaProducto = $DataGGVVRUTA
-                ->where('RUTA', $objCliente['RUTA'])
-                ->whereIn('SKU', $listaCODALTProductoNueva);
             $lineasProducto = [];
-            foreach ($listaLineaProducto as $lcp) {
-                $lineasProducto[]  = $lcp['LINEA'];
+            if ($objCliente != null) {
+                $listaLineaProducto = $DataGGVVRUTA
+                    ->where('RUTA', $objCliente['RUTA'])
+                    ->whereIn('SKU', $listaCODALTProductoNueva);
+
+                if ($listaLineaProducto !== null) {
+                    foreach ($listaLineaProducto as $lcp) {
+                        $lineasProducto[]  = $lcp['LINEA'];
+                    }
+                }
+
+                $lineasProducto = array_unique($lineasProducto);
             }
-            $lineasProducto = array_unique($lineasProducto);
+
 
             foreach ($dpg as $key => $dp) {
                 $CodigosCODALT[] = $dp['CODALT'];
@@ -291,14 +297,14 @@ class Excel
                 $nroPedidoEspejo = $dp['NROPEDIDO'];
 
                 if (count($lineasProducto) > 1) {
-                    // $objCliente = $DataCLIENTEPEDIDOProcesada->where('NROPEDIDO', $dp['NROPEDIDO'])->first();
                     $objGGVVRUTA = $DataGGVVRUTA
                         ->where('SKU', $dp['CODALT'])
                         ->where('RUTA', $objCliente['RUTA'])
                         ->first();
-
-                    if ($objGGVVRUTA['LINEA'] == 2) {
-                        $nroPedidoEspejo = $dp['NROPEDIDO'] . 'e';
+                    if ($objGGVVRUTA != null) {
+                        if ($objGGVVRUTA['LINEA'] == 2) {
+                            $nroPedidoEspejo = $dp['NROPEDIDO'] . 'e';
+                        }
                     }
                 }
                 $nuevaData[] = [
