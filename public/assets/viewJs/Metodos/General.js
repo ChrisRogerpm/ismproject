@@ -1,45 +1,116 @@
 basePath = document.location.origin + "/";
 basePathApi = document.location.origin + "/api/";
-basePathTramite = basePath + 'assets/viewJs/Archivos/PDF/';
-basePathImagen = basePath + 'assets/viewJs/Archivos/Imagenes/Perfiles/'
-basePathSeguimiento = basePath + 'assets/viewJs/Archivos/Seguimiento';
-basePathSeguimientoRespuesta = basePath + 'assets/viewJs/Archivos/SeguimientoRespuesta';
-basePathSeguimientoTramiteRespuesta = basePath + 'assets/viewJs/Archivos/SeguimientoTramiteRespuesta';
-$.fn.datepicker.dates['es'] = {
-    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+basePathTramite = basePath + "assets/viewJs/Archivos/PDF/";
+basePathImagen = basePath + "assets/viewJs/Archivos/Imagenes/Perfiles/";
+basePathSeguimiento = basePath + "assets/viewJs/Archivos/Seguimiento";
+basePathSeguimientoRespuesta =
+    basePath + "assets/viewJs/Archivos/SeguimientoRespuesta";
+basePathSeguimientoTramiteRespuesta =
+    basePath + "assets/viewJs/Archivos/SeguimientoTramiteRespuesta";
+$.fn.datepicker.dates["es"] = {
+    days: [
+        "Domingo",
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+    ],
     daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
     daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
-    months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-    monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    months: [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre",
+    ],
+    monthsShort: [
+        "Ene",
+        "Feb",
+        "Mar",
+        "Abr",
+        "May",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dic",
+    ],
     today: "Hoy",
     monthsTitle: "Meses",
     clear: "Borrar",
     weekStart: 1,
-    format: "yyyy-mm-dd"
+    format: "yyyy-mm-dd",
 };
-$.fn.datetimepicker.dates['es'] = {
-    days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+$.fn.datetimepicker.dates["es"] = {
+    days: [
+        "Domingo",
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+        "Domingo",
+    ],
     daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
     daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
-    months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-    monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+    months: [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre",
+    ],
+    monthsShort: [
+        "Ene",
+        "Feb",
+        "Mar",
+        "Abr",
+        "May",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dic",
+    ],
     today: "Hoy",
     suffix: [],
-    meridiem: []
+    meridiem: [],
 };
 $.extend($.fn.dataTable.defaults, {
     autoWidth: false,
     responsive: true,
     // dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
     language: {
-        search: '<span>Buscar:</span> _INPUT_',
-        searchPlaceholder: 'Buscar...',
-        lengthMenu: '<span>Mostrar:</span> _MENU_',
+        search: "<span>Buscar:</span> _INPUT_",
+        searchPlaceholder: "Buscar...",
+        lengthMenu: "<span>Mostrar:</span> _MENU_",
         paginate: {
-            'first': 'First',
-            'last': 'Last',
-            'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;',
-            'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;'
+            first: "First",
+            last: "Last",
+            next: $("html").attr("dir") == "rtl" ? "&larr;" : "&rarr;",
+            previous: $("html").attr("dir") == "rtl" ? "&rarr;" : "&larr;",
         },
         emptyTable: "No hay Data que Mostrar",
         infoEmpty: "Mostrando 0 al 0 de 0 Registros",
@@ -48,7 +119,7 @@ $.extend($.fn.dataTable.defaults, {
         loadingRecords: "Cargando...",
         processing: "Procesando...",
         zeroRecords: "No Se encontro Coincidencias",
-    }
+    },
 });
 $.fn.serializeFormJSON = function () {
     let o = {};
@@ -58,32 +129,32 @@ $.fn.serializeFormJSON = function () {
             if (!o[this.name].push) {
                 o[this.name] = [o[this.name]];
             }
-            o[this.name].push(this.value || '');
+            o[this.name].push(this.value || "");
         } else {
-            o[this.name] = this.value || '';
+            o[this.name] = this.value || "";
         }
     });
     return o;
 };
-$(document).on('click', '.btnRecargar', function () {
+$(document).on("click", ".btnRecargar", function () {
     RefrescarVentana();
 });
-$(document).on('click', '#btnIniciarSesionToken', function () {
+$(document).on("click", "#btnIniciarSesionToken", function () {
     $("#frmSessionToken").submit();
     if (_objetoForm_frmSessionToken.valid()) {
-        let dataForm = $('#frmSessionToken').serializeFormJSON();
+        let dataForm = $("#frmSessionToken").serializeFormJSON();
         EnviarDataPostWithOutApi({
             url: "RestablecerTokenUsuarioJson",
             data: dataForm,
             callBackSuccess: function (response) {
                 let token = response;
-                localStorage.setItem('token', token);
-                $("#modalRenovarSessionToken").modal('hide');
+                localStorage.setItem("token", token);
+                $("#modalRenovarSessionToken").modal("hide");
                 setTimeout(function () {
                     RefrescarVentana();
                 }, 1000);
-            }
-        })
+            },
+        });
     }
 });
 $("select").on("select2:close", function (e) {
@@ -93,21 +164,21 @@ const ValidarFormulario = (obj) => {
     let defaults = {
         contenedor: null,
         nameVariable: "",
-        ignore: 'input[type=hidden], .select2-search__field',
+        ignore: "input[type=hidden], .select2-search__field",
         rules: {},
-        messages: {}
+        messages: {},
     };
     let opciones = $.extend({}, defaults, obj);
     if (opciones.contenedor == null) {
-        console.warn('Advertencia - contenedor no esta definido.');
+        console.warn("Advertencia - contenedor no esta definido.");
         return;
     }
     let objt = "_objetoForm";
-    this[objt + '_' + opciones.nameVariable] = $(opciones.contenedor).validate({
+    this[objt + "_" + opciones.nameVariable] = $(opciones.contenedor).validate({
         ignore: opciones.ignore, // ignore hidden fields
-        errorClass: 'validation-invalid-label',
-        successClass: 'validation-valid-label',
-        validClass: 'validation-valid-label',
+        errorClass: "validation-invalid-label",
+        successClass: "validation-valid-label",
+        validClass: "validation-valid-label",
         highlight: function (element, errorClass) {
             $(element).removeClass(errorClass);
         },
@@ -119,23 +190,31 @@ const ValidarFormulario = (obj) => {
         },
         // Different components require proper error label placement
         errorPlacement: function (error, element) {
-
             // Unstyled checkboxes, radios
-            if (element.parents().hasClass('form-check')) {
-                error.appendTo(element.parents('.form-check').parent());
+            if (element.parents().hasClass("form-check")) {
+                error.appendTo(element.parents(".form-check").parent());
             }
             // Input group, styled file input
-            else if (element.parent().is('.uniform-uploader, .uniform-select') || element.parents().hasClass('input-group')) {
+            else if (
+                element.parent().is(".uniform-uploader, .uniform-select") ||
+                element.parents().hasClass("input-group")
+            ) {
                 error.appendTo(element.parent().parent());
             }
 
             // Input with icons and Select2
-            else if (element.parents().hasClass('form-group-feedback') || element.hasClass('select2-hidden-accessible')) {
+            else if (
+                element.parents().hasClass("form-group-feedback") ||
+                element.hasClass("select2-hidden-accessible")
+            ) {
                 error.appendTo(element.parent());
             }
 
             // Input group, styled file input
-            else if (element.parent().is('.uniform-uploader, .uniform-select') || element.parents().hasClass('input-group')) {
+            else if (
+                element.parent().is(".uniform-uploader, .uniform-select") ||
+                element.parents().hasClass("input-group")
+            ) {
                 error.appendTo(element.parent().parent());
             }
             // Other elements
@@ -143,11 +222,12 @@ const ValidarFormulario = (obj) => {
                 error.insertAfter(element);
             }
         },
-        submitHandler: function (form) { // for demo
+        submitHandler: function (form) {
+            // for demo
             return false;
         },
         rules: opciones.rules,
-        messages: opciones.messages
+        messages: opciones.messages,
     });
 };
 const RedirigirUrl = (url) => {
@@ -172,33 +252,39 @@ const simpleDataTable = (obj) => {
         tableHeaderCheck: false,
         tabledrawCallback: "",
         tablerowCallback: "",
-        tablefooterCallback: ""
+        tablefooterCallback: "",
     };
     let opciones = $.extend({}, defaults, obj);
     let objt = "_objetoDatatable";
-    this[objt + '_' + opciones.tableNameVariable] = $(opciones.table).DataTable({
-        "bDestroy": true,
-        "scrollCollapse": true,
-        "scrollX": false,
-        "autoWidth": false,
-        "bProcessing": true,
-        "bDeferRender": true,
-        "paging": opciones.tablePaging,
-        "ordering": opciones.tableOrdering,
-        "info": opciones.tableInfo,
-        "lengthChange": opciones.tableLengthChange,
-        data: opciones.tableColumnsData,
-        columns: opciones.tableColumns,
-        "initComplete": function () {
-            let api = this.api();
-            if (opciones.tableHeaderCheck) {
-                $(api.column(0).header()).html('<input type="checkbox" name="header_chk_all" data-children="' + opciones.table + '" class="form-check-input-styled-info chk_all text-center">');
-            }
-        },
-        "drawCallback": opciones.tabledrawCallback,
-        "rowCallback": opciones.tablerowCallback,
-        "footerCallback": opciones.tablefooterCallback,
-    });
+    this[objt + "_" + opciones.tableNameVariable] = $(opciones.table).DataTable(
+        {
+            bDestroy: true,
+            scrollCollapse: true,
+            scrollX: false,
+            autoWidth: false,
+            bProcessing: true,
+            bDeferRender: true,
+            paging: opciones.tablePaging,
+            ordering: opciones.tableOrdering,
+            info: opciones.tableInfo,
+            lengthChange: opciones.tableLengthChange,
+            data: opciones.tableColumnsData,
+            columns: opciones.tableColumns,
+            initComplete: function () {
+                let api = this.api();
+                if (opciones.tableHeaderCheck) {
+                    $(api.column(0).header()).html(
+                        '<input type="checkbox" name="header_chk_all" data-children="' +
+                            opciones.table +
+                            '" class="form-check-input-styled-info chk_all text-center">'
+                    );
+                }
+            },
+            drawCallback: opciones.tabledrawCallback,
+            rowCallback: opciones.tablerowCallback,
+            footerCallback: opciones.tablefooterCallback,
+        }
+    );
 };
 const CargarDataSelect = (obj) => {
     let objeto = {
@@ -209,35 +295,41 @@ const CargarDataSelect = (obj) => {
         dataValor: null,
         valorSelect: null,
         alldata: false,
-        alldataTitulo: 'Todos',
+        alldataTitulo: "Todos",
         disabledall: false,
         withoutplaceholder: false,
         parameter: {},
-        callBackSuccess: function () {
-        },
+        callBackSuccess: function () {},
     };
     let options = $.extend({}, objeto, obj);
     $(options.idSelect).empty();
     $(options.idSelect).append('<option value="">Cargando...</option>');
     $.LoadingOverlay("show");
 
-
-    let token = localStorage.getItem('token');
+    let token = localStorage.getItem("token");
     axios.defaults.headers = {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
     };
     axios
         .get(basePathApi + options.url, {
-            params: options.dataForm
+            params: options.dataForm,
         })
         .then(function (response) {
             let data = response.data.data;
             if (data.length > 0) {
                 if (options.alldata) {
-                    $(options.idSelect).empty().append('<option value="0">-- ' + options.alldataTitulo + ' --</option>');
+                    $(options.idSelect)
+                        .empty()
+                        .append(
+                            '<option value="0">-- ' +
+                                options.alldataTitulo +
+                                " --</option>"
+                        );
                 } else {
-                    $(options.idSelect).empty().append('<option value="">-- Seleccione --</option>');
+                    $(options.idSelect)
+                        .empty()
+                        .append('<option value="">-- Seleccione --</option>');
                 }
 
                 if (options.withoutplaceholder) {
@@ -245,11 +337,14 @@ const CargarDataSelect = (obj) => {
                 }
 
                 $.each(data, function (key, value) {
-                    let selected = value[options.dataId] === options.valorSelect ? "selected" : "";
+                    let selected =
+                        value[options.dataId] === options.valorSelect
+                            ? "selected"
+                            : "";
 
                     if (options.disabledall) {
                         if (selected === "") {
-                            selected = 'disabled';
+                            selected = "disabled";
                         }
                     }
 
@@ -257,42 +352,59 @@ const CargarDataSelect = (obj) => {
                     if (!Object.keys(options.parameter).length > 0) {
                         parameterdata = "";
                     } else {
-                        Object.keys(options.parameter).forEach(item => {
+                        Object.keys(options.parameter).forEach((item) => {
                             if (value[obj[item]] === obj[item]) {
-                                parameterdata += item + '="' + value[options.parameter[item]] + '" ';
+                                parameterdata +=
+                                    item +
+                                    '="' +
+                                    value[options.parameter[item]] +
+                                    '" ';
                             }
                         });
                     }
 
-                    $(options.idSelect).append('<option ' + selected + ' value="' + value[options.dataId] + '" ' + parameterdata + '>' + value[options.dataValor] + '</option>');
+                    $(options.idSelect).append(
+                        "<option " +
+                            selected +
+                            ' value="' +
+                            value[options.dataId] +
+                            '" ' +
+                            parameterdata +
+                            ">" +
+                            value[options.dataValor] +
+                            "</option>"
+                    );
                 });
                 $(options.idSelect).select2();
-                options.callBackSuccess(data);
             } else {
-                $(options.idSelect).empty().append('<option value="">-- No se ha encontrado registros --</option>');
+                $(options.idSelect)
+                    .empty()
+                    .append(
+                        '<option value="">-- No se ha encontrado registros --</option>'
+                    );
                 $(options.idSelect).select2();
             }
+            options.callBackSuccess(data);
         })
         .catch(function (error) {
-            $('.modal').modal('hide');
+            $(".modal").modal("hide");
             let statusCode = error.response.status;
             if (statusCode == 401) {
                 swal.fire({
-                    title: 'LA SESIÓN HA EXPIRADO',
+                    title: "LA SESIÓN HA EXPIRADO",
                     text: "VUELVA A INICIAR SESIÓN NUEVAMENTE",
-                    type: 'warning',
-                    confirmButtonColor: '#FC8004',
-                    confirmButtonText: 'OK',
-                    allowOutsideClick: false
+                    type: "warning",
+                    confirmButtonColor: "#FC8004",
+                    confirmButtonText: "OK",
+                    allowOutsideClick: false,
                 }).then((result) => {
                     if (result.value) {
-
                         $("#modalRenovarSessionToken").modal({
-                            backdrop: 'static',
-                            keyboard: false
-                        })
+                            backdrop: "static",
+                            keyboard: false,
+                        });
                     }
-                })
+                });
             }
         })
         .finally(function () {
@@ -308,47 +420,47 @@ const CargarTablaDatatable = (obj) => {
         tableColumns: [],
         loader: false,
         tableHeaderCheck: false,
-        callBackSuccess: function () {
-        },
+        callBackSuccess: function () {},
     };
     let opciones = $.extend({}, defaults, obj);
     if (opciones.ajaxUrl == null) {
-        console.warn('Advertencia - url no fue declarado.');
+        console.warn("Advertencia - url no fue declarado.");
         return;
     }
     let url = basePathApi + opciones.ajaxUrl;
-    let token = localStorage.getItem('token');
+    let token = localStorage.getItem("token");
     axios.defaults.headers = {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
     };
     $.LoadingOverlay("show");
     axios
-        .get(url, { params: opciones.ajaxDataSend }).then(function (response) {
+        .get(url, { params: opciones.ajaxDataSend })
+        .then(function (response) {
             opciones.tableColumnsData = response.data.data;
             simpleDataTable(opciones);
             opciones.callBackSuccess(response.data);
         })
         .catch(function (error) {
             if (error.response != undefined) {
-                $('.modal').modal('hide');
+                $(".modal").modal("hide");
                 let statusCode = error.response.status;
                 if (statusCode == 401) {
                     swal.fire({
-                        title: 'LA SESIÓN HA EXPIRADO',
+                        title: "LA SESIÓN HA EXPIRADO",
                         text: "VUELVA A INICIAR SESIÓN NUEVAMENTE",
-                        type: 'warning',
-                        confirmButtonColor: '#FC8004',
-                        confirmButtonText: 'OK',
-                        allowOutsideClick: false
+                        type: "warning",
+                        confirmButtonColor: "#FC8004",
+                        confirmButtonText: "OK",
+                        allowOutsideClick: false,
                     }).then((result) => {
                         if (result.value) {
                             $("#modalRenovarSessionToken").modal({
-                                backdrop: 'static',
-                                keyboard: false
-                            })
+                                backdrop: "static",
+                                keyboard: false,
+                            });
                         }
-                    })
+                    });
                 }
             }
         })
@@ -372,25 +484,25 @@ const ShowAlert = (obj) => {
         progressBar: true,
         closeWith: null,
         modal: false,
-        custom_option: {}
+        custom_option: {},
     };
     let opciones = $.extend({}, defaults, obj);
     let add_options = {};
     switch (opciones.type) {
-        case 'success':
-            add_options.title = 'Excelente';
+        case "success":
+            add_options.title = "Excelente";
             add_options = Object.assign(add_options, opciones.custom_option);
             break;
-        case 'error':
-            add_options.title = 'Error';
+        case "error":
+            add_options.title = "Error";
             add_options = Object.assign(add_options, opciones.custom_option);
             break;
-        case 'warning':
-            add_options.title = 'Advertencia';
+        case "warning":
+            add_options.title = "Advertencia";
             add_options = Object.assign(add_options, opciones.custom_option);
             break;
-        case 'info':
-            add_options.title = 'Para tu información';
+        case "info":
+            add_options.title = "Para tu información";
             add_options = Object.assign(add_options, opciones.custom_option);
             break;
     }
@@ -399,7 +511,7 @@ const ShowAlert = (obj) => {
         type: opciones.type,
     };
     options = Object.assign(add_options, options);
-    swal.fire(options)
+    swal.fire(options);
 };
 const GenerarExcelMecanico = (objeto) => {
     let obj = {
@@ -411,53 +523,52 @@ const GenerarExcelMecanico = (objeto) => {
     let ListaHeaders = Object.keys(opciones.data[0]);
     let data = opciones.data;
     let dataForm = {
-        'table_data': data,
-        'NombreArchivo': opciones.NombreArchivo,
-        'ListaHeaders': ListaHeaders,
+        table_data: data,
+        NombreArchivo: opciones.NombreArchivo,
+        ListaHeaders: ListaHeaders,
     };
-    let token = localStorage.getItem('token');
+    let token = localStorage.getItem("token");
     $.LoadingOverlay("show");
     axios.defaults.headers = {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
     };
     axios({
-        method: 'post',
+        method: "post",
         url: basePathApi + "GenerarExcelJson",
-        data: dataForm
+        data: dataForm,
     })
         .then(function (response) {
             let respuesta = response.data.respuesta;
             if (respuesta === "") {
                 ShowAlert({
-                    type: 'warning',
-                    message: respuesta
-                })
+                    type: "warning",
+                    message: respuesta,
+                });
             } else {
                 let url = basePath + respuesta;
                 window.location.href = url;
             }
         })
         .catch(function (error) {
-            $('.modal').modal('hide');
+            $(".modal").modal("hide");
             let statusCode = error.response.status;
             if (statusCode == 401) {
                 swal.fire({
-                    title: 'LA SESIÓN HA EXPIRADO',
+                    title: "LA SESIÓN HA EXPIRADO",
                     text: "VUELVA A INICIAR SESIÓN NUEVAMENTE",
-                    type: 'warning',
-                    confirmButtonColor: '#FC8004',
-                    confirmButtonText: 'OK',
-                    allowOutsideClick: false
+                    type: "warning",
+                    confirmButtonColor: "#FC8004",
+                    confirmButtonText: "OK",
+                    allowOutsideClick: false,
                 }).then((result) => {
                     if (result.value) {
-
                         $("#modalRenovarSessionToken").modal({
-                            backdrop: 'static',
-                            keyboard: false
-                        })
+                            backdrop: "static",
+                            keyboard: false,
+                        });
                     }
-                })
+                });
             }
         })
         .finally(function () {
@@ -476,8 +587,8 @@ const GenerarExcel = (objeto) => {
     let opciones = $.extend({}, obj, objeto);
 
     let ListaHeaders = [];
-    let table = $('#' + opciones.tabla).DataTable();
-    let data = table.rows({ filter: 'applied' }).data().toArray();
+    let table = $("#" + opciones.tabla).DataTable();
+    let data = table.rows({ filter: "applied" }).data().toArray();
 
     if (opciones.ListaHeaderCustom.length === 0) {
         $("#" + opciones.tabla + " thead th").each(function () {
@@ -499,63 +610,61 @@ const GenerarExcel = (objeto) => {
     if (opciones.ColumnasEliminar.length > 0) {
         $.each(data, function (key, value) {
             $.each(opciones.ColumnasEliminar, function (k, v) {
-                delete value[v]
+                delete value[v];
             });
         });
     }
 
-
     let dataForm = {
-        'table_data': data,
-        'NombreArchivo': opciones.NombreArchivo,
-        'ListaHeaders': ListaHeaders,
-        'NombreTitulo': opciones.NombreTitulo,
+        table_data: data,
+        NombreArchivo: opciones.NombreArchivo,
+        ListaHeaders: ListaHeaders,
+        NombreTitulo: opciones.NombreTitulo,
     };
 
     if (data.length > 0) {
-        let token = localStorage.getItem('token');
+        let token = localStorage.getItem("token");
         $.LoadingOverlay("show");
         axios.defaults.headers = {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + token
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
         };
         axios({
-            method: 'post',
+            method: "post",
             url: basePathApi + "GenerarExcelJson",
-            data: dataForm
+            data: dataForm,
         })
             .then(function (response) {
                 let respuesta = response.data.respuesta;
                 if (respuesta === "") {
                     ShowAlert({
-                        type: 'warning',
-                        message: respuesta
-                    })
+                        type: "warning",
+                        message: respuesta,
+                    });
                 } else {
                     let url = basePath + respuesta;
                     window.location.href = url;
                 }
             })
             .catch(function (error) {
-                $('.modal').modal('hide');
+                $(".modal").modal("hide");
                 let statusCode = error.response.status;
                 if (statusCode == 401) {
                     swal.fire({
-                        title: 'LA SESIÓN HA EXPIRADO',
+                        title: "LA SESIÓN HA EXPIRADO",
                         text: "VUELVA A INICIAR SESIÓN NUEVAMENTE",
-                        type: 'warning',
-                        confirmButtonColor: '#FC8004',
-                        confirmButtonText: 'OK',
-                        allowOutsideClick: false
+                        type: "warning",
+                        confirmButtonColor: "#FC8004",
+                        confirmButtonText: "OK",
+                        allowOutsideClick: false,
                     }).then((result) => {
                         if (result.value) {
-
                             $("#modalRenovarSessionToken").modal({
-                                backdrop: 'static',
-                                keyboard: false
-                            })
+                                backdrop: "static",
+                                keyboard: false,
+                            });
                         }
-                    })
+                    });
                 }
             })
             .finally(function () {
@@ -563,9 +672,9 @@ const GenerarExcel = (objeto) => {
             });
     } else {
         ShowAlert({
-            type: 'warning',
-            message: 'NO SE ENCONTRARON REGISTROS A EXPORTAR'
-        })
+            type: "warning",
+            message: "NO SE ENCONTRARON REGISTROS A EXPORTAR",
+        });
     }
 };
 const RefrescarVentana = () => {
@@ -581,21 +690,19 @@ const EnviarDataPost = (obj) => {
         limpiarform: "",
         showMessag: true,
         showMessagError: true,
-        callBackSuccess: function () {
-        },
-        callBackError: function () {
-        }
+        callBackSuccess: function () {},
+        callBackError: function () {},
     };
 
     let opciones = $.extend({}, defaults, obj);
 
     if (opciones.url == null) {
-        console.warn('Advertencia - url no fue declarado.');
+        console.warn("Advertencia - url no fue declarado.");
         return;
     }
 
     let url = basePathApi + opciones.url;
-    let token = localStorage.getItem('token');
+    let token = localStorage.getItem("token");
 
     if (opciones.loader) {
         $.LoadingOverlay("show");
@@ -605,9 +712,9 @@ const EnviarDataPost = (obj) => {
         url: url,
         data: opciones.data,
         headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + token
-        }
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+        },
     })
         .then(function (response) {
             let respuesta = response.data.respuesta;
@@ -617,17 +724,17 @@ const EnviarDataPost = (obj) => {
                 if (opciones.showMessag) {
                     ShowAlert({
                         message: mensaje,
-                        type: "success"
+                        type: "success",
                     });
                 }
                 if (opciones.refresh) {
                     setTimeout(function () {
-                        RefrescarVentana()
+                        RefrescarVentana();
                     }, 1000);
                 }
                 if (opciones.limpiarform !== "") {
                     LimpiarFormulario({
-                        formulario: opciones.limpiarform
+                        formulario: opciones.limpiarform,
                     });
                 }
                 opciones.callBackSuccess(data);
@@ -635,7 +742,7 @@ const EnviarDataPost = (obj) => {
                 if (opciones.showMessagError) {
                     ShowAlert({
                         message: mensaje,
-                        type: "warning"
+                        type: "warning",
                     });
                 }
                 opciones.callBackError(response);
@@ -673,23 +780,23 @@ const LimpiarFormulario = (obj) => {
     let objeto = {
         formulario: null,
         nameVariable: null,
-        callBackSuccess: function () {
-        },
+        callBackSuccess: function () {},
     };
     let options = $.extend({}, objeto, obj);
-    $(options.formulario).trigger('reset');
-    $(options.formulario + ' select').val(null).trigger("change");
+    $(options.formulario).trigger("reset");
+    $(options.formulario + " select")
+        .val(null)
+        .trigger("change");
     if (options.nameVariable !== null) {
-        this['_objetoForm_' + options.nameVariable].resetForm();
+        this["_objetoForm_" + options.nameVariable].resetForm();
     }
 };
 const CargarDataGET = (obj) => {
     let objeto = {
         url: null,
         dataForm: [],
-        callBackSuccess: function () {
-        },
-        loading: ""
+        callBackSuccess: function () {},
+        loading: "",
     };
     let options = $.extend({}, objeto, obj);
     if (options.loading !== "") {
@@ -697,38 +804,39 @@ const CargarDataGET = (obj) => {
     } else {
         $.LoadingOverlay("show");
     }
-    let token = localStorage.getItem('token');
+    let token = localStorage.getItem("token");
     axios.defaults.headers = {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
     };
-    axios.get(basePathApi + options.url, {
-        params: options.dataForm
-    })
+    axios
+        .get(basePathApi + options.url, {
+            params: options.dataForm,
+        })
         .then(function (response) {
             let data = response.data.data;
             options.callBackSuccess(data);
         })
         .catch(function (error) {
             if (error.response != undefined) {
-                $('.modal').modal('hide');
+                $(".modal").modal("hide");
                 let statusCode = error.response.status;
                 if (statusCode == 401) {
                     swal.fire({
-                        title: 'LA SESIÓN HA EXPIRADO',
+                        title: "LA SESIÓN HA EXPIRADO",
                         text: "VUELVA A INICIAR SESIÓN NUEVAMENTE",
-                        type: 'warning',
-                        confirmButtonColor: '#FC8004',
-                        confirmButtonText: 'OK',
-                        allowOutsideClick: false
+                        type: "warning",
+                        confirmButtonColor: "#FC8004",
+                        confirmButtonText: "OK",
+                        allowOutsideClick: false,
                     }).then((result) => {
                         if (result.value) {
                             $("#modalRenovarSessionToken").modal({
-                                backdrop: 'static',
-                                keyboard: false
-                            })
+                                backdrop: "static",
+                                keyboard: false,
+                            });
                         }
-                    })
+                    });
                 }
             }
         })
@@ -741,7 +849,6 @@ const CargarDataGET = (obj) => {
         });
 };
 const GuardarAuditoria = (obj) => {
-
     let objeto = {
         formulario: "",
         metodo: "",
@@ -759,7 +866,7 @@ const GuardarAuditoria = (obj) => {
             dataAfterSend: options.dataAfterSend,
         },
         showMessag: false,
-        loader: false
+        loader: false,
     });
 };
 const EnviarDataPostWithOutApi = (obj) => {
@@ -772,21 +879,19 @@ const EnviarDataPostWithOutApi = (obj) => {
         limpiarform: "",
         showMessag: true,
         showMessagError: true,
-        callBackSuccess: function () {
-        },
-        callBackError: function () {
-        }
+        callBackSuccess: function () {},
+        callBackError: function () {},
     };
 
     let opciones = $.extend({}, defaults, obj);
 
     if (opciones.url == null) {
-        console.warn('Advertencia - url no fue declarado.');
+        console.warn("Advertencia - url no fue declarado.");
         return;
     }
 
     let url = basePath + opciones.url;
-    let token = localStorage.getItem('token');
+    let token = localStorage.getItem("token");
 
     if (opciones.loader) {
         $.LoadingOverlay("show");
@@ -796,59 +901,57 @@ const EnviarDataPostWithOutApi = (obj) => {
         url: url,
         data: opciones.data,
         headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + token
-        }
-    }).then(function (response) {
-        let respuesta = response.data.respuesta;
-        let mensaje = response.data.mensaje;
-        let data = response.data.data;
-        if (respuesta) {
-            if (opciones.showMessag) {
-                ShowAlert({
-                    message: mensaje,
-                    type: "success"
-                });
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+        },
+    })
+        .then(function (response) {
+            let respuesta = response.data.respuesta;
+            let mensaje = response.data.mensaje;
+            let data = response.data.data;
+            if (respuesta) {
+                if (opciones.showMessag) {
+                    ShowAlert({
+                        message: mensaje,
+                        type: "success",
+                    });
+                }
+                if (opciones.refresh) {
+                    setTimeout(function () {
+                        RefrescarVentana();
+                    }, 1000);
+                }
+                if (opciones.limpiarform !== "") {
+                    LimpiarFormulario({
+                        formulario: opciones.limpiarform,
+                    });
+                }
+                opciones.callBackSuccess(data);
+            } else {
+                if (opciones.showMessagError) {
+                    ShowAlert({
+                        message: mensaje,
+                        type: "error",
+                    });
+                }
+                opciones.callBackError(response);
             }
-            if (opciones.refresh) {
-                setTimeout(function () {
-                    RefrescarVentana()
-                }, 1000);
+        })
+        .finally(function () {
+            if (opciones.loader) {
+                $.LoadingOverlay("hide");
             }
-            if (opciones.limpiarform !== "") {
-                LimpiarFormulario({
-                    formulario: opciones.limpiarform
-                });
-            }
-            opciones.callBackSuccess(data);
-        } else {
-            if (opciones.showMessagError) {
-                ShowAlert({
-                    message: mensaje,
-                    type: "error"
-                });
-            }
-            opciones.callBackError(response);
-        }
-    }).finally(function () {
-        if (opciones.loader) {
-            $.LoadingOverlay("hide");
-        }
-    });
+        });
 };
 ValidarFormulario({
-    contenedor: '#frmSessionToken',
-    nameVariable: 'frmSessionToken',
+    contenedor: "#frmSessionToken",
+    nameVariable: "frmSessionToken",
     rules: {
         emailAcceso: { required: true },
         password: { required: true },
     },
     messages: {
-        emailAcceso: { required: 'El campo es requerido' },
-        password: { required: 'El campo es requerido' },
-    }
+        emailAcceso: { required: "El campo es requerido" },
+        password: { required: "El campo es requerido" },
+    },
 });
-
-
-
-

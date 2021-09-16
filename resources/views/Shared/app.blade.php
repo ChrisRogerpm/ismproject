@@ -3,9 +3,9 @@
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 <head>
     <meta charset="utf-8" />
-    <title>ISM</title>
+    <title>Industria San Miguel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="{{asset('assets/media/logos/logo_fau_ico.png')}}" rel="icon">
+    <link href="{{asset('assets/media/logos/iconn.ico')}}" rel="icon">
     <link rel="stylesheet" href="{{asset('fonts/fonts-google.css')}}">
     <link href="{{asset('assets/plugins/custom/datatables/datatables.bundle.css')}}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{{asset('assets/plugins/global/icheck/skins/all.css')}}">
@@ -20,7 +20,7 @@
 <body class="kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--fixed kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-aside--minimize">
     {{-- <body class="kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--fixed kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading"> --}}
     <div id="kt_header_mobile" class="kt-header-mobile kt-header-mobile--fixed ">
-        <div class="kt-header-mobile__logo"> <a href="javascript:void(0)"> <img alt="Logo" src="#" /></a> </div>
+        <div class="kt-header-mobile__logo"> <a href="javascript:void(0)"> <img alt="Logo" src="{{asset('assets/media/logos/logo_ism_removebg.png')}}" /></a> </div>
         <div class="kt-header-mobile__toolbar"> <button class="kt-header-mobile__toggler kt-header-mobile__toggler--left" id="kt_aside_mobile_toggler"> <span></span></button> <button class="kt-header-mobile__topbar-toggler" id="kt_header_mobile_topbar_toggler"><i class="flaticon-more"></i></button> </div>
     </div>
     <div class="kt-grid kt-grid--hor kt-grid--root">
@@ -28,9 +28,9 @@
             <div class="kt-aside kt-aside--fixed kt-grid__item kt-grid kt-grid--desktop kt-grid--hor-desktop" id="kt_aside">
                 <div class="kt-aside__brand kt-grid__item " id="kt_aside_brand">
                     <div class="kt-aside__brand-logo">
-                        {{-- <a href="javascript:void(0)">
-                            <img alt="Logo" src="{{asset('assets/media/logos/proyectaImagenMini.png')}}" />
-                        </a> --}}
+                        <a href="javascript:void(0)">
+                            <img alt="Logo" src="{{asset('assets/media/logos/logo_ism_removebg.png')}}" />
+                        </a>
                     </div>
                     <div class="kt-aside__brand-tools"> <button class="kt-aside__brand-aside-toggler" id="kt_aside_toggler"> <span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="kt-svg-icon">
                                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -56,33 +56,39 @@
                     <div class="kt-header__topbar">
                         <div class="kt-header__topbar-item kt-header__topbar-item--user">
                             <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px,0px">
-                                <div class="kt-header__topbar-user"> <span class="kt-header__topbar-welcome kt-hidden-mobile">DEMO</span> <span class="kt-header__topbar-username kt-hidden-mobile"></span> <img class="kt-hidden" alt="Pic" src="{{asset('assets/media/users/300_25.jpg')}}" /> <span class="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold">D</span> </div>
+                                <div class="kt-header__topbar-user">
+                                    <span class="kt-header__topbar-welcome kt-hidden-mobile">ISM</span>
+                                    <span class="kt-header__topbar-username kt-hidden-mobile"></span>
+                                    {{-- <img class="kt-hidden" alt="Pic" src="{{asset('assets/media/users/300_25.jpg')}}" /> --}}
+                                    <span class="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold">I</span>
+                                </div>
                             </div>
-                            <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
-                                <div class="kt-notification"> <a href="" class="kt-notification__item">
+                            {{-- <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl"> --}}
+                            {{-- <div class="kt-notification"> --}}
+                            {{-- <a href="" class="kt-notification__item">
                                         <div class="kt-notification__item-icon"> <i class="fa fa-user-alt kt-font-success"></i> </div>
                                         <div class="kt-notification__item-details">
                                             <div class="kt-notification__item-title kt-font-bold">MI PERFIL</div>
                                             <div class="kt-notification__item-time"> Configuraciones de cuenta y más </div>
                                         </div>
-                                    </a>
-                                    {{-- <a href="{{route('CambiarContrasenia')}}" class="kt-notification__item">
-                                    <div class="kt-notification__item-icon"> <i class="fa fa-lock kt-font-warning"></i> </div>
-                                    <div class="kt-notification__item-details">
-                                        <div class="kt-notification__item-title kt-font-bold"> CAMBIAR CONTRASEÑA </div>
-                                        <div class="kt-notification__item-time"> Cambio de contraseña </div>
-                                    </div>
                                     </a> --}}
-                                    {{-- <a href="javascript:void(0)" class="kt-notification__item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            {{-- <a href="{{route('CambiarContrasenia')}}" class="kt-notification__item">
+                            <div class="kt-notification__item-icon"> <i class="fa fa-lock kt-font-warning"></i> </div>
+                            <div class="kt-notification__item-details">
+                                <div class="kt-notification__item-title kt-font-bold"> CAMBIAR CONTRASEÑA </div>
+                                <div class="kt-notification__item-time"> Cambio de contraseña </div>
+                            </div>
+                            </a> --}}
+                            {{-- <a href="javascript:void(0)" class="kt-notification__item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         <div class="kt-notification__item-icon"> <i class="fa fa-power-off kt-font-dark"></i> </div>
                                         <div class="kt-notification__item-details">
                                             <div class="kt-notification__item-title kt-font-bold"> CERRAR SESIÓN </div>
                                             <div class="kt-notification__item-time"> Cierre total del sistema </div>
                                         </div>
                                         <form id="logout-form" action="{{route('CerrarSesion')}}" method="POST" style="display: none;">{{csrf_field()}}</form>
-                                    </a> --}}
-                                </div>
-                            </div>
+                            </a> --}}
+                            {{-- </div> --}}
+                            {{-- </div> --}}
                         </div>
                     </div>
                 </div>
@@ -130,6 +136,7 @@
     <script src="{{asset('assets/js/pages/crud/forms/widgets/select2.js')}}" type="text/javascript"></script>
     <script src="{{asset('assets/js/pages/crud/forms/widgets/bootstrap-datetimepicker.js')}}"></script>
     <script src="{{asset('assets/js/pages/crud/forms/widgets/bootstrap-datepicker.js')}}"></script>
-    <script src="{{asset('assets/plugins/global/validation/validate.min.js')}}"></script> @stack('js')
+    <script src="{{asset('assets/plugins/global/validation/validate.min.js')}}"></script>
+    @stack('js')
 </body>
 </html>

@@ -9,7 +9,7 @@
         </div>
         <div class="kt-subheader__toolbar">
             <div class="kt-subheader__wrapper">
-                <button class="btn btnFau dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa fa-cog"></i> ACCIONES
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
