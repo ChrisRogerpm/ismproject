@@ -42,3 +42,7 @@ Route::get('EditarProducto/{idProducto}', 'ProductoController@ProductoEditarVist
 Route::get('Linea', 'LineaController@LineaListarVista')->name('Linea.Listar');
 Route::get('RegistrarLinea/{idCeo}', 'LineaController@LineaRegistrarVista');
 Route::get('EditarLinea/{idLinea}', 'LineaController@LineaEditarVista');
+
+Route::get('Bonificacion', 'BonificacionController@BonificacionListarVista')->name('Bonificacion.Listar');
+Route::get('RegistrarBonificacion/{idCeo}', 'BonificacionController@BonificacionRegistrarVista');
+Route::get('EditarBonificacion/{idBonificacion}', 'BonificacionController@BonificacionEditarVista');

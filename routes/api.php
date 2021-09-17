@@ -95,3 +95,15 @@ Route::post('LineaEditarJson', 'LineaController@LineaEditarJson');
 Route::post('LineaBloquearJson', 'LineaController@LineaBloquearJson');
 Route::post('LineaRestablecerJson', 'LineaController@LineaRestablecerJson');
 #endregion
+#region BONIFICACION
+Route::get('BonificacionListarJson', 'BonificacionController@BonificacionListarJson');
+Route::post('BonificacionRegistrarJson', 'BonificacionController@BonificacionRegistrarJson');
+Route::post('BonificacionEditarJson', 'BonificacionController@BonificacionEditarJson');
+Route::post('BonificacionActivarJson', 'BonificacionController@BonificacionActivarJson');
+#endregion
+
+#region BONIFICACION_DETALLE
+Route::get('BonificacionDetalleListarJson', 'BonificacionDetalleController@BonificacionDetalleListarJson');
+Route::post('BonificacionDetalleEliminarJson', 'BonificacionDetalleController@BonificacionDetalleEliminarJson');
+Route::post('BonificacionDetalleRegistrarJson', 'BonificacionDetalleController@BonificacionDetalleRegistrarJson');
+#endregion

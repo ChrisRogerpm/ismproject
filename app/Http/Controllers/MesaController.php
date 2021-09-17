@@ -25,8 +25,6 @@ class MesaController extends Controller
     public function MesaEditarVista($idMesa)
     {
         $Mesa = Mesa::with(['CentroOperativo'])->findOrfail($idMesa);
-        // $MesaRuta = MesaRuta::where('idMesa', $Mesa->idMesa)->get();
-        // $MesaSupervisor = MesaSupervisor::where('idMesa', $Mesa->idMesa)->get();
         return view('Mesa.MesaEditar', compact('Mesa'));
     }
     #endregion
