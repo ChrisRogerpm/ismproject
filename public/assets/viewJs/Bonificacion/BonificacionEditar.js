@@ -3,6 +3,7 @@ ListaProductosRegistrados = [];
 ListaProductos = [];
 
 ListaProductosIndependiente = [];
+ListaProductosEliminar = [];
 
 let BonificacionEditar = (function () {
     const fncAcciones = () => {
@@ -67,6 +68,50 @@ let BonificacionEditar = (function () {
                 .asDays();
             $("#diasBonificar").val(diasBonificar);
         });
+        $(document).on("click", "#btnEliminarProductos", function () {
+            if (ListaProductosEliminar.length > 0) {
+                Swal.fire({
+                    title: `ESTA SEGURO DE ELIMINAR ${ListaProductosEliminar.length} PRODUCTO(S)?`,
+                    text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "SI, ELIMINAR!",
+                    cancelButtonText: "NO, CANCELAR!",
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.value) {
+                        EnviarDataPost({
+                            url: "BonificacionDetalleEliminarJson",
+                            data: {
+                                ListaProductosEliminar: ListaProductosEliminar,
+                            },
+                            callBackSuccess: function () {
+                                ListaProductosEliminar = [];
+                                fncListaProductosRegistrados();
+                            },
+                        });
+                    }
+                });
+            } else {
+                ShowAlert({
+                    type: 'warning',
+                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A BORRAR"
+                })
+                return false;
+            }
+        });
+        $(document).on("ifChecked", "#tablaProductoRegistrado input:checkbox", function () {
+            let idProducto = $(this).val();
+            ListaProductosEliminar.push(parseInt(idProducto));
+        });
+        $(document).on("ifUnchecked", "#tablaProductoRegistrado input:checkbox", function () {
+            let idProducto = $(this).val();
+            ListaProductosEliminar = ListaProductosEliminar.filter(
+                (item) => item != parseInt(idProducto)
+            );
+        });
         //#region MODAL PRODUCTO
         $(document).on("click", "#btnModalProducto", function () {
             ListaProductosTabla = [];
@@ -95,9 +140,7 @@ let BonificacionEditar = (function () {
                 });
             }
         });
-        $(document).on(
-            "ifChecked",
-            "#tableProductos input:checkbox",
+        $(document).on("ifChecked", "#tableProductos input:checkbox",
             function () {
                 let idProducto = $(this).val();
                 let objProducto = ListaProductos.find(
@@ -106,9 +149,7 @@ let BonificacionEditar = (function () {
                 ListaProductosTabla.push(objProducto);
             }
         );
-        $(document).on(
-            "ifUnchecked",
-            "#tableProductos input:checkbox",
+        $(document).on("ifUnchecked", "#tableProductos input:checkbox",
             function () {
                 let idProducto = $(this).val();
                 ListaProductosTabla = ListaProductosTabla.filter(
@@ -191,11 +232,22 @@ let BonificacionEditar = (function () {
 
                             <td class="text-center valorBonificar${ele.sku}">${ele.marcaBonificar == null ? `--` : `${ele.marcaBonificar}/${ele.formatoBonificar}`}</td>
                             <td>${fncGenerarComboBonificar({ sku: ele.sku, valorSelect: ele.idProductoBonificar })}</td>
-                            <td class="text-center"><button type="button" class="btn btn-danger btn-icon btn-sm btnRemoverProducto" data-id="${ele.idProducto}"><i class="fa fa-window-close"></i></button></td>
+                            <td class="text-center">
+                                <div class="icheck-inline-producto text-center">
+                                    <input type="checkbox" value="${ele.idBonificacionDetalle}" data-checkbox="icheckbox_square-blue">
+                                </div>
+                            </td>
                         </tr>
-                `);
+                        `);
                     });
+                    $(".icheck-inline-producto").iCheck({
+                        checkboxClass: "icheckbox_square-blue",
+                        radioClass: "iradio_square-red",
+                        increaseArea: "25%",
+                    });
+                    $("#txtTituloProductos").text(`PRODUCTOS : AGREGADOS(S) ${response.length}`);
                 } else {
+                    $("#txtTituloProductos").text(`PRODUCTOS`);
                     contenedor.append(
                         `<tr><td colspan="11" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
                     );
@@ -291,12 +343,9 @@ let BonificacionEditar = (function () {
             valorSelect: "",
         };
         let opciones = $.extend({}, objeto, obj);
-
         let options = `<option value="">-- Seleccione --</option>`;
         ListaProductosIndependiente.map((ele) => {
-            options += `<option value="${ele.idProducto}" ${opciones.valorSelect == ele.idProducto ? `selected` : ``
-                } data-formato="${ele.formato}" data-marca="${ele.marca}">${ele.sku
-                }</option>`;
+            options += `<option value="${ele.idProducto}" ${opciones.valorSelect == ele.idProducto ? `selected` : ``} data-formato="${ele.formato}" data-marca="${ele.marca}">${ele.sku}</option>`;
         });
         return `<select class="form-control CbBonificar" data-sku="${opciones.sku}" style="width:100%">${options}</select>`;
     };
@@ -327,7 +376,7 @@ let BonificacionEditar = (function () {
                 obj.ListaProductosBonificacion = [];
                 return false;
             }
-            if (parseInt(nroBotellasBonificar) <= 1) {
+            if (parseInt(nroBotellasBonificar) < 1) {
                 obj.respuesta = false;
                 obj.mensaje =
                     "EL VALOR DE BONIFICACION (BOTELLAS) EL VALOR MINIMO ACEPTADO ES 1";

@@ -91,7 +91,7 @@
         <div class="kt-portlet kt-portlet--mobile">
             <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
-                    <h3 class="kt-portlet__head-title">
+                    <h3 class="kt-portlet__head-title" id="txtTituloProductos">
                         PRODUCTOS
                     </h3>
                 </div>
@@ -100,39 +100,44 @@
                         <a href="javascript:void(0)" id="btnModalProducto" class="btn btn-primary">
                             <i class="fa fa-plus-square mr-1"></i>ABRIR PRODUCTOS
                         </a>
+                        <a href="javascript:void(0)" id="btnEliminarProductos" class="btn btn-danger">
+                            <i class="fa fa-trash mr-1"></i>ELIMINAR PRODUCTOS
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="kt-portlet__body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaProductoRegistrado">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">CODALT</th>
-                                    <th>PRODUCTO</th>
-                                    <th>MARCA</th>
-                                    <th>FORMATO</th>
-                                    <th>SABOR</th>
-                                    <th class="text-center" style="width:10%">OPCIONES</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="6" class="text-center">CARGANDO PRODUCTOS...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-scrollable">
+                            <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaProductoRegistrado">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">CODALT</th>
+                                        <th>PRODUCTO</th>
+                                        <th>MARCA</th>
+                                        <th>FORMATO</th>
+                                        <th>SABOR</th>
+                                        <th class="text-center" style="width:10%">OPCIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6" class="text-center">CARGANDO PRODUCTOS...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-5">
         <div class="kt-portlet kt-portlet--mobile">
             <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
-                    <h3 class="kt-portlet__head-title">
+                    <h3 class="kt-portlet__head-title" id="txtTituloRutas">
                         RUTAS
                     </h3>
                 </div>
@@ -141,35 +146,40 @@
                         <a href="javascript:void(0)" id="btnModalRutas" class="btn btn-primary">
                             <i class="fa fa-plus-square mr-1"></i>ABRIR RUTAS
                         </a>
+                        <a href="javascript:void(0)" id="btnEliminarRutas" class="btn btn-danger">
+                            <i class="fa fa-trash mr-1"></i>ELIMINAR RUTAS
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="kt-portlet__body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaRutaRegistrado">
-                            <thead>
-                                <tr>
-                                    <th>RUTA</th>
-                                    <th class="text-center" style="width:10%">OPCIONES</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="5" class="text-center">CARGANDO RUTAS...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-scrollable">
+                            <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaRutaRegistrado">
+                                <thead>
+                                    <tr>
+                                        <th>RUTA</th>
+                                        <th class="text-center" style="width:10%">OPCIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" class="text-center">CARGANDO RUTAS...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-7">
         <div class="kt-portlet kt-portlet--mobile">
             <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
-                    <h3 class="kt-portlet__head-title">
+                    <h3 class="kt-portlet__head-title" id="txtTituloSupervisores">
                         SUPERVISORES
                     </h3>
                 </div>
@@ -178,25 +188,30 @@
                         <a href="javascript:void(0)" id="btnModalSupervisors" class="btn btn-primary">
                             <i class="fa fa-plus-square mr-1"></i>ABRIR SUPERVISORES
                         </a>
+                        <a href="javascript:void(0)" id="btnEliminarSupervisors" class="btn btn-danger">
+                            <i class="fa fa-trash mr-1"></i>ELIMINAR SUPERVISORES
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="kt-portlet__body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaSupervisorRegistrado">
-                            <thead>
-                                <tr>
-                                    <th>SUPERVISOR</th>
-                                    <th class="text-center" style="width:10%">OPCIONES</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="5" class="text-center">CARGANDO SUPERVISORES...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-scrollable">
+                            <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaSupervisorRegistrado">
+                                <thead>
+                                    <tr>
+                                        <th>SUPERVISOR</th>
+                                        <th class="text-center" style="width:10%">OPCIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" class="text-center">CARGANDO SUPERVISORES...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

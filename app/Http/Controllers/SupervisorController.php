@@ -9,6 +9,7 @@ use App\Model\CentroOperativo;
 
 class SupervisorController extends Controller
 {
+    #region Vista
     public function SupervisorListarVista()
     {
         return view('Supervisor.SupervisorListar');
@@ -21,8 +22,12 @@ class SupervisorController extends Controller
     public function SupervisorEditarVista($idSupervisor)
     {
         $Supervisor = Supervisor::findOrfail($idSupervisor);
-        return view('Supervisor.SupervisorEditar', compact('Supervisor'));
+        $nombreCeo = CentroOperativo::findOrfail($Supervisor->idCeo)->nombreCeo;
+        $idCeo = $Supervisor->idCeo;
+        return view('Supervisor.SupervisorEditar', compact('Supervisor', 'nombreCeo', 'idCeo'));
     }
+    #endregion
+    #region JSON
     public function SupervisorListarJson(Request $request)
     {
         $data = "";
@@ -34,4 +39,31 @@ class SupervisorController extends Controller
         }
         return response()->json(['data' => $data, 'mensaje' => $mensaje]);
     }
+    public function SupervisorRegistrarJson(Request $request)
+    {
+        $respuesta = false;
+        $mensaje = "";
+        try {
+            Supervisor::SupervisorRegistrar($request);
+            $respuesta = true;
+            $mensaje = "Se ha registrado un Supervisor exitosamente";
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje]);
+    }
+    public function SupervisorEditarJson(Request $request)
+    {
+        $respuesta = false;
+        $mensaje = "";
+        try {
+            Supervisor::SupervisorEditar($request);
+            $respuesta = true;
+            $mensaje = "Se ha editado el Supervisor exitosamente";
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje]);
+    }
+    #endregion
 }

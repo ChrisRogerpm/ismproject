@@ -53,6 +53,19 @@ let BonificacionListar = (function () {
                 }
             });
         });
+        $(document).on('click', '#GenerarExcel', function () {
+            let objBonificacionActiva = ListadeBonificacions.find(ele => parseInt(ele.estado) == 1);
+            if (objBonificacionActiva != null) {
+                let idCeo = $("#CbidCeo").val();
+                let url = `${basePathApi}BonificacionesDownload?idCeo=${idCeo}`;
+                window.open(url, "_blank");
+            } else {
+                ShowAlert({
+                    type: 'warning',
+                    message: 'NO SE HA ENCONTRADO BONIFICACIÓN ACTIVA'
+                })
+            }
+        });
     };
     const fncInicializarData = () => {
         CargarDataSelect({

@@ -4,7 +4,7 @@
 <div class="kt-subheader   kt-grid__item" id="kt_subheader">
     <div class="kt-container  kt-container--fluid ">
         <div class="kt-subheader__main">
-            <h3 class="kt-subheader__title">GESTORES </h3>
+            <h3 class="kt-subheader__title">SUPERVISORES </h3>
             <span class="kt-subheader__separator kt-hidden"></span>
         </div>
         <div class="kt-subheader__toolbar">
@@ -13,11 +13,8 @@
                     <i class="fa fa-cog"></i> ACCIONES
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item btnNuevo" href="javascript:void(0)"><i class="fa fa-plus-square"></i>NUEVO GESTOR</a>
-                    <a class="dropdown-item btnImportarExcel" href="javascript:void(0)"><i class="fa fa-file-excel"></i>IMPORTAR EXCEL</a>
-                    <a class="dropdown-item" id="GenerarExcel" href="javascript:void(0)"><i class="fa fa-file-excel"></i>EXPORTAR EXCEL COMPACTO</a>
-                    <a class="dropdown-item" id="GenerarExcelDetalle" href="javascript:void(0)"><i class="fa fa-file-excel"></i>EXPORTAR EXCEL DETALLADO</a>
-                    <a class="dropdown-item btnBuscar" href="javascript:void(0)"><i class="fa fa-search"></i>BUSCAR</a>
+                    <a class="dropdown-item btnNuevo" href="javascript:void(0)"><i class="fa fa-plus-square"></i>NUEVO SUPERVISOR</a>
+                    <a class="dropdown-item btnRecargar" href="javascript:void(0)"><i class="fa fa-redo"></i>RECARGAR</a>
                 </div>
             </div>
         </div>
@@ -48,9 +45,8 @@
             </div>
         </div>
     </div>
-    @include('Gestor.modal.modalImportarGestor')
 </div>
 @endsection
 @push('js')
-<script src="{{asset('assets/viewJs/Gestor/GestorListar.js')}}"></script>
+<script src="{{asset('assets/viewJs/Supervisor/SupervisorListar.js')}}"></script>
 @endpush

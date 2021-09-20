@@ -77,6 +77,50 @@ let GestorListar = (function () {
                 data: $("#frmNuevo").serializeFormJSON(),
             });
         });
+        $(document).on("click", ".btnImportarExcel", function () {
+            LimpiarFormulario({
+                formulario: "frmImportarGestor",
+                nameVariable: "frmImportarGestor",
+            });
+            $(`.custom-file-label`).text("Elegir archivo...");
+            $("#ModalImportarGestor").modal({
+                keyboard: false,
+                backdrop: "static",
+            });
+        });
+        $(document).on("change", "#gestorExcel", function (e) {
+            const files = e.target.files;
+            if (files[0] === undefined) {
+                $(`.custom-file-label`).text("Elegir archivo...");
+            } else {
+                $(`.custom-file-label`).text(files[0].name);
+            }
+        });
+        $(document).on("click", "#btnImportarGestor", function () {
+            $("#frmImportarGestor").submit();
+            if (_objetoForm_frmImportarGestor.valid()) {
+                let dataForm = new FormData($("#frmImportarGestor")[0]);
+                dataForm.append("idCeo", parseInt($("#CbidCeo").val()));
+                EnviarDataPost({
+                    url: "GestorImportarDataJson",
+                    data: dataForm,
+                    callBackSuccess: function () {
+                        $("#ModalImportarGestor").modal("hide");
+                        fncListarGestors();
+                    },
+                });
+            }
+        });
+        $(document).on('click', '#GenerarExcel', function () {
+            let idCeo = $("#CbidCeo").val();
+            let url = `${basePathApi}GestoresDownload?idCeo=${idCeo}`;
+            window.open(url, "_blank");
+        });
+        $(document).on('click', '#GenerarExcelDetalle', function () {
+            let idCeo = $("#CbidCeo").val();
+            let url = `${basePathApi}GestorExcelDownload?idCeo=${idCeo}`;
+            window.open(url, "_blank");
+        });
     };
     const fncInicializarData = () => {
         CargarDataSelect({
@@ -149,10 +193,23 @@ let GestorListar = (function () {
             },
         });
     };
+    const fncValidarFormularioImportarGestor = () => {
+        ValidarFormulario({
+            contenedor: "#frmImportarGestor",
+            nameVariable: "frmImportarGestor",
+            rules: {
+                gestorExcel: { required: true },
+            },
+            messages: {
+                gestorExcel: { required: "El campo es requerido" },
+            },
+        });
+    };
     return {
         init: function () {
             fncAcciones();
             fncInicializarData();
+            fncValidarFormularioImportarGestor();
         },
     };
 })();

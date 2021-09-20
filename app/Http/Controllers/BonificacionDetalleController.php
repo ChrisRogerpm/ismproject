@@ -26,7 +26,7 @@ class BonificacionDetalleController extends Controller
         try {
             BonificacionDetalle::BonificacionDetalleEliminar($request);
             $respuesta = true;
-            $mensaje = "Se ha eliminado el producto exitosamente";
+            $mensaje = "Se ha eliminado los productos exitosamente";
         } catch (Exception $ex) {
             $mensaje = $ex->getMessage();
         }

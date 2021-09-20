@@ -15,6 +15,10 @@ class GestorSupervisor extends Model
         'idSupervisor',
     ];
     public $timestamps = false;
+    public function Supervisor()
+    {
+        return $this->belongsTo(Supervisor::class, 'idSupervisor');
+    }
     public static function GestorSupervisorRegistrarLista(Request $request, Gestor $obj)
     {
         $ListaSupervisorsRegistrados = $request->input('ListaSupervisorsRegistrados');
@@ -51,7 +55,23 @@ class GestorSupervisor extends Model
     }
     public static function GestorSupervisorEliminar(Request $request)
     {
-        $data = GestorSupervisor::findOrfail($request->input('idGestorSupervisor'));
-        $data->delete();
+        $ListaSupervisorsEliminar = $request->input('ListaSupervisorsEliminar');
+        foreach ($ListaSupervisorsEliminar as $lista) {
+            $data = GestorSupervisor::findOrfail($lista);
+            $data->delete();
+        }
+    }
+    public static function GestorSupervisorSupervisorConcatenado($idGestor)
+    {
+        $data = collect(DB::select(DB::raw("SELECT
+        s.nombre
+        FROM gestorsupervisor AS gs
+        INNER JOIN supervisor AS s ON s.idSupervisor = gs.idSupervisor
+        WHERE gs.idGestor = $idGestor")));
+        $data = $data->map(function ($item, $key) {
+            return $item->nombre;
+        })->toArray();
+        $data = implode("-", $data);
+        return $data;
     }
 }

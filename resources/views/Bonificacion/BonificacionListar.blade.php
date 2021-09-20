@@ -14,7 +14,7 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item btnNuevo" href="javascript:void(0)"><i class="fa fa-plus-square"></i>NUEVA BONIFICACION</a>
-                    <a class="dropdown-item btnRecargar" href="javascript:void(0)"><i class="fa fa-redo"></i>RECARGAR</a>
+                    <a class="dropdown-item" id="GenerarExcel" href="javascript:void(0)"><i class="fa fa-file-excel"></i>EXPORTAR EXCEL</a>
                 </div>
             </div>
         </div>

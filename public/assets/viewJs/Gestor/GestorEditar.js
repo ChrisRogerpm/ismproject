@@ -7,6 +7,10 @@ ListaRutas = [];
 ListaSupervisorsTabla = [];
 ListaSupervisors = [];
 
+ListaProductosEliminar = [];
+ListaRutasEliminar = [];
+ListaSupervisorsEliminar = [];
+
 let ProductoEditar = (function () {
     const fncAcciones = () => {
         $(document).on("click", ".btnVolver", function () {
@@ -20,29 +24,16 @@ let ProductoEditar = (function () {
                     idCeo: idCeo,
                     idGestor: Gestor.idGestor,
                 });
-                console.log(dataForm);
-                // EnviarDataPost({
-                //     url: "GestorEditarJson",
-                //     data: dataForm,
-                //     callBackSuccess: function () {
-                //         setTimeout(function () {
-                //             RedirigirUrl(`Gestor`);
-                //         }, 1100);
-                //     },
-                // });
+                EnviarDataPost({
+                    url: "GestorEditarJson",
+                    data: dataForm,
+                    callBackSuccess: function () {
+                        setTimeout(function () {
+                            RedirigirUrl(`Gestor`);
+                        }, 1100);
+                    },
+                });
             }
-        });
-        $(document).on("change", "#CbidMesa", function () {
-            // $("#tablaRutaRegistrado tbody")
-            //     .html("")
-            //     .append(
-            //         '<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO RUTAS</td></tr>'
-            //     );
-            // $("#tablaSupervisorRegistrado tbody")
-            //     .html("")
-            //     .append(
-            //         '<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO SUPERVISORES</td></tr>'
-            //     );
         });
         //#region MODAL PRODUCTO
         $(document).on("click", "#btnModalProducto", function () {
@@ -73,54 +64,63 @@ let ProductoEditar = (function () {
                 });
             }
         });
-        $(document).on(
-            "ifChecked",
-            "#tableProductos input:checkbox",
-            function () {
-                let idProducto = $(this).val();
-                let objProducto = ListaProductos.find(
-                    (ele) => ele.idProducto == idProducto
-                );
-                ListaProductosTabla.push(objProducto);
-            }
-        );
-        $(document).on(
-            "ifUnchecked",
-            "#tableProductos input:checkbox",
-            function () {
-                let idProducto = $(this).val();
-                ListaProductosTabla = ListaProductosTabla.filter(
-                    (item) => item.idProducto != parseInt(idProducto)
-                );
-            }
-        );
-        $(document).on("click", ".btnRemoverProducto", function () {
-            let idGestorProducto = $(this).data("id");
-            Swal.fire({
-                title: `ESTA SEGURO DE ELIMINAR ESTE PRODUCTO?`,
-                text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "SI, ELIMINAR!",
-                cancelButtonText: "NO, CANCELAR!",
-                allowOutsideClick: false,
-            }).then((result) => {
-                if (result.value) {
-                    EnviarDataPost({
-                        url: "GestorProductoEliminarJson",
-                        data: {
-                            idGestorProducto: idGestorProducto,
-                        },
-                        callBackSuccess: function () {
-                            fncListaProductosRegistrados();
-                        },
-                    });
-                }
-            });
+        $(document).on("ifChecked", "#tableProductos input:checkbox", function () {
+            let idProducto = $(this).val();
+            let objProducto = ListaProductos.find(
+                (ele) => ele.idProducto == idProducto
+            );
+            ListaProductosTabla.push(objProducto);
         });
-
+        $(document).on("ifUnchecked", "#tableProductos input:checkbox", function () {
+            let idProducto = $(this).val();
+            ListaProductosTabla = ListaProductosTabla.filter(
+                (item) => item.idProducto != parseInt(idProducto)
+            );
+        });
+        $(document).on("click", "#btnEliminarProductos", function () {
+            if (ListaProductosEliminar.length > 0) {
+                Swal.fire({
+                    title: `ESTA SEGURO DE ELIMINAR ${ListaProductosEliminar.length} PRODUCTO(S)?`,
+                    text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "SI, ELIMINAR!",
+                    cancelButtonText: "NO, CANCELAR!",
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.value) {
+                        EnviarDataPost({
+                            url: "GestorProductoEliminarJson",
+                            data: {
+                                ListaProductosEliminar: ListaProductosEliminar,
+                            },
+                            callBackSuccess: function () {
+                                ListaProductosEliminar = [];
+                                fncListaProductosRegistrados();
+                            },
+                        });
+                    }
+                });
+            } else {
+                ShowAlert({
+                    type: 'warning',
+                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A BORRAR"
+                })
+                return false;
+            }
+        });
+        $(document).on("ifChecked", "#tablaProductoRegistrado input:checkbox", function () {
+            let idGestorProducto = $(this).val();
+            ListaProductosEliminar.push(parseInt(idGestorProducto));
+        });
+        $(document).on("ifUnchecked", "#tablaProductoRegistrado input:checkbox", function () {
+            let idGestorProducto = $(this).val();
+            ListaProductosEliminar = ListaProductosEliminar.filter(
+                (item) => item != parseInt(idGestorProducto)
+            );
+        });
         //#endregion
         //#region MODAL RUTAS
         $(document).on("click", "#btnModalRutas", function () {
@@ -156,41 +156,55 @@ let ProductoEditar = (function () {
             let objRuta = ListaRutas.find((ele) => ele.idRuta == idRuta);
             ListaRutasTabla.push(objRuta);
         });
-        $(document).on(
-            "ifUnchecked",
-            "#tableRutas input:checkbox",
-            function () {
-                let idRuta = $(this).val();
-                ListaRutasTabla = ListaRutasTabla.filter(
-                    (item) => item.idRuta != parseInt(idRuta)
-                );
+        $(document).on("ifUnchecked", "#tableRutas input:checkbox", function () {
+            let idRuta = $(this).val();
+            ListaRutasTabla = ListaRutasTabla.filter(
+                (item) => item.idRuta != parseInt(idRuta)
+            );
+        });
+        $(document).on("click", "#btnEliminarRutas", function () {
+            if (ListaRutasEliminar.length > 0) {
+                Swal.fire({
+                    title: `ESTA SEGURO DE ELIMINAR ${ListaRutasEliminar.length} RUTA(S)?`,
+                    text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "SI, ELIMINAR!",
+                    cancelButtonText: "NO, CANCELAR!",
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.value) {
+                        EnviarDataPost({
+                            url: "GestorRutaEliminarJson",
+                            data: {
+                                ListaRutasEliminar: ListaRutasEliminar,
+                            },
+                            callBackSuccess: function () {
+                                ListaRutasEliminar = [];
+                                fncListaRutasRegistrados();
+                            },
+                        });
+                    }
+                });
+            } else {
+                ShowAlert({
+                    type: 'warning',
+                    message: "NO SE HA SELECCIONADO RUTA(S) A BORRAR"
+                })
+                return false;
             }
-        );
-        $(document).on("click", ".btnRemoverRuta", function () {
-            let idGestorRuta = $(this).data("id");
-            Swal.fire({
-                title: `ESTA SEGURO DE ELIMINAR ESTA RUTA?`,
-                text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "SI, ELIMINAR!",
-                cancelButtonText: "NO, CANCELAR!",
-                allowOutsideClick: false,
-            }).then((result) => {
-                if (result.value) {
-                    EnviarDataPost({
-                        url: "GestorRutaEliminarJson",
-                        data: {
-                            idGestorRuta: idGestorRuta,
-                        },
-                        callBackSuccess: function () {
-                            fncListaRutasRegistrados();
-                        },
-                    });
-                }
-            });
+        });
+        $(document).on("ifChecked", "#tablaRutaRegistrado input:checkbox", function () {
+            let idGestorRuta = $(this).val();
+            ListaRutasEliminar.push(parseInt(idGestorRuta));
+        });
+        $(document).on("ifUnchecked", "#tablaRutaRegistrado input:checkbox", function () {
+            let idGestorRuta = $(this).val();
+            ListaRutasEliminar = ListaRutasEliminar.filter(
+                (item) => item != parseInt(idGestorRuta)
+            );
         });
         //#endregion
         //#region MODAL SUPERVISOR
@@ -223,52 +237,62 @@ let ProductoEditar = (function () {
                 });
             }
         });
-        $(document).on(
-            "ifChecked",
-            "#tableSupervisores input:checkbox",
-            function () {
-                let idSupervisor = $(this).val();
-                let objSupervisor = ListaSupervisors.find(
-                    (ele) => ele.idSupervisor == idSupervisor
-                );
-                ListaSupervisorsTabla.push(objSupervisor);
+        $(document).on("ifChecked", "#tableSupervisores input:checkbox", function () {
+            let idSupervisor = $(this).val();
+            let objSupervisor = ListaSupervisors.find(
+                (ele) => ele.idSupervisor == idSupervisor
+            );
+            ListaSupervisorsTabla.push(objSupervisor);
+        });
+        $(document).on("ifUnchecked", "#tableSupervisores input:checkbox", function () {
+            let idSupervisor = $(this).val();
+            ListaSupervisorsTabla = ListaSupervisorsTabla.filter(
+                (item) => item.idSupervisor != parseInt(idSupervisor)
+            );
+        });
+        $(document).on("click", "#btnEliminarSupervisors", function () {
+            if (ListaSupervisorsEliminar.length > 0) {
+                Swal.fire({
+                    title: `ESTA SEGURO DE ELIMINAR ${ListaSupervisorsEliminar.length} SUPERVISOR(S)?`,
+                    text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "SI, ELIMINAR!",
+                    cancelButtonText: "NO, CANCELAR!",
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.value) {
+                        EnviarDataPost({
+                            url: "GestorSupervisorEliminarJson",
+                            data: {
+                                ListaSupervisorsEliminar: ListaSupervisorsEliminar,
+                            },
+                            callBackSuccess: function () {
+                                ListaSupervisorsEliminar = [];
+                                fncListaSupervisorsRegistrados();
+                            },
+                        });
+                    }
+                });
+            } else {
+                ShowAlert({
+                    type: 'warning',
+                    message: "NO SE HA SELECCIONADO SUPERVISOR(S) A BORRAR"
+                })
+                return false;
             }
-        );
-        $(document).on(
-            "ifUnchecked",
-            "#tableSupervisores input:checkbox",
-            function () {
-                let idSupervisor = $(this).val();
-                ListaSupervisorsTabla = ListaSupervisorsTabla.filter(
-                    (item) => item.idSupervisor != parseInt(idSupervisor)
-                );
-            }
-        );
-        $(document).on("click", ".btnRemoverSupervisor", function () {
-            let idGestorSupervisor = $(this).data("id");
-            Swal.fire({
-                title: `ESTA SEGURO DE ELIMINAR ESTE SUPERVISOR?`,
-                text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "SI, ELIMINAR!",
-                cancelButtonText: "NO, CANCELAR!",
-                allowOutsideClick: false,
-            }).then((result) => {
-                if (result.value) {
-                    EnviarDataPost({
-                        url: "GestorSupervisorEliminarJson",
-                        data: {
-                            idGestorSupervisor: idGestorSupervisor,
-                        },
-                        callBackSuccess: function () {
-                            fncListaSupervisorsRegistrados();
-                        },
-                    });
-                }
-            });
+        });
+        $(document).on("ifChecked", "#tablaSupervisorRegistrado input:checkbox", function () {
+            let idGestorSupervisor = $(this).val();
+            ListaSupervisorsEliminar.push(parseInt(idGestorSupervisor));
+        });
+        $(document).on("ifUnchecked", "#tablaSupervisorRegistrado input:checkbox", function () {
+            let idGestorSupervisor = $(this).val();
+            ListaSupervisorsEliminar = ListaSupervisorsEliminar.filter(
+                (item) => item != parseInt(idGestorSupervisor)
+            );
         });
         //#endregion
     };
@@ -289,7 +313,6 @@ let ProductoEditar = (function () {
             valorSelect: Gestor.idMesa,
         });
     };
-
     const fncListarSupervisors = () => {
         CargarTablaDatatable({
             uniform: true,
@@ -429,10 +452,9 @@ let ProductoEditar = (function () {
             },
         });
     };
-
     const fncListaProductosRegistrados = (obj) => {
         let objeto = {
-            callBackSuccess: function () {},
+            callBackSuccess: function () { },
         };
         let options = $.extend({}, objeto, obj);
         CargarDataGET({
@@ -445,16 +467,28 @@ let ProductoEditar = (function () {
                 contenedor.html("");
                 if (response.length > 0) {
                     response.map((ele) => {
-                        contenedor.append(`<tr>
-                        <td class="text-center">${ele.sku}</td>
-                        <td>${ele.nombreProducto}</td>
-                        <td>${ele.marca}</td>
-                        <td>${ele.formato}</td>
-                        <td>${ele.sabor}</td>
-                        <td class="text-center"><button type="button" class="btn btn-danger btn-icon btn-sm btnRemoverProducto" data-id="${ele.idGestorProducto}"><i class="fa fa-window-close"></i></button></td>
+                        contenedor.append(`
+                        <tr>
+                            <td class="text-center">${ele.sku}</td>
+                            <td>${ele.nombreProducto}</td>
+                            <td>${ele.marca}</td>
+                            <td>${ele.formato}</td>
+                            <td>${ele.sabor}</td>
+                            <td class="text-center">
+                                <div class="icheck-inline-producto text-center">
+                                    <input type="checkbox" value="${ele.idGestorProducto}" data-checkbox="icheckbox_square-blue">
+                                </div>
+                            </td>
                         </tr>`);
                     });
+                    $(".icheck-inline-producto").iCheck({
+                        checkboxClass: "icheckbox_square-blue",
+                        radioClass: "iradio_square-red",
+                        increaseArea: "25%",
+                    });
+                    $("#txtTituloProductos").text(`PRODUCTOS : SELECCIONADO(S) ${response.length}`);
                 } else {
+                    $("#txtTituloProductos").text(`PRODUCTOS`);
                     contenedor.append(
                         `<tr><td colspan="6" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
                     );
@@ -465,7 +499,7 @@ let ProductoEditar = (function () {
     };
     const fncListaRutasRegistrados = (obj) => {
         let objeto = {
-            callBackSuccess: function () {},
+            callBackSuccess: function () { },
         };
         let options = $.extend({}, objeto, obj);
 
@@ -479,12 +513,24 @@ let ProductoEditar = (function () {
                 contenedor.html("");
                 if (response.length > 0) {
                     response.map((ele) => {
-                        contenedor.append(`<tr>
-                        <td>${ele.descripcion}</td>
-                        <td class="text-center"><button type="button" class="btn btn-danger btn-icon btn-sm btnRemoverRuta" data-id="${ele.idGestorRuta}"><i class="fa fa-window-close"></i></button></td>
+                        contenedor.append(`
+                        <tr>
+                            <td>${ele.descripcion}</td>
+                            <td class="text-center">
+                                <div class="icheck-inline-ruta text-center">
+                                    <input type="checkbox" value="${ele.idGestorRuta}" data-checkbox="icheckbox_square-blue">
+                                </div>
+                            </td>
                         </tr>`);
                     });
+                    $(".icheck-inline-ruta").iCheck({
+                        checkboxClass: "icheckbox_square-blue",
+                        radioClass: "iradio_square-red",
+                        increaseArea: "25%",
+                    });
+                    $("#txtTituloRutas").text(`RUTAS : SELECCIONADO(S) ${response.length}`);
                 } else {
+                    $("#txtTituloRutas").text(`RUTAS`);
                     contenedor.append(
                         `<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO RUTAS</td></tr>`
                     );
@@ -495,7 +541,7 @@ let ProductoEditar = (function () {
     };
     const fncListaSupervisorsRegistrados = (obj) => {
         let objeto = {
-            callBackSuccess: function () {},
+            callBackSuccess: function () { },
         };
         let options = $.extend({}, objeto, obj);
 
@@ -509,12 +555,24 @@ let ProductoEditar = (function () {
                 contenedor.html("");
                 if (response.length > 0) {
                     response.map((ele) => {
-                        contenedor.append(`<tr>
-                        <td>${ele.nombre}</td>
-                        <td class="text-center"><button type="button" class="btn btn-danger btn-icon btn-sm btnRemoverSupervisor" data-id="${ele.idGestorSupervisor}"><i class="fa fa-window-close"></i></button></td>
+                        contenedor.append(`
+                        <tr>
+                            <td>${ele.nombre}</td>
+                            <td class="text-center">
+                                <div class="icheck-inline-supervisor text-center">
+                                    <input type="checkbox" value="${ele.idGestorSupervisor}" data-checkbox="icheckbox_square-blue">
+                                </div>
+                            </td>
                         </tr>`);
                     });
+                    $(".icheck-inline-supervisor").iCheck({
+                        checkboxClass: "icheckbox_square-blue",
+                        radioClass: "iradio_square-red",
+                        increaseArea: "25%",
+                    });
+                    $("#txtTituloSupervisores").text(`SUPERVISORES : SELECCIONADO(S) ${response.length}`);
                 } else {
+                    $("#txtTituloSupervisores").text(`SUPERVISORES`);
                     contenedor.append(
                         `<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO SUPERVISOR</td></tr>`
                     );
@@ -523,7 +581,6 @@ let ProductoEditar = (function () {
             },
         });
     };
-
     const fncValidarFormularioEditar = () => {
         ValidarFormulario({
             contenedor: "#frmNuevo",

@@ -73,8 +73,8 @@ class BonificacionDetalle extends Model
     }
     public static function BonificacionDetalleEliminar(Request $request)
     {
-        $data = BonificacionDetalle::findOrfail($request->input('idBonificacionDetalle'));
-        $data->delete();
+        $ListaProductosEliminar = $request->input('ListaProductosEliminar');
+        return BonificacionDetalle::whereIn('idBonificacionDetalle', $ListaProductosEliminar)->delete();
     }
     public static function BonificacionDetalleEditarLista(Request $request)
     {

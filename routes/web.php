@@ -46,3 +46,9 @@ Route::get('EditarLinea/{idLinea}', 'LineaController@LineaEditarVista');
 Route::get('Bonificacion', 'BonificacionController@BonificacionListarVista')->name('Bonificacion.Listar');
 Route::get('RegistrarBonificacion/{idCeo}', 'BonificacionController@BonificacionRegistrarVista');
 Route::get('EditarBonificacion/{idBonificacion}', 'BonificacionController@BonificacionEditarVista');
+
+Route::get('Supervisor', 'SupervisorController@SupervisorListarVista')->name('Supervisor.Listar');
+Route::get('RegistrarSupervisor/{idCeo}', 'SupervisorController@SupervisorRegistrarVista');
+Route::get('EditarSupervisor/{idSupervisor}', 'SupervisorController@SupervisorEditarVista');
+
+Route::get('Pedido', 'PedidoController@PedidoListarVista')->name('Pedido.Listar');

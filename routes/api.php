@@ -35,6 +35,7 @@ Route::post('GestorRegistrarJson', 'GestorController@GestorRegistrarJson');
 Route::post('GestorEditarJson', 'GestorController@GestorEditarJson');
 Route::post('GestorBloquearJson', 'GestorController@GestorBloquearJson');
 Route::post('GestorRestablecerJson', 'GestorController@GestorRestablecerJson');
+Route::post('GestorImportarDataJson', 'GestorController@GestorImportarDataJson');
 #endregion
 #region PRODUCTO
 Route::get('ProductoListarJson', 'ProductoController@ProductoListarJson');
@@ -61,6 +62,8 @@ Route::post('RutaActualizarJson', 'RutaController@RutaActualizarJson');
 #endregion
 #region SUPERVISOR
 Route::get('SupervisorListarJson', 'SupervisorController@SupervisorListarJson');
+Route::post('SupervisorRegistrarJson', 'SupervisorController@SupervisorRegistrarJson');
+Route::post('SupervisorEditarJson', 'SupervisorController@SupervisorEditarJson');
 #endregion
 #region MES_ARUTA
 Route::get('MesaRutaListarJson', 'MesaRutaController@MesaRutaListarJson');
@@ -106,4 +109,12 @@ Route::post('BonificacionActivarJson', 'BonificacionController@BonificacionActiv
 Route::get('BonificacionDetalleListarJson', 'BonificacionDetalleController@BonificacionDetalleListarJson');
 Route::post('BonificacionDetalleEliminarJson', 'BonificacionDetalleController@BonificacionDetalleEliminarJson');
 Route::post('BonificacionDetalleRegistrarJson', 'BonificacionDetalleController@BonificacionDetalleRegistrarJson');
+#endregion
+#region Pedido
+Route::get('PedidoListarJson', 'PedidoController@PedidoListarJson');
+#endregion
+#region Download Excel
+Route::get('GestoresDownload', 'ExcelController@GestoresDownload');
+Route::get('BonificacionesDownload', 'ExcelController@BonificacionesDownload');
+Route::get('GestorExcelDownload', 'ExcelController@GestorExcelDownload');
 #endregion

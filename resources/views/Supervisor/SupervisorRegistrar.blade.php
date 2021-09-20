@@ -4,7 +4,7 @@
 <div class="kt-subheader   kt-grid__item" id="kt_subheader">
     <div class="kt-container  kt-container--fluid ">
         <div class="kt-subheader__main">
-            <h3 class="kt-subheader__title">GESTORES </h3>
+            <h3 class="kt-subheader__title">REGISTRAR SUPERVISOR </h3>
             <span class="kt-subheader__separator kt-hidden"></span>
         </div>
         <div class="kt-subheader__toolbar">
@@ -13,11 +13,8 @@
                     <i class="fa fa-cog"></i> ACCIONES
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item btnNuevo" href="javascript:void(0)"><i class="fa fa-plus-square"></i>NUEVO GESTOR</a>
-                    <a class="dropdown-item btnImportarExcel" href="javascript:void(0)"><i class="fa fa-file-excel"></i>IMPORTAR EXCEL</a>
-                    <a class="dropdown-item" id="GenerarExcel" href="javascript:void(0)"><i class="fa fa-file-excel"></i>EXPORTAR EXCEL COMPACTO</a>
-                    <a class="dropdown-item" id="GenerarExcelDetalle" href="javascript:void(0)"><i class="fa fa-file-excel"></i>EXPORTAR EXCEL DETALLADO</a>
-                    <a class="dropdown-item btnBuscar" href="javascript:void(0)"><i class="fa fa-search"></i>BUSCAR</a>
+                    <a class="dropdown-item btnGuardar" href="#"><i class="fa fa-save"></i> GUARDAR</a>
+                    <a class="dropdown-item btnVolver" href="#"><i class="fa fa-arrow-left"></i> VOLVER</a>
                 </div>
             </div>
         </div>
@@ -29,28 +26,41 @@
 <div class="row">
     <div class="col-md-12">
         <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">
+                        DATOS DE SUPERVISOR
+                    </h3>
+                </div>
+            </div>
             <div class="kt-portlet__body">
-                <form id="frmNuevo">
+                <form id="frmNuevo" autocomplete="off">
                     <div class="row">
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label for=""><b>CENTRO OPERATIVO</b></label>
-                                <select name="idCeo" id="CbidCeo" class="form-control" style="width: 100%;"></select>
+                                <input type="text" class="form-control" value="{{$nombreCeo}}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="form-group">
+                                <label for=""><b>NOMBRE</b></label>
+                                <input type="text" class="form-control" name="nombre" id="nombre">
                             </div>
                         </div>
                     </div>
                 </form>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <table class="table table-striped- table-bordered table-hover table-checkable" id="table"></table>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
-    @include('Gestor.modal.modalImportarGestor')
 </div>
 @endsection
+
 @push('js')
-<script src="{{asset('assets/viewJs/Gestor/GestorListar.js')}}"></script>
+<script>
+    nombreCeo = @json($nombreCeo);
+    idCeo = @json($idCeo);
+
+</script>
+<script src="{{asset('assets/viewJs/Supervisor/SupervisorRegistrar.js')}}"></script>
 @endpush

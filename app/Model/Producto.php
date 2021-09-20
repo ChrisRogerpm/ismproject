@@ -99,6 +99,28 @@ class Producto extends Model
         INNER JOIN linea AS l ON l.idLinea = p.idLinea
         WHERE p.idCeo =  $idCeo"));
     }
+    public static function ProductoListarActivos(Request $request)
+    {
+        $idCeo = $request->input('idCeo');
+        return DB::select(DB::raw("SELECT
+            p.idProducto,
+            l.nombre AS nombreLinea,
+            p.sku,
+            p.nombre AS nombreProducto,
+            p.marca,
+            p.formato,
+            p.sabor,
+            p.unidadxCaja AS caja,
+            p.unidadxPaquete AS paquete,
+            p.cajaxpaquete,
+            p.codigoPadre,
+            p.codigoHijo,
+            p.estado,
+            IF(p.estado = 1,'ACTIVO','INACTIVO') as estadoNombre
+        FROM producto AS p
+        INNER JOIN linea AS l ON l.idLinea = p.idLinea
+        WHERE p.idCeo =  $idCeo AND p.estado = 1"));
+    }
     public static function ProductoImportarData(Request $request)
     {
         $archivoPlantilla = $request->file('productoExcel');

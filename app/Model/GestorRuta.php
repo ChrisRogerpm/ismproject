@@ -16,6 +16,10 @@ class GestorRuta extends Model
         'idRuta',
     ];
     public $timestamps = false;
+    public function Ruta()
+    {
+        return $this->belongsTo(Ruta::class, 'idRuta');
+    }
     public static function GestorRutaRegistrarLista(Request $request, Gestor $obj)
     {
         $ListaRutasRegistrados = $request->input('ListaRutasRegistrados');
@@ -52,7 +56,24 @@ class GestorRuta extends Model
     }
     public static function GestorRutaEliminar(Request $request)
     {
-        $data = GestorRuta::findOrfail($request->input('idGestorRuta'));
-        $data->delete();
+        $ListaRutasEliminar = $request->input('ListaRutasEliminar');
+        foreach ($ListaRutasEliminar as $lista) {
+            $data = GestorRuta::findOrfail($lista);
+            $data->delete();
+        }
+    }
+    public static function GestorRutaRutasConcatenadas($idGestor)
+    {
+        $data = collect(DB::select(DB::raw("SELECT
+        r.descripcion
+        FROM gestorruta AS gr
+        INNER JOIN ruta AS r ON r.idRuta = gr.idRuta
+        WHERE gr.idGestor = $idGestor
+        GROUP BY r.descripcion")));
+        $data = $data->map(function ($item, $key) {
+            return $item->descripcion;
+        })->toArray();
+        $data = implode("-", $data);
+        return $data;
     }
 }

@@ -16,6 +16,10 @@ class GestorProducto extends Model
         'idProducto',
     ];
     public $timestamps = false;
+    public function Producto()
+    {
+        return $this->belongsTo(Producto::class, 'idProducto');
+    }
     public static function GestorProductoRegistrarLista(Request $request, Gestor $obj)
     {
         $ListaProductosRegistrados = $request->input('ListaProductosRegistrados');
@@ -65,7 +69,39 @@ class GestorProducto extends Model
     }
     public static function GestorProductoEliminar(Request $request)
     {
-        $data = GestorProducto::findOrfail($request->input('idGestorProducto'));
-        $data->delete();
+        $ListaProductosEliminar = $request->input("ListaProductosEliminar");
+        foreach ($ListaProductosEliminar as $lista) {
+            $data = GestorProducto::findOrfail($lista);
+            $data->delete();
+        }
+    }
+    public static function GestorProductoMarcasConcatenadas($idGestor)
+    {
+        $data = collect(DB::select(DB::raw("SELECT
+            p.marca,
+            l.nombre AS nombreLinea
+        FROM gestorproducto AS gp
+        INNER JOIN producto AS p ON p.idProducto = gp.idProducto
+        INNER JOIN linea AS l ON l.idLinea = p.idLinea
+        WHERE gp.idGestor = $idGestor GROUP BY p.marca,l.nombre")));
+        $data = $data->map(function ($item, $key) {
+            return $item->marca;
+        })->toArray();
+        $data = implode("-", $data);
+        return $data;
+    }
+    public static function GestorProductoLineasConcatenadas($idGestor)
+    {
+        $data = collect(DB::select(DB::raw("SELECT
+            l.nombre AS nombreLinea
+        FROM gestorproducto AS gp
+        INNER JOIN producto AS p ON p.idProducto = gp.idProducto
+        INNER JOIN linea AS l ON l.idLinea = p.idLinea
+        WHERE gp.idGestor = $idGestor GROUP BY l.nombre")));
+        $data = $data->map(function ($item, $key) {
+            return $item->nombreLinea;
+        })->toArray();
+        $data = implode("-", $data);
+        return $data;
     }
 }

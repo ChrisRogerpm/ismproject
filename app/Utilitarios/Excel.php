@@ -3,9 +3,11 @@
 namespace App\Utilitarios;
 
 use Carbon\Carbon;
+use App\Model\Gestor;
 use App\Model\Reporte;
 use App\Model\Solicitud;
 use App\Model\Liquidacion;
+use App\Model\Bonificacion;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -15,6 +17,243 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class Excel
 {
+    public const Columnas = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+
+    public static function GenerarExcelGestor(Request $request)
+    {
+        $spreadsheet = new Spreadsheet();
+
+        $styleArray = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ];
+        $styleArrayTitulo = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+            'font' => array(
+                'name'      =>  'Calibri',
+                'color' => ['argb' => '000000'],
+                'bold' => true
+            )
+        ];
+        $colorFondoCabecera = "F7CAAC";
+        $Titulo1 = "LISTA DE GESTORES";
+        $sheet = $spreadsheet->getDefaultStyle()->getFont()->setSize(11);
+        $sheet = $spreadsheet->getDefaultStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF');
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->mergeCells('A1:I1')->setCellValue('A1', $Titulo1);
+        $sheet->getStyle('A1:I1')->applyFromArray($styleArray);
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
+        $sheet->getStyle('A1')->getFont()->setBold(true);
+
+        // $TituloCabecera = ['C.O', 'NRO DE LINEA', 'MARCA', 'FORMATO', 'COD', 'CAJA X', 'CONDICIÓN AT', 'SKU', 'BONIF(BOTELLAS)', 'MARCA/FORMATO BONIFICAR', '#DÍAS A BONIFICAR', 'DEL', 'AL'];
+        $TituloCabecera = ['RUTA', 'LINEA', 'MESA', 'GESTOR', 'TELEFONO', 'DNI', 'CODIGO', 'MARCAS', 'SUPERVISOR'];
+        $data1 = Gestor::GestorListarProcesado($request);
+        $fila = 2;
+        foreach ($TituloCabecera as $i => $d) {
+            $sheet->setCellValue(Excel::Columnas[$i] . $fila, ucwords($TituloCabecera[$i]))->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+            $valor = Excel::Columnas[$i] . $fila;
+            $sheet->getStyle($valor)->applyFromArray($styleArrayTitulo);
+            $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle($valor)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
+            $sheet->getStyle($valor)->getFont()->setBold(true);
+        }
+        $fila++;
+        $arrayData1 = [
+            'ruta',
+            'linea',
+            'mesa',
+            'gestor',
+            'telefono',
+            'dni',
+            'codigo',
+            'marcas',
+            'supervisor',
+        ];
+        if (count($data1) > 0) {
+            for ($x = 0; $x < count($data1); $x++) {
+                for ($i = 0; $i < count($arrayData1); $i++) {
+                    // $nombreKey = $arrayData1[$i];
+                    $sheet->setCellValue(Excel::Columnas[$i] . $fila, $data1[$x][$arrayData1[$i]])->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+                    $valor = Excel::Columnas[$i] . $fila;
+                    $sheet->getStyle($valor)->applyFromArray($styleArray);
+                    $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+                }
+                $fila++;
+            }
+        } else {
+            $sheet->mergeCells('A' . $fila . ':F' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
+            $sheet->getStyle('A' . $fila . ':F' . $fila . '')->applyFromArray($styleArray);
+            $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
+        }
+        return $spreadsheet;
+    }
+    public static function GenerarExcelGestorExcel(Request $request){
+        $spreadsheet = new Spreadsheet();
+
+        $styleArray = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ];
+        $styleArrayTitulo = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+            'font' => array(
+                'name'      =>  'Calibri',
+                'color' => ['argb' => '000000'],
+                'bold' => true
+            )
+        ];
+        $colorFondoCabecera = "F7CAAC";
+
+        $sheet = $spreadsheet->getDefaultStyle()->getFont()->setSize(11);
+        $sheet = $spreadsheet->getDefaultStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF');
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $TituloCabecera = ['RUTA', 'LINEA', 'MESA', 'GESTOR', 'TELEFONO', 'DNI', 'CODIGO', 'MARCAS', 'SUPERVISOR'];
+        $data1 = Gestor::GestorListarData($request);
+        $fila = 1;
+        foreach ($TituloCabecera as $i => $d) {
+            $sheet->setCellValue(Excel::Columnas[$i] . $fila, ucwords($TituloCabecera[$i]))->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+            $valor = Excel::Columnas[$i] . $fila;
+            $sheet->getStyle($valor)->applyFromArray($styleArrayTitulo);
+            $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle($valor)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
+            $sheet->getStyle($valor)->getFont()->setBold(true);
+        }
+        $fila++;
+        $arrayData1 = [
+            'ruta',
+            'linea',
+            'mesa',
+            'gestor',
+            'telefono',
+            'dni',
+            'codigo',
+            'marcas',
+            'supervisor',
+        ];
+        if (count($data1) > 0) {
+            for ($x = 0; $x < count($data1); $x++) {
+                for ($i = 0; $i < count($arrayData1); $i++) {
+                    // $nombreKey = $arrayData1[$i];
+                    $sheet->setCellValue(Excel::Columnas[$i] . $fila, $data1[$x][$arrayData1[$i]])->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+                    $valor = Excel::Columnas[$i] . $fila;
+                    $sheet->getStyle($valor)->applyFromArray($styleArray);
+                    $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+                }
+                $fila++;
+            }
+        } else {
+            $sheet->mergeCells('A' . $fila . ':F' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
+            $sheet->getStyle('A' . $fila . ':F' . $fila . '')->applyFromArray($styleArray);
+            $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
+        }
+        return $spreadsheet;
+    }
+    public static function GenerarExcelBonificacion(Request $request)
+    {
+        $spreadsheet = new Spreadsheet();
+
+        $styleArray = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ];
+        $styleArrayTitulo = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+            'font' => array(
+                'name'      =>  'Calibri',
+                'color' => ['argb' => '000000'],
+                'bold' => true
+            )
+        ];
+        $colorFondoCabecera = "F7CAAC";
+        $Titulo1 = "LISTA DE BONIFICACIONES";
+        $sheet = $spreadsheet->getDefaultStyle()->getFont()->setSize(11);
+        $sheet = $spreadsheet->getDefaultStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF');
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->mergeCells('A1:N1')->setCellValue('A1', $Titulo1);
+        $sheet->getStyle('A1:N1')->applyFromArray($styleArray);
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
+        $sheet->getStyle('A1')->getFont()->setBold(true);
+
+        $TituloCabecera = ['C.O', 'NRO DE LINEA', 'MARCA', 'FORMATO', 'COD', 'CAJA X', 'CONDICIÓN AT', 'SKU', 'BONIF(BOTELLAS)', 'MARCA/FORMATO BONIFICAR','SABOR A BONIFICAR', '#DÍAS A BONIFICAR', 'DEL', 'AL'];
+        $data1 = Bonificacion::BonificacionListarProcesado($request);
+        $fila = 2;
+        foreach ($TituloCabecera as $i => $d) {
+            $sheet->setCellValue(Excel::Columnas[$i] . $fila, ucwords($TituloCabecera[$i]))->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+            $valor = Excel::Columnas[$i] . $fila;
+            $sheet->getStyle($valor)->applyFromArray($styleArrayTitulo);
+            $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle($valor)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
+            $sheet->getStyle($valor)->getFont()->setBold(true);
+        }
+        $fila++;
+        $arrayData1 = [
+            'nombreCeo',
+            'nombreLinea',
+            'marca',
+            'formato',
+            'codigoPadre',
+            'cajaX',
+            'condicionAt',
+            'sku',
+            'nroBotellasBonificar',
+            'marcaFormatoBonificar',
+            'saborBonificar',
+            'diasBonificar',
+            'fechaInicio',
+            'fechaFin',
+        ];
+        if (count($data1) > 0) {
+            for ($x = 0; $x < count($data1); $x++) {
+                for ($i = 0; $i < count($arrayData1); $i++) {
+                    $nombreKey = $arrayData1[$i];
+                    $sheet->setCellValue(Excel::Columnas[$i] . $fila, $data1[$x]->$nombreKey)->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+                    $valor = Excel::Columnas[$i] . $fila;
+                    $sheet->getStyle($valor)->applyFromArray($styleArray);
+                    $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+                }
+                $fila++;
+            }
+        } else {
+            $sheet->mergeCells('A' . $fila . ':F' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
+            $sheet->getStyle('A' . $fila . ':F' . $fila . '')->applyFromArray($styleArray);
+            $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
+        }
+        return $spreadsheet;
+    }
+
+
     public static function CopiarArchivosTmp($archivo)
     {
         $rutaDirectorio = public_path('Excels');

@@ -10,6 +10,10 @@ ListaSupervisorsTabla = [];
 ListaSupervisorsRegistrados = [];
 ListaSupervisors = [];
 
+ListaProductosEliminar = [];
+ListaRutasEliminar = [];
+ListaSupervisorsEliminar = [];
+
 let ProductoRegistrar = (function () {
     const fncAcciones = () => {
         $(document).on("click", ".btnVolver", function () {
@@ -99,40 +103,56 @@ let ProductoRegistrar = (function () {
                 });
             }
         });
-        $(document).on(
-            "ifChecked",
-            "#tableProductos input:checkbox",
-            function () {
-                let idProducto = $(this).val();
-                let objProducto = ListaProductos.find(
-                    (ele) => ele.idProducto == idProducto
-                );
-                ListaProductosTabla.push(objProducto);
-            }
-        );
-        $(document).on(
-            "ifUnchecked",
-            "#tableProductos input:checkbox",
-            function () {
-                let idProducto = $(this).val();
-                ListaProductosTabla = ListaProductosTabla.filter(
-                    (item) => item.idProducto != parseInt(idProducto)
-                );
-            }
-        );
-        $(document).on("click", ".btnRemoverProducto", function () {
-            let idProducto = $(this).data("id");
-            ListaProductosRegistrados = ListaProductosRegistrados.filter(
-                (value) => value.idProducto != parseInt(idProducto)
+        $(document).on("ifChecked", "#tableProductos input:checkbox", function () {
+            let idProducto = $(this).val();
+            let objProducto = ListaProductos.find(
+                (ele) => ele.idProducto == idProducto
             );
-            $(this).closest("tr").remove();
-            if (ListaProductosRegistrados.length == 0) {
-                $("#tablaProductoRegistrado tbody").append(
-                    `<tr><td colspan="5" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
-                );
+            ListaProductosTabla.push(objProducto);
+        }
+        );
+        $(document).on("ifUnchecked", "#tableProductos input:checkbox", function () {
+            let idProducto = $(this).val();
+            ListaProductosTabla = ListaProductosTabla.filter(
+                (item) => item.idProducto != parseInt(idProducto)
+            );
+        }
+        );
+        $(document).on("click", "#btnEliminarProductos", function () {
+            if (ListaProductosEliminar.length > 0) {
+                ListaProductosRegistrados = ListaProductosRegistrados.filter((ele) => {
+                    return !ListaProductosEliminar.find((arg) => {
+                        return arg === ele.idProducto;
+                    });
+                });
+                ListaProductosEliminar.map(ele => {
+                    $(`.Fila${ele}`).remove();
+                });
+                ListaProductosEliminar = [];
+                if (ListaProductosRegistrados.length > 0) {
+                    $("#txtTituloProductos").text(`PRODUCTOS : SELECCIONADO(S) ${ListaProductosRegistrados.length}`);
+                } else {
+                    $("#txtTituloProductos").text(`PRODUCTOS`);
+                    $("#tablaProductoRegistrado tbody").append(`<tr><td colspan="11" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`);
+                }
+            } else {
+                ShowAlert({
+                    type: 'warning',
+                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A BORRAR"
+                })
+                return false;
             }
         });
-
+        $(document).on("ifChecked", "#tablaProductoRegistrado input:checkbox", function () {
+            let idProducto = $(this).val();
+            ListaProductosEliminar.push(parseInt(idProducto));
+        });
+        $(document).on("ifUnchecked", "#tablaProductoRegistrado input:checkbox", function () {
+            let idProducto = $(this).val();
+            ListaProductosEliminar = ListaProductosEliminar.filter(
+                (item) => item != parseInt(idProducto)
+            );
+        });
         //#endregion
         //#region MODAL RUTAS
         $(document).on("click", "#btnModalRutas", function () {
@@ -166,16 +186,12 @@ let ProductoRegistrar = (function () {
             let objRuta = ListaRutas.find((ele) => ele.idRuta == idRuta);
             ListaRutasTabla.push(objRuta);
         });
-        $(document).on(
-            "ifUnchecked",
-            "#tableRutas input:checkbox",
-            function () {
-                let idRuta = $(this).val();
-                ListaRutasTabla = ListaRutasTabla.filter(
-                    (item) => item.idRuta != parseInt(idRuta)
-                );
-            }
-        );
+        $(document).on("ifUnchecked", "#tableRutas input:checkbox", function () {
+            let idRuta = $(this).val();
+            ListaRutasTabla = ListaRutasTabla.filter(
+                (item) => item.idRuta != parseInt(idRuta)
+            );
+        });
         $(document).on("click", ".btnRemoverRuta", function () {
             let idRuta = $(this).data("id");
             ListaRutasRegistrados = ListaRutasRegistrados.filter(
@@ -187,6 +203,41 @@ let ProductoRegistrar = (function () {
                     `<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO RUTAS</td></tr>`
                 );
             }
+        });
+        $(document).on("click", "#btnEliminarRutas", function () {
+            if (ListaRutasEliminar.length > 0) {
+                ListaRutasRegistrados = ListaRutasRegistrados.filter((ele) => {
+                    return !ListaRutasEliminar.find((arg) => {
+                        return arg === ele.idRuta;
+                    });
+                });
+                ListaRutasEliminar.map(ele => {
+                    $(`.FilaRuta${ele}`).remove();
+                });
+                ListaRutasEliminar = [];
+                if (ListaRutasRegistrados.length > 0) {
+                    $("#txtTituloRutas").text(`RUTAS : SELECCIONADO(S) ${ListaRutasRegistrados.length}`);
+                } else {
+                    $("#txtTituloRutas").text(`RUTAS`);
+                    $("#tablaRutaRegistrado tbody").append(`<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO RUTAS</td></tr>`);
+                }
+            } else {
+                ShowAlert({
+                    type: 'warning',
+                    message: "NO SE HA SELECCIONADO RUTA(S) A BORRAR"
+                })
+                return false;
+            }
+        });
+        $(document).on("ifChecked", "#tablaRutaRegistrado input:checkbox", function () {
+            let idRuta = $(this).val();
+            ListaRutasEliminar.push(parseInt(idRuta));
+        });
+        $(document).on("ifUnchecked", "#tablaRutaRegistrado input:checkbox", function () {
+            let idRuta = $(this).val();
+            ListaRutasEliminar = ListaRutasEliminar.filter(
+                (item) => item != parseInt(idRuta)
+            );
         });
         //#endregion
         //#region MODAL SUPERVISOR
@@ -218,38 +269,53 @@ let ProductoRegistrar = (function () {
                 });
             }
         });
-        $(document).on(
-            "ifChecked",
-            "#tableSupervisores input:checkbox",
-            function () {
-                let idSupervisor = $(this).val();
-                let objSupervisor = ListaSupervisors.find(
-                    (ele) => ele.idSupervisor == idSupervisor
-                );
-                ListaSupervisorsTabla.push(objSupervisor);
-            }
-        );
-        $(document).on(
-            "ifUnchecked",
-            "#tableSupervisores input:checkbox",
-            function () {
-                let idSupervisor = $(this).val();
-                ListaSupervisorsTabla = ListaSupervisorsTabla.filter(
-                    (item) => item.idSupervisor != parseInt(idSupervisor)
-                );
-            }
-        );
-        $(document).on("click", ".btnRemoverSupervisor", function () {
-            let idSupervisor = $(this).data("id");
-            ListaSupervisorsRegistrados = ListaSupervisorsRegistrados.filter(
-                (value) => value.idSupervisor != idSupervisor
+        $(document).on("ifChecked", "#tableSupervisores input:checkbox", function () {
+            let idSupervisor = $(this).val();
+            let objSupervisor = ListaSupervisors.find(
+                (ele) => ele.idSupervisor == idSupervisor
             );
-            $(this).closest("tr").remove();
-            if (ListaSupervisorsRegistrados.length == 0) {
-                $("#tablaSupervisorRegistrado tbody").append(
-                    `<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO SUPERVISOR</td></tr>`
-                );
+            ListaSupervisorsTabla.push(objSupervisor);
+        });
+        $(document).on("ifUnchecked", "#tableSupervisores input:checkbox", function () {
+            let idSupervisor = $(this).val();
+            ListaSupervisorsTabla = ListaSupervisorsTabla.filter(
+                (item) => item.idSupervisor != parseInt(idSupervisor)
+            );
+        });
+        $(document).on("click", "#btnEliminarSupervisors", function () {
+            if (ListaSupervisorsEliminar.length > 0) {
+                ListaSupervisorsRegistrados = ListaSupervisorsRegistrados.filter((ele) => {
+                    return !ListaSupervisorsEliminar.find((arg) => {
+                        return arg === ele.idSupervisor;
+                    });
+                });
+                ListaSupervisorsEliminar.map(ele => {
+                    $(`.FilaSupervisor${ele}`).remove();
+                });
+                ListaSupervisorsEliminar = [];
+                if (ListaSupervisorsRegistrados.length > 0) {
+                    $("#txtTituloSupervisores").text(`SUPERVISOR : SELECCIONADO(S) ${ListaSupervisorsRegistrados.length}`);
+                } else {
+                    $("#txtTituloSupervisores").text(`SUPERVISOR`);
+                    $("#tablaSupervisorRegistrado tbody").append(`<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO SUPERVISORES</td></tr>`);
+                }
+            } else {
+                ShowAlert({
+                    type: 'warning',
+                    message: "NO SE HA SELECCIONADO Supervisor(S) A BORRAR"
+                })
+                return false;
             }
+        });
+        $(document).on("ifChecked", "#tablaSupervisorRegistrado input:checkbox", function () {
+            let idSupervisor = $(this).val();
+            ListaSupervisorsEliminar.push(parseInt(idSupervisor));
+        });
+        $(document).on("ifUnchecked", "#tablaSupervisorRegistrado input:checkbox", function () {
+            let idSupervisor = $(this).val();
+            ListaSupervisorsEliminar = ListaSupervisorsEliminar.filter(
+                (item) => item != parseInt(idSupervisor)
+            );
         });
         //#endregion
     };
@@ -268,7 +334,7 @@ let ProductoRegistrar = (function () {
     const fncListaProductosRegistrados = (obj) => {
         let objeto = {
             lista: [],
-            callBackSuccess: function () {},
+            callBackSuccess: function () { },
         };
         let options = $.extend({}, objeto, obj);
 
@@ -276,18 +342,99 @@ let ProductoRegistrar = (function () {
         contenedor.html("");
         if (options.lista.length > 0) {
             options.lista.map((ele) => {
-                contenedor.append(`<tr>
+                contenedor.append(`<tr class="Fila${ele.idProducto}">
                 <td class="text-center">${ele.sku}</td>
                 <td>${ele.nombreProducto}</td>
                 <td>${ele.marca}</td>
                 <td>${ele.formato}</td>
                 <td>${ele.sabor}</td>
-                <td class="text-center"><button type="button" class="btn btn-danger btn-icon btn-sm btnRemoverProducto" data-id="${ele.idProducto}"><i class="fa fa-window-close"></i></button></td>
+                <td class="text-center">
+                    <div class="icheck-inline-producto text-center">
+                        <input type="checkbox" value="${ele.idProducto}" data-checkbox="icheckbox_square-blue">
+                    </div>
+                </td>
                 </tr>`);
             });
+            $(".icheck-inline-producto").iCheck({
+                checkboxClass: "icheckbox_square-blue",
+                radioClass: "iradio_square-red",
+                increaseArea: "25%",
+            });
+            $("#txtTituloProductos").text(`PRODUCTOS : SELECCIONADO(S) ${options.lista.length}`);
         } else {
+            $("#txtTituloProductos").text(`PRODUCTOS`);
             contenedor.append(
                 `<tr><td colspan="6" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
+            );
+        }
+        options.callBackSuccess();
+    };
+    const fncListaRutasRegistrados = (obj) => {
+        let objeto = {
+            lista: [],
+            callBackSuccess: function () { },
+        };
+        let options = $.extend({}, objeto, obj);
+
+        let contenedor = $("#tablaRutaRegistrado tbody");
+        contenedor.html("");
+        if (options.lista.length > 0) {
+            options.lista.map((ele) => {
+                contenedor.append(`
+                <tr class="FilaRuta${ele.idRuta}">
+                    <td>${ele.descripcion}</td>
+                    <td class="text-center">
+                        <div class="icheck-inline-ruta text-center">
+                            <input type="checkbox" value="${ele.idRuta}" data-checkbox="icheckbox_square-blue">
+                        </div>
+                    </td>
+                </tr>`);
+            });
+            $(".icheck-inline-ruta").iCheck({
+                checkboxClass: "icheckbox_square-blue",
+                radioClass: "iradio_square-red",
+                increaseArea: "25%",
+            });
+            $("#txtTituloRutas").text(`RUTAS : SELECCIONADO(S) ${options.lista.length}`);
+        } else {
+            $("#txtTituloRutas").text(`RUTAS`);
+            contenedor.append(
+                `<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO RUTAS</td></tr>`
+            );
+        }
+        options.callBackSuccess();
+    };
+    const fncListaSupervisorsRegistrados = (obj) => {
+        let objeto = {
+            lista: [],
+            callBackSuccess: function () { },
+        };
+        let options = $.extend({}, objeto, obj);
+
+        let contenedor = $("#tablaSupervisorRegistrado tbody");
+        contenedor.html("");
+        if (options.lista.length > 0) {
+            options.lista.map((ele) => {
+                contenedor.append(`
+                <tr class="FilaSupervisor${ele.idSupervisor}">
+                    <td>${ele.nombre}</td>
+                    <td class="text-center">
+                        <div class="icheck-inline-supervisor text-center">
+                            <input type="checkbox" value="${ele.idSupervisor}" data-checkbox="icheckbox_square-blue">
+                        </div>
+                    </td>
+                </tr>`);
+            });
+            $(".icheck-inline-supervisor").iCheck({
+                checkboxClass: "icheckbox_square-blue",
+                radioClass: "iradio_square-red",
+                increaseArea: "25%",
+            });
+            $("#txtTituloSupervisores").text(`SUPERVISORES : SELECCIONADO(S) ${options.lista.length}`);
+        } else {
+            $("#txtTituloSupervisores").text(`SUPERVISORES`);
+            contenedor.append(
+                `<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO SUPERVISOR</td></tr>`
             );
         }
         options.callBackSuccess();
@@ -391,52 +538,6 @@ let ProductoRegistrar = (function () {
                 });
             },
         });
-    };
-    const fncListaRutasRegistrados = (obj) => {
-        let objeto = {
-            lista: [],
-            callBackSuccess: function () {},
-        };
-        let options = $.extend({}, objeto, obj);
-
-        let contenedor = $("#tablaRutaRegistrado tbody");
-        contenedor.html("");
-        if (options.lista.length > 0) {
-            options.lista.map((ele) => {
-                contenedor.append(`<tr>
-                <td>${ele.descripcion}</td>
-                <td class="text-center"><button type="button" class="btn btn-danger btn-icon btn-sm btnRemoverRuta" data-id="${ele.idRuta}"><i class="fa fa-window-close"></i></button></td>
-                </tr>`);
-            });
-        } else {
-            contenedor.append(
-                `<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO RUTAS</td></tr>`
-            );
-        }
-        options.callBackSuccess();
-    };
-    const fncListaSupervisorsRegistrados = (obj) => {
-        let objeto = {
-            lista: [],
-            callBackSuccess: function () {},
-        };
-        let options = $.extend({}, objeto, obj);
-
-        let contenedor = $("#tablaSupervisorRegistrado tbody");
-        contenedor.html("");
-        if (options.lista.length > 0) {
-            options.lista.map((ele) => {
-                contenedor.append(`<tr>
-                <td>${ele.nombre}</td>
-                <td class="text-center"><button type="button" class="btn btn-danger btn-icon btn-sm btnRemoverSupervisor" data-id="${ele.idSupervisor}"><i class="fa fa-window-close"></i></button></td>
-                </tr>`);
-            });
-        } else {
-            contenedor.append(
-                `<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO SUPERVISOR</td></tr>`
-            );
-        }
-        options.callBackSuccess();
     };
     const fncListarSupervisors = () => {
         CargarTablaDatatable({

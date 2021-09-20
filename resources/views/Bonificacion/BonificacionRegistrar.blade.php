@@ -76,7 +76,7 @@
         <div class="kt-portlet kt-portlet--mobile">
             <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
-                    <h3 class="kt-portlet__head-title">
+                    <h3 class="kt-portlet__head-title" id="txtTituloProductos">
                         PRODUCTOS
                     </h3>
                 </div>
@@ -84,6 +84,9 @@
                     <div class="kt-portlet__head-actions">
                         <a href="javascript:void(0)" id="btnModalProducto" class="btn btn-primary">
                             <i class="fa fa-plus-square mr-1"></i>ABRIR PRODUCTOS
+                        </a>
+                        <a href="javascript:void(0)" id="btnEliminarProductos" class="btn btn-danger">
+                            <i class="fa fa-trash-alt mr-1"></i>ELIMINAR PRODUCTOS
                         </a>
                     </div>
                 </div>
@@ -104,8 +107,7 @@
                                     <th class="text-center">BONIF (BOTELLAS)</th>
                                     <th class="text-center">MARCA/FORMATO BONIFICAR</th>
                                     <th class="text-center">SABOR A BONIFICAR</th>
-                                    <th class="text-center" style="width:10%">OPCIONES</th>
-
+                                    <th class="text-center" style="width:10%">ELIMINAR</th>
                                 </tr>
                             </thead>
                             <tbody>

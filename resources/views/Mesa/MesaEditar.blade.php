@@ -72,19 +72,21 @@
             <div class="kt-portlet__body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaRutaRegistrado">
-                            <thead>
-                                <tr>
-                                    <th>RUTA</th>
-                                    <th class="text-center" style="width:10%">OPCIONES</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="5" class="text-center">NO SE HA REGISTRADO RUTAS</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-scrollable">
+                            <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaRutaRegistrado">
+                                <thead>
+                                    <tr>
+                                        <th>RUTA</th>
+                                        <th class="text-center" style="width:10%">OPCIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" class="text-center">CARGANDO RUTAS...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -109,19 +111,21 @@
             <div class="kt-portlet__body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaSupervisorRegistrado">
-                            <thead>
-                                <tr>
-                                    <th>SUPERVISOR</th>
-                                    <th class="text-center" style="width:10%">OPCIONES</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="5" class="text-center">NO SE HA REGISTRADO SUPERVISORES</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-scrollable">
+                            <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaSupervisorRegistrado">
+                                <thead>
+                                    <tr>
+                                        <th>SUPERVISOR</th>
+                                        <th class="text-center" style="width:10%">OPCIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" class="text-center">CARGANDO SUPERVISORES...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

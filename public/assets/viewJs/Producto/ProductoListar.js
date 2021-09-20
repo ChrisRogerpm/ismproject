@@ -52,6 +52,7 @@ let ProductoListar = (function () {
                     url: "ProductoImportarDataJson",
                     data: dataForm,
                     callBackSuccess: function () {
+                        $("#ModalImportarProducto").modal("hide");
                         fncListarProductos();
                     },
                 });

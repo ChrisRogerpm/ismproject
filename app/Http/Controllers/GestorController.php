@@ -16,6 +16,7 @@ class GestorController extends Controller
     #region Vista
     public function GestorListarVista()
     {
+        // return count(Gestor::GestorListarData(new Request()));
         return view('Gestor.GestorListar');
     }
     public function GestorRegistrarVista($idCeo)
@@ -96,6 +97,19 @@ class GestorController extends Controller
             Gestor::GestorRestablecer($request);
             $respuesta = true;
             $mensaje = "Se ha restablecido el Gestor exitosamente";
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje]);
+    }
+    public static function GestorImportarDataJson(Request $request)
+    {
+        $respuesta = false;
+        $mensaje = "";
+        try {
+            Gestor::GestorImportarData($request);
+            $respuesta = true;
+            $mensaje = "Se ha importado la información exitosamente";
         } catch (Exception $ex) {
             $mensaje = $ex->getMessage();
         }
