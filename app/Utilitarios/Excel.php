@@ -10,6 +10,7 @@ use App\Model\Liquidacion;
 use App\Model\Bonificacion;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -98,7 +99,8 @@ class Excel
         }
         return $spreadsheet;
     }
-    public static function GenerarExcelGestorExcel(Request $request){
+    public static function GenerarExcelGestorExcel(Request $request)
+    {
         $spreadsheet = new Spreadsheet();
 
         $styleArray = [
@@ -128,7 +130,7 @@ class Excel
         $sheet = $spreadsheet->getDefaultStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF');
         $sheet = $spreadsheet->getActiveSheet();
 
-        $TituloCabecera = ['RUTA', 'LINEA', 'MESA', 'GESTOR', 'TELEFONO', 'DNI', 'CODIGO', 'MARCAS', 'SUPERVISOR'];
+        $TituloCabecera = ['RUTA', 'LINEA', 'MESA', 'GESTOR', 'TELEFONO', 'DNI', 'CODIGO', 'SKU', 'MARCAS', 'SUPERVISOR'];
         $data1 = Gestor::GestorListarData($request);
         $fila = 1;
         foreach ($TituloCabecera as $i => $d) {
@@ -148,6 +150,7 @@ class Excel
             'telefono',
             'dni',
             'codigo',
+            'sku',
             'marcas',
             'supervisor',
         ];
@@ -206,7 +209,7 @@ class Excel
         $sheet->getStyle('A1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
         $sheet->getStyle('A1')->getFont()->setBold(true);
 
-        $TituloCabecera = ['C.O', 'NRO DE LINEA', 'MARCA', 'FORMATO', 'COD', 'CAJA X', 'CONDICIÓN AT', 'SKU', 'BONIF(BOTELLAS)', 'MARCA/FORMATO BONIFICAR','SABOR A BONIFICAR', '#DÍAS A BONIFICAR', 'DEL', 'AL'];
+        $TituloCabecera = ['C.O', 'NRO DE LINEA', 'MARCA', 'FORMATO', 'COD', 'CAJA X', 'CONDICIÓN AT', 'SKU', 'BONIF(BOTELLAS)', 'MARCA/FORMATO BONIFICAR', 'SABOR A BONIFICAR', '#DÍAS A BONIFICAR', 'DEL', 'AL'];
         $data1 = Bonificacion::BonificacionListarProcesado($request);
         $fila = 2;
         foreach ($TituloCabecera as $i => $d) {
@@ -252,8 +255,122 @@ class Excel
         }
         return $spreadsheet;
     }
+    public static function GenerarExcelPedidoProcesado(Collection $Cliente, Collection $Pedido)
+    {
+        $spreadsheet = new Spreadsheet();
+        $styleArray = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ];
+        $styleArrayTitulo = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+            'font' => array(
+                'name'      =>  'Calibri',
+                'color' => ['argb' => '000000'],
+                'bold' => true
+            )
+        ];
+        $colorFondoCabecera = "F7CAAC";
+        // $Titulo1 = "LISTA DE GESTORES";
+        $sheet = $spreadsheet->getDefaultStyle()->getFont()->setSize(11);
+        $sheet = $spreadsheet->getDefaultStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF');
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('CLIENTE');
+        $TituloCabecera = ['NROPEDIDO', 'COD_CLIE', 'CLIENTE', 'DIRECCION', 'TIPO_DOC', 'NRO_DOC', 'RUTA', 'MODULO', 'VISITA', 'LATITUD', 'LONGITUD', 'GIRO', 'EMAIL', 'TELEFONO', 'LUGAR', 'SUCURSAL', 'CANAL', 'REFERENCIA', 'LPRECIO', 'PDV'];
+        $fila = 1;
+        foreach ($TituloCabecera as $i => $d) {
+            $sheet->setCellValue(Excel::Columnas[$i] . $fila, ucwords($TituloCabecera[$i]))->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+            $valor = Excel::Columnas[$i] . $fila;
+            $sheet->getStyle($valor)->applyFromArray($styleArrayTitulo);
+            $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle($valor)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
+            $sheet->getStyle($valor)->getFont()->setBold(true);
+        }
+        $fila++;
+        $arrayData1 = [
+            'NROPEDIDO',
+            'COD_CLIE',
+            'CLIENTE',
+            'DIRECCION',
+            'TIPO_DOC',
+            'NRO_DOC',
+            'RUTA',
+            'MODULO',
+            'VISITA',
+            'LATITUD',
+            'LONGITUD',
+            'GIRO',
+            'EMAIL',
+            'TELEFONO',
+            'LUGAR',
+            'SUCURSAL',
+            'CANAL',
+            'REFERENCIA',
+            'LPRECIO',
+            'PDV',
+        ];
+        if (count($Cliente) > 0) {
+            for ($x = 0; $x < count($Cliente); $x++) {
+                for ($i = 0; $i < count($arrayData1); $i++) {
+                    // $nombreKey = $arrayData1[$i];
+                    $sheet->setCellValue(Excel::Columnas[$i] . $fila, $Cliente[$x][$arrayData1[$i]])->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+                    $valor = Excel::Columnas[$i] . $fila;
+                    $sheet->getStyle($valor)->applyFromArray($styleArray);
+                    $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+                }
+                $fila++;
+            }
+        } else {
+            $sheet->mergeCells('A' . $fila . ':F' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
+            $sheet->getStyle('A' . $fila . ':F' . $fila . '')->applyFromArray($styleArray);
+            $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
+        }
 
+        $spreadsheet->createSheet();
+        $spreadsheet->setActiveSheetIndex(1);
+        $spreadsheet->getActiveSheet()->setTitle('CLIENTE');
 
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $header = ['NROPEDIDO', 'FEPVTA', 'FEMOVI', 'CODALT', 'CANTIDAD', 'PRECIO', 'PDSCTO', 'DESCTO', 'TDOCTO'];
+        $arrayKeys = $header;
+        $fila = "";
+        $sheet->setTitle('PEDIDO');
+        //Cabeceras
+        for ($i = 0; $i < count($header); $i++) {
+            $celda = Excel::Columnas[$i] . '1';
+            $sheet->setCellValue($celda, $header[$i]);
+            $sheet->getStyle($celda)->getFont()->setBold(true);
+            $sheet->getStyle($celda)->applyFromArray($styleArrayTitulo);
+            $sheet->getStyle($celda)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle($celda)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
+        }
+        $fila = 2;
+        //Cuerpo Columnas Data
+        for ($x = 0; $x < count($Pedido); $x++) {
+            for ($i = 0; $i < count($arrayKeys); $i++) {
+                $sheet->setCellValue(Excel::Columnas[$i] . $fila, $Pedido[$x][$arrayKeys[$i]])->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+                $valor = Excel::Columnas[$i] . $fila;
+                $sheet->getStyle($valor)->applyFromArray($styleArray);
+                $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+            }
+            $fila++;
+        }
+        $nombreArchivo = 'Pedidos' . '_' . time() . '.xlsx';
+        $archivo = "Excels/" . $nombreArchivo;
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($archivo);
+        return $nombreArchivo;
+    }
     public static function CopiarArchivosTmp($archivo)
     {
         $rutaDirectorio = public_path('Excels');
@@ -336,7 +453,6 @@ class Excel
     {
         $path = public_path('Excels' . DIRECTORY_SEPARATOR);
         $archivoPedido = $path . $request->input('archivoPedido');
-
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $reader->setReadDataOnly(true);
         $reader->setLoadSheetsOnly(["CLIENTE"]);

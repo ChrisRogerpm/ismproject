@@ -30,7 +30,7 @@
                     <div class="col-lg-12">
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#kt_tabs_1_1">
+                                <a class="nav-link active" data-toggle="tab" href="#kt_tabs_1_1" id="tabListado">
                                     <i class="fa fa-file-alt"></i> LISTADO DE PEDIDOS
                                 </a>
                             </li>
@@ -50,11 +50,23 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="kt_tabs_1_2" role="tabpanel">
-                                2 It has survived not only five centuries, but also the leap into
-                                electronic typesetting, remaining essentially unchanged. It was
-                                popularised in the 1960s with the release of Letraset sheets containing
-                                Lorem Ipsum passages, and more recently with desktop publishing software
-                                like Aldus PageMaker including versions of Lorem Ipsum.
+                                <form id="frmImportarPedido">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <label for=""><strong>SUBIR ARCHIVO PEDIDOS (*)</strong></label>
+                                                <div></div>
+                                                <div class="custom-file">
+                                                    <input type="file" name="archivoPedido" id="archivoPedido" class="custom-file-input" accept=".xlsx">
+                                                    <label class="custom-file-label" for="customFile">Elegir archivo...</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2 ml-auto">
+                                            <button type="button" class="btn btn-primary btn-block" id="btnImportarPedido"><i class="fa fa-plus-square"></i>IMPORTAR PEDIDO</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -62,6 +74,7 @@
             </div>
         </div>
     </div>
+    @include('Pedido.modal.modalPedidoDetalle')
 </div>
 @endsection
 @push('js')

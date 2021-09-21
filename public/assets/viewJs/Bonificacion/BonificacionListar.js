@@ -120,6 +120,13 @@ let BonificacionListar = (function () {
             },
             callBackSuccess: function (response) {
                 ListadeBonificacions = response.data;
+                let verificarBonificacionActiva = ListadeBonificacions.find(ele => parseInt(ele.estado) == 1);
+                if (verificarBonificacionActiva == null) {
+                    ShowAlert({
+                        type: 'warning',
+                        message: 'NO SE HA ENCONTRADO NINGUNA BONIFICACION ACTIVO'
+                    })
+                }
             },
         });
     };

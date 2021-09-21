@@ -1,28 +1,11 @@
-ListadePedidos = [];
 let PedidoListar = (function () {
     const fncAcciones = function () {
-        $(document).on("click", ".btnBuscar", function () {
-            fncListarPedidos({
-                data: $("#frmNuevo").serializeFormJSON(),
-            });
-        });
         $(document).on("change", "#CbidCeo", function () {
             fncListarPedidos({
                 data: $("#frmNuevo").serializeFormJSON(),
             });
         });
-        $(document).on("click", ".btnImportarExcel", function () {
-            LimpiarFormulario({
-                formulario: "frmImportarPedido",
-                nameVariable: "frmImportarPedido",
-            });
-            $(`.custom-file-label`).text("Elegir archivo...");
-            $("#ModalImportarPedido").modal({
-                keyboard: false,
-                backdrop: "static",
-            });
-        });
-        $(document).on("change", "#PedidoExcel", function (e) {
+        $(document).on("change", "#archivoPedido", function (e) {
             const files = e.target.files;
             if (files[0] === undefined) {
                 $(`.custom-file-label`).text("Elegir archivo...");
@@ -38,13 +21,36 @@ let PedidoListar = (function () {
                 EnviarDataPost({
                     url: "PedidoImportarDataJson",
                     data: dataForm,
-                    callBackSuccess: function () {
-                        $("#ModalImportarPedido").modal("hide");
+                    callBackSuccess: function (response) {
+                        $("#tabListado").click();
+                        $(`.custom-file-label`).text("Elegir archivo...");
+                        LimpiarFormulario({
+                            formulario: "#frmImportarPedido",
+                            nameVariable: "frmImportarPedido"
+                        });
+                        let urlExcel = `${basePath}Excels/${response}`;
+                        window.open(urlExcel, "_blank");
                         fncListarPedidos();
                     },
                 });
             }
         });
+        $(document).on('click', '.btnVerDetalle', function () {
+            let nroPedido = $(this).data('id');
+            let idCeo = $("#CbidCeo").val();
+            fncListarPedidoDetalle({
+                data: {
+                    nroPedido: nroPedido,
+                    idCeo: idCeo,
+                },
+                callBackSuccess: function () {
+                    $("#ModalPedidoDetalle").modal({
+                        keyboard: false,
+                        backdrop: "static",
+                    })
+                }
+            });
+        })
     };
     const fncInicializarData = () => {
         CargarDataSelect({
@@ -60,6 +66,35 @@ let PedidoListar = (function () {
             },
         });
     };
+    const fncListarPedidoDetalle = function (obj) {
+        let objeto = {
+            data: {},
+            callBackSuccess: function () { }
+        };
+        let options = $.extend({}, objeto, obj);
+        CargarTablaDatatable({
+            uniform: true,
+            ajaxUrl: "PedidoDetalleListarJson",
+            table: "#tablePedidoDetalle",
+            ajaxDataSend: options.data,
+            tableColumns: [
+                { data: "nroPedido", title: "NRO DE PEDIDO" },
+                { data: "fechaVenta", title: "FECHA DE VENTA" },
+                { data: "fechaMovimiento", title: "FECHA DE MOVIMIENTO" },
+                { data: "sku", title: "SKU" },
+                { data: "cantidad", title: "CANTIDAD" },
+                { data: "precio", title: "PRECIO" },
+                { data: "precioDescuento", title: "PRECIO DESCUENTO" },
+                { data: "descuento", title: "DESCUENTO" },
+                { data: "tdocto", title: "TDOCTO" },
+            ],
+            tabledrawCallback: function () {
+            },
+            callBackSuccess: function () {
+                options.callBackSuccess();
+            }
+        });
+    }
     const fncListarPedidos = function (obj) {
         let objeto = {
             data: $("#frmNuevo").serializeFormJSON(),
@@ -71,6 +106,15 @@ let PedidoListar = (function () {
             table: "#table",
             ajaxDataSend: options.data,
             tableColumns: [
+                {
+                    data: null, title: "ELIMINAR", render: function (value) {
+                        return `
+                        <div class="icheck-inline-supervisor text-center">
+                            <input type="checkbox" value="${value.nroPedido}" data-checkbox="icheckbox_square-blue">
+                        </div>
+                        `;
+                    }
+                },
                 { data: "nroPedido", title: "NRO DE PEDIDO" },
                 { data: "codigoCliente", title: "CODIGO DE CLIENTE" },
                 { data: "direccion", title: "DIRECCIÓN" },
@@ -80,9 +124,25 @@ let PedidoListar = (function () {
                 { data: "ruta", title: "RUTA" },
                 { data: "modulo", title: "MODULO" },
                 { data: "nombreGestor", title: "GESTOR" },
+                {
+                    data: null, title: "OPCIONES", render: function (value) {
+                        let ver = `<a class="dropdown-item btnVerDetalle" data-id="${value.nroPedido}" href="javascript:void(0)"><i class="fa fa-eye"></i> VER DETALLE</a>`;
+                        return `<span class="dropdown">
+                                    <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-align-justify"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-right" style="display: none;">
+                                    ${ver}
+                                    </div>
+                                </span>`;
+                    }, className: "text-center"
+                }
             ],
-            callBackSuccess: function (response) {
-                ListadePedidos = response.data;
+            tabledrawCallback: function () {
+                $(".icheck-inline-supervisor").iCheck({
+                    checkboxClass: "icheckbox_square-blue",
+                    radioClass: "iradio_square-red",
+                    increaseArea: "25%",
+                });
             },
         });
     };
@@ -91,10 +151,10 @@ let PedidoListar = (function () {
             contenedor: "#frmImportarPedido",
             nameVariable: "frmImportarPedido",
             rules: {
-                PedidoExcel: { required: true },
+                archivoPedido: { required: true },
             },
             messages: {
-                PedidoExcel: { required: "El campo es requerido" },
+                archivoPedido: { required: "El campo es requerido" },
             },
         });
     };

@@ -92,4 +92,61 @@ class Bonificacion extends Model
         INNER JOIN linea AS l ON l.idLinea = p.idLinea
         WHERE bd.idBonificacion = (SELECT bf.idBonificacion FROM bonificacion AS bf WHERE bf.estado = 1 ORDER BY bf.idBonificacion LIMIT 1) AND b.idCeo = $idCeo"));
     }
+    public static function BonificacionImportarData(Request $request)
+    {
+        $archivoBonificacion = $request->file('archivoBonificacion');
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader->setReadDataOnly(true);
+        $spreadSheet = $reader->load($archivoBonificacion);
+        $workSheet = $spreadSheet->getActiveSheet();
+        $startRow = 2;
+        $max = $spreadSheet->getActiveSheet()->getHighestRow();
+        $columns = [
+            "G" => "condicionAt",
+            "H" => "sku",
+            "I" => "nroBotellasBonificar",
+            "K" => "idProductoBonificar"
+        ];
+        $dataImportada = [];
+        for ($i = $startRow; $i <= $max; $i++) {
+            $data_row = [];
+            foreach ($columns as $col => $field) {
+                $val = $workSheet->getCell("$col$i")->getValue();
+                $data_row[$field] = $val;
+            }
+            $dataImportada[] = $data_row;
+        }
+        $dataImportada = collect($dataImportada);
+        $ListaDetalle = [];
+        foreach ($dataImportada as $data) {
+            $objProducto = Producto::ProductoDetalle($data['sku'], $request->input('idCeo'));
+            $objProductoBonificar = Producto::where('sku', $data['idProductoBonificar'])->where('idCeo', $request->input('idCeo'))->first();
+            $ListaDetalle[] = [
+                'idProducto' => $objProducto->idProducto,
+                'nombreLinea' => $objProducto->nombreLinea,
+                'sku' => $objProducto->sku,
+                'nombreProducto' => $objProducto->nombreProducto,
+                'marca' => $objProducto->marca,
+                'formato' => $objProducto->formato,
+                'sabor' => $objProducto->sabor,
+                'caja' => $objProducto->caja,
+                'paquete' => $objProducto->paquete,
+                'cajaxpaquete' => $objProducto->cajaxpaquete,
+                'codigoPadre' => $objProducto->codigoPadre,
+                'codigoHijo' => $objProducto->codigoHijo,
+                'estado' => $objProducto->estado,
+                'estadoNombre' => $objProducto->estadoNombre,
+                'cajaX' => $data['condicionAt'] == "CAJA" ? $objProducto->caja : $objProducto->paquete,
+                'condicionAt' => $data['condicionAt'] == "CAJA" ? 1 : 0,
+                'nroBotellasBonificar' => $data['nroBotellasBonificar'],
+                'idProductoBonificar' => $objProductoBonificar->idProducto,
+            ];
+        }
+        // $ListaSku = implode(", ", collect($dataImportada)->groupBy('sku')->keys()->toArray());
+        // $dataDetalle = Producto::ProductoDetalleArray($ListaSku, $request->input('idCeo'));
+        // foreach ($dataDetalle as $data) {
+        //     $data->
+        // }
+        return collect($ListaDetalle);
+    }
 }

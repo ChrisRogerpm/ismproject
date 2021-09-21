@@ -103,6 +103,7 @@ Route::get('BonificacionListarJson', 'BonificacionController@BonificacionListarJ
 Route::post('BonificacionRegistrarJson', 'BonificacionController@BonificacionRegistrarJson');
 Route::post('BonificacionEditarJson', 'BonificacionController@BonificacionEditarJson');
 Route::post('BonificacionActivarJson', 'BonificacionController@BonificacionActivarJson');
+Route::post('BonificacionImportarDataJson', 'BonificacionController@BonificacionImportarDataJson');
 #endregion
 
 #region BONIFICACION_DETALLE
@@ -112,6 +113,8 @@ Route::post('BonificacionDetalleRegistrarJson', 'BonificacionDetalleController@B
 #endregion
 #region Pedido
 Route::get('PedidoListarJson', 'PedidoController@PedidoListarJson');
+Route::post('PedidoImportarDataJson', 'PedidoController@PedidoImportarDataJson');
+Route::get('PedidoDetalleListarJson', 'PedidoController@PedidoDetalleListarJson');
 #endregion
 #region Download Excel
 Route::get('GestoresDownload', 'ExcelController@GestoresDownload');

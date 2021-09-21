@@ -85,5 +85,19 @@ class BonificacionController extends Controller
         }
         return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje]);
     }
+    public function BonificacionImportarDataJson(Request $request)
+    {
+        $respuesta = false;
+        $data = "";
+        $mensaje = "";
+        try {
+            $data = Bonificacion::BonificacionImportarData($request);
+            $respuesta = true;
+            $mensaje = "Se ha importado la data exitosamente";
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje, 'data' => $data,]);
+    }
     #endregion
 }

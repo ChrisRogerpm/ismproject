@@ -251,6 +251,7 @@ class Gestor extends Model
                             'telefono' => $gestor->telefono,
                             'dni' => $gestor->nroDocumento,
                             'codigo' => $gestor->codigoGestor,
+                            'sku' => $objProducto->sku,
                             'marcas' => $objProducto->marca,
                             'supervisor' => $objSupervisor->supervisor->nombre,
                         ];

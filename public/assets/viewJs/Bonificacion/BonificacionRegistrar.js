@@ -79,8 +79,7 @@ let ProductoRegistrar = (function () {
                         return arg.idProducto === ele.idProducto;
                     });
                 });
-                ListaProductosRegistrados =
-                    ListaProductosRegistrados.concat(ProductosFiltrados);
+                ListaProductosRegistrados = ListaProductosRegistrados.concat(ProductosFiltrados);
                 fncListaProductosRegistrados({
                     lista: ListaProductosRegistrados,
                     callBackSuccess: function () {
@@ -151,7 +150,47 @@ let ProductoRegistrar = (function () {
                 (item) => item != parseInt(idProducto)
             );
         });
-
+        //#endregion
+        //#region IMPORTAR DATA
+        $(document).on('click', '#btnImportarDataBonificacion', function () {
+            LimpiarFormulario({
+                formulario: "frmImportarBonificacion",
+                nameVariable: "frmImportarBonificacion",
+            });
+            $(`.custom-file-label`).text("Elegir archivo...");
+            $("#ModalImportarBonificacion").modal({
+                keyboard: false,
+                backdrop: "static",
+            });
+        })
+        $(document).on("change", "#archivoBonificacion", function (e) {
+            const files = e.target.files;
+            if (files[0] === undefined) {
+                $(`.custom-file-label`).text("Elegir archivo...");
+            } else {
+                $(`.custom-file-label`).text(files[0].name);
+            }
+        });
+        $(document).on("click", "#btnImportarBonificacion", function () {
+            $("#frmImportarBonificacion").submit();
+            if (_objetoForm_frmImportarBonificacion.valid()) {
+                let dataForm = new FormData($("#frmImportarBonificacion")[0]);
+                dataForm.append("idCeo", idCeo);
+                EnviarDataPost({
+                    url: "BonificacionImportarDataJson",
+                    data: dataForm,
+                    callBackSuccess: function (response) {
+                        ListaProductosRegistrados = response;
+                        fncListaProductosRegistrados({
+                            lista: response,
+                            callBackSuccess: function () {
+                                $("#ModalImportarBonificacion").modal("hide");
+                            },
+                        });
+                    },
+                });
+            }
+        });
         //#endregion
     };
     const fncInicializarData = () => {
@@ -176,13 +215,14 @@ let ProductoRegistrar = (function () {
             .asDays();
         $("#diasBonificar").val(diasBonificar);
     };
+    // const fncListarProducto
     const fncListaProductosRegistrados = (obj) => {
         let objeto = {
             lista: [],
             callBackSuccess: function () { },
+            importado: false
         };
         let options = $.extend({}, objeto, obj);
-
         let contenedor = $("#tablaProductoRegistrado tbody");
         contenedor.html("");
         if (options.lista.length > 0) {
@@ -193,18 +233,18 @@ let ProductoRegistrar = (function () {
                     <td class="text-center">${ele.marca}</td>
                     <td class="text-center">${ele.formato}</td>
                     <td class="text-center">${ele.codigoPadre}</td>
-                    <td class="text-center valorCondicion${ele.sku}">--</td>
+                    <td class="text-center valorCondicion${ele.sku}">${ele.cajaX == undefined ? '' : ele.cajaX}</td>
                     <td>
                         <select class="form-control CbCondicion" data-sku="${ele.sku}" style="width:100%;">
                             <option value="">-- Seleccione --</option>
-                            <option value="1" data-valor="${ele.caja}">CAJA</option>
-                            <option value="0" data-valor="${ele.paquete}">PAQUETE</option>
+                            <option value="1" ${ele.condicionAt == 1 ? "selected" : ""} data-valor="${ele.caja}">CAJA</option>
+                            <option value="0" ${ele.condicionAt == 0 ? "selected" : ""} data-valor="${ele.paquete}">PAQUETE</option>
                         </select>
                     </td>
                     <td class="text-center">${ele.sku}</td>
-                    <td><input type="text" class="form-control text-center" value="0"></td>
+                    <td><input type="text" class="form-control text-center" value="${ele.nroBotellasBonificar == undefined ? 0 : ele.nroBotellasBonificar}"></td>
                     <td class="text-center valorBonificar${ele.sku}">--</td>
-                    <td>${fncGenerarComboBonificar({ sku: ele.sku, valorSelect: ele.idProducto })}</td>
+                    <td>${fncGenerarComboBonificar({ sku: ele.sku, valorSelect: ele.idProductoBonificar })}</td>
                     <td class="text-center">
                         <div class="icheck-inline-producto text-center">
                             <input type="checkbox" value="${ele.idProducto}" data-checkbox="icheckbox_square-blue">
@@ -296,14 +336,14 @@ let ProductoRegistrar = (function () {
             rules: {
                 codigoBonificacion: { required: true },
                 nombre: { required: true },
-                nroDocumento: { required: true },
-                telefono: { required: true },
+                fechaInicio: { required: true },
+                fechaFin: { required: true },
+                nombreBonificacion: { required: true },
             },
             messages: {
-                codigoBonificacion: { required: "El campo es requerido" },
-                nombre: { required: "El campo es requerido" },
-                nroDocumento: { required: "El campo es requerido" },
-                telefono: { required: "El campo es requerido" },
+                fechaInicio: { required: "El campo es requerido" },
+                fechaFin: { required: "El campo es requerido" },
+                nombreBonificacion: { required: "El campo es requerido" },
             },
         });
     };
@@ -325,7 +365,6 @@ let ProductoRegistrar = (function () {
             mensaje: "",
             ListaProductosBonificacion: [],
         };
-        // let contenedor = $("#tablaProductoRegistrado tbody tr");
         $("#tablaProductoRegistrado tbody tr").each(function () {
             let idProducto = $(this).data("id");
             let sku = $(this).data("sku");
@@ -373,11 +412,24 @@ let ProductoRegistrar = (function () {
 
         return obj;
     };
+    const fncValidarFormularioImportarBonificacion = () => {
+        ValidarFormulario({
+            contenedor: "#frmImportarBonificacion",
+            nameVariable: "frmImportarBonificacion",
+            rules: {
+                archivoBonificacion: { required: true },
+            },
+            messages: {
+                archivoBonificacion: { required: "El campo es requerido" },
+            },
+        });
+    };
     return {
         init: function () {
             fncAcciones();
             fncInicializarData();
             fncValidarFormularioRegistrar();
+            fncValidarFormularioImportarBonificacion();
         },
     };
 })();

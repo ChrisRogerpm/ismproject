@@ -193,6 +193,7 @@ let BonificacionEditar = (function () {
                 language: "es",
                 orientation: "bottom left",
             });
+        $("#nombreBonificacion").val(Bonificacion.nombreBonificacion);
         $("#diasBonificar").val(Bonificacion.diasBonificar);
     };
     const fncListaProductosRegistrados = (obj) => {

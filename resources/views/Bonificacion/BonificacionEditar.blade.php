@@ -36,13 +36,19 @@
             <div class="kt-portlet__body">
                 <form id="frmNuevo" autocomplete="off">
                     <div class="row">
-                        <div class="col-lg-3">
+                        <div class="col-lg-2">
                             <div class="form-group">
                                 <label for=""><b>CENTRO OPERATIVO</b></label>
                                 <input type="text" class="form-control" value="{{$nombreCeo}}" readonly>
                             </div>
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for=""><b>NOMBRE DE BONIFICACION</b></label>
+                                <input type="text" class="form-control" name="nombreBonificacion" id="nombreBonificacion">
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
                             <div class="form-group">
                                 <label for=""><b>FECHA INICIO</b></label>
                                 <div class="input-group">
@@ -51,7 +57,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-lg-2">
                             <div class="form-group">
                                 <label for=""><b>FECHA FIN</b></label>
                                 <div class="input-group">
@@ -60,7 +66,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-lg-2">
                             <div class="form-group">
                                 <label for=""><b>DÍAS A BONIFICAR</b></label>
                                 <input type="text" class="form-control text-center" name="diasBonificar" id="diasBonificar" readonly>

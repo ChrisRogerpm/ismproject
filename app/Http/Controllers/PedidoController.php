@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Model\Pedido;
+use App\Model\PedidoDetalle;
 use Illuminate\Http\Request;
 
 class PedidoController extends Controller
@@ -25,6 +26,30 @@ class PedidoController extends Controller
             $mensaje = $ex->getMessage();
         }
         return response()->json(['data' => $data, 'mensaje' => $mensaje]);
+    }
+    public function PedidoDetalleListarJson(Request $request)
+    {
+        $data = "";
+        $mensaje = "";
+        try {
+            $data = PedidoDetalle::PedidoDetalleListar($request);
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['data' => $data, 'mensaje' => $mensaje]);
+    }
+    public function PedidoImportarDataJson(Request $request)
+    {
+        $respuesta = false;
+        $mensaje = "";
+        try {
+            $data = Pedido::PedidoImportarData($request);
+            $respuesta = true;
+            $mensaje = "Se ha importado exitosamente";
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje, 'data' => $data,]);
     }
     #endregion
 }

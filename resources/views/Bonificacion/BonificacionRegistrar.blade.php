@@ -37,13 +37,19 @@
             <div class="kt-portlet__body">
                 <form id="frmNuevo" autocomplete="off">
                     <div class="row">
-                        <div class="col-lg-3">
+                        <div class="col-lg-2">
                             <div class="form-group">
                                 <label for=""><b>CENTRO OPERATIVO</b></label>
                                 <input type="text" class="form-control" value="{{$nombreCeo}}" readonly>
                             </div>
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for=""><b>NOMBRE DE BONIFICACION</b></label>
+                                <input type="text" class="form-control" name="nombreBonificacion" id="nombreBonificacion">
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
                             <div class="form-group">
                                 <label for=""><b>FECHA INICIO</b></label>
                                 <div class="input-group">
@@ -52,7 +58,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-lg-2">
                             <div class="form-group">
                                 <label for=""><b>FECHA FIN</b></label>
                                 <div class="input-group">
@@ -61,7 +67,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3">
+                        <div class="col-lg-2">
                             <div class="form-group">
                                 <label for=""><b>DÍAS A BONIFICAR</b></label>
                                 <input type="text" class="form-control text-center" name="diasBonificar" id="diasBonificar" readonly>
@@ -82,6 +88,9 @@
                 </div>
                 <div class="kt-portlet__head-toolbar">
                     <div class="kt-portlet__head-actions">
+                        <a href="javascript:void(0)" id="btnImportarDataBonificacion" class="btn btn-success">
+                            <i class="fa fa-file-excel mr-1"></i>IMPORTAR EXCEL
+                        </a>
                         <a href="javascript:void(0)" id="btnModalProducto" class="btn btn-primary">
                             <i class="fa fa-plus-square mr-1"></i>ABRIR PRODUCTOS
                         </a>
@@ -122,6 +131,7 @@
         </div>
     </div>
     @include('Bonificacion.modal.modalProducto')
+    @include('Bonificacion.modal.modalImportarBonificacion')
 </div>
 @endsection
 @push('js')

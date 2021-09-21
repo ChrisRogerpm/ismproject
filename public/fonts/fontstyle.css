@@ -30,3 +30,6 @@ body {
     position: sticky;
     top: -1px;
 }
+.custom-file-input ~ .custom-file-label::after {
+    content: "Buscar";
+}
