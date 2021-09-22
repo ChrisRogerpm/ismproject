@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GestorSupervisor extends Model
 {
-    protected $table = "gestorSupervisor";
+    protected $table = "gestorsupervisor";
     protected $primaryKey = "idGestorSupervisor";
     protected $fillable = [
         'idGestor',
