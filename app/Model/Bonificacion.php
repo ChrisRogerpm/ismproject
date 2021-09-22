@@ -120,33 +120,30 @@ class Bonificacion extends Model
         $ListaDetalle = [];
         foreach ($dataImportada as $data) {
             $objProducto = Producto::ProductoDetalle($data['sku'], $request->input('idCeo'));
-            $objProductoBonificar = Producto::where('sku', $data['idProductoBonificar'])->where('idCeo', $request->input('idCeo'))->first();
-            $ListaDetalle[] = [
-                'idProducto' => $objProducto->idProducto,
-                'nombreLinea' => $objProducto->nombreLinea,
-                'sku' => $objProducto->sku,
-                'nombreProducto' => $objProducto->nombreProducto,
-                'marca' => $objProducto->marca,
-                'formato' => $objProducto->formato,
-                'sabor' => $objProducto->sabor,
-                'caja' => $objProducto->caja,
-                'paquete' => $objProducto->paquete,
-                'cajaxpaquete' => $objProducto->cajaxpaquete,
-                'codigoPadre' => $objProducto->codigoPadre,
-                'codigoHijo' => $objProducto->codigoHijo,
-                'estado' => $objProducto->estado,
-                'estadoNombre' => $objProducto->estadoNombre,
-                'cajaX' => $data['condicionAt'] == "CAJA" ? $objProducto->caja : $objProducto->paquete,
-                'condicionAt' => $data['condicionAt'] == "CAJA" ? 1 : 0,
-                'nroBotellasBonificar' => $data['nroBotellasBonificar'],
-                'idProductoBonificar' => $objProductoBonificar->idProducto,
-            ];
+            if ($objProducto != null) {
+                $objProductoBonificar = Producto::where('sku', $data['idProductoBonificar'])->where('idCeo', $request->input('idCeo'))->first();
+                $ListaDetalle[] = [
+                    'idProducto' => $objProducto->idProducto,
+                    'nombreLinea' => $objProducto->nombreLinea,
+                    'sku' => $objProducto->sku,
+                    'nombreProducto' => $objProducto->nombreProducto,
+                    'marca' => $objProducto->marca,
+                    'formato' => $objProducto->formato,
+                    'sabor' => $objProducto->sabor,
+                    'caja' => $objProducto->caja,
+                    'paquete' => $objProducto->paquete,
+                    'cajaxpaquete' => $objProducto->cajaxpaquete,
+                    'codigoPadre' => $objProducto->codigoPadre,
+                    'codigoHijo' => $objProducto->codigoHijo,
+                    'estado' => $objProducto->estado,
+                    'estadoNombre' => $objProducto->estadoNombre,
+                    'cajaX' => $data['condicionAt'] == "CAJA" ? $objProducto->caja : $objProducto->paquete,
+                    'condicionAt' => $data['condicionAt'] == "CAJA" ? 1 : 0,
+                    'nroBotellasBonificar' => $data['nroBotellasBonificar'],
+                    'idProductoBonificar' => $objProductoBonificar == null ? '' : $objProductoBonificar->idProducto,
+                ];
+            }
         }
-        // $ListaSku = implode(", ", collect($dataImportada)->groupBy('sku')->keys()->toArray());
-        // $dataDetalle = Producto::ProductoDetalleArray($ListaSku, $request->input('idCeo'));
-        // foreach ($dataDetalle as $data) {
-        //     $data->
-        // }
         return collect($ListaDetalle);
     }
 }

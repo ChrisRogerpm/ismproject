@@ -13,7 +13,6 @@
                     <i class="fa fa-cog"></i> ACCIONES
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item btnNuevo" href="javascript:void(0)"><i class="fa fa-plus-square"></i>NUEVA RUTA</a>
                     <a class="dropdown-item btnActualizarRutas" href="javascript:void(0)"><i class="fa fa-cog"></i>ACTUALIZAR RUTAS</a>
                     <a class="dropdown-item btnRecargar" href="javascript:void(0)"><i class="fa fa-redo"></i>RECARGAR</a>
                 </div>

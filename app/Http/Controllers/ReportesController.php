@@ -17,6 +17,9 @@ class ReportesController extends Controller
         }
         return view('Reportes.ReportePedidos');
     }
+    public function ReporteProductoMasVendido()
+    {
+    }
     #endregion
     #region JSON
     public function ReportImportarExcelsJson(Request $request)

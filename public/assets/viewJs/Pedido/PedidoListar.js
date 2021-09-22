@@ -106,15 +106,6 @@ let PedidoListar = (function () {
             table: "#table",
             ajaxDataSend: options.data,
             tableColumns: [
-                {
-                    data: null, title: "ELIMINAR", render: function (value) {
-                        return `
-                        <div class="icheck-inline-supervisor text-center">
-                            <input type="checkbox" value="${value.nroPedido}" data-checkbox="icheckbox_square-blue">
-                        </div>
-                        `;
-                    }
-                },
                 { data: "nroPedido", title: "NRO DE PEDIDO" },
                 { data: "codigoCliente", title: "CODIGO DE CLIENTE" },
                 { data: "direccion", title: "DIRECCIÓN" },
@@ -137,13 +128,6 @@ let PedidoListar = (function () {
                     }, className: "text-center"
                 }
             ],
-            tabledrawCallback: function () {
-                $(".icheck-inline-supervisor").iCheck({
-                    checkboxClass: "icheckbox_square-blue",
-                    radioClass: "iradio_square-red",
-                    increaseArea: "25%",
-                });
-            },
         });
     };
     const fncValidarFormularioImportarPedido = () => {

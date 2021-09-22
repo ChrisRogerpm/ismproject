@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 class LineaController extends Controller
 {
+    #region Vista
+    #endregion
     #region JSON
     public function LineaListarJson(Request $request)
     {

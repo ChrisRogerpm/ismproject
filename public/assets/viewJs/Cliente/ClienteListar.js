@@ -28,7 +28,12 @@ let ClienteListar = (function () {
                 EnviarDataPost({
                     url: "ClienteImportarDataJson",
                     data: dataForm,
-                    callBackSuccess: function () {},
+                    callBackSuccess: function () {
+                        $("#ModalImportarCliente").modal("hide");
+                        fncListarClientes({
+                            data: $("#frmNuevo").serializeFormJSON(),
+                        });
+                    },
                 });
             }
         });
