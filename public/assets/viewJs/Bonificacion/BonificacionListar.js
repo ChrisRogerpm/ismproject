@@ -92,6 +92,7 @@ let BonificacionListar = (function () {
             table: "#table",
             ajaxDataSend: options.data,
             tableColumns: [
+                { data: "nombreBonificacion", title: "NOMBRE" },
                 { data: "fechaInicio", title: "FECHA DE INICIO" },
                 { data: "fechaFin", title: "FECHA FIN" },
                 { data: "diasBonificar", title: "DÍAS A BONIFICAR" },

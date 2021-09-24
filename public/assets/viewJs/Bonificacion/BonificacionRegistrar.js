@@ -243,7 +243,7 @@ let ProductoRegistrar = (function () {
                     </td>
                     <td class="text-center">${ele.sku}</td>
                     <td><input type="text" class="form-control text-center" value="${ele.nroBotellasBonificar == undefined ? 0 : ele.nroBotellasBonificar}"></td>
-                    <td class="text-center valorBonificar${ele.sku}">--</td>
+                    <td class="text-center valorBonificar${ele.sku}">${ele.marcaFormatoBonificar == undefined ? '--' : ele.marcaFormatoBonificar}</td>
                     <td>${fncGenerarComboBonificar({ sku: ele.sku, valorSelect: ele.idProductoBonificar })}</td>
                     <td class="text-center">
                         <div class="icheck-inline-producto text-center">

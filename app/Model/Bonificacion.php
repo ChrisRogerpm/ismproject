@@ -12,6 +12,7 @@ class Bonificacion extends Model
     protected $primaryKey = "idBonificacion";
     protected $fillable = [
         'idCeo',
+        'nombreBonificacion',
         'fechaInicio',
         'fechaFin',
         'diasBonificar',
@@ -24,6 +25,7 @@ class Bonificacion extends Model
         return DB::select(DB::raw("SELECT
         b.idBonificacion,
         b.idCeo,
+        b.nombreBonificacion,
         b.fechaInicio,
         b.fechaFin,
         b.diasBonificar,
@@ -140,6 +142,7 @@ class Bonificacion extends Model
                     'cajaX' => $data['condicionAt'] == "CAJA" ? $objProducto->caja : $objProducto->paquete,
                     'condicionAt' => $data['condicionAt'] == "CAJA" ? 1 : 0,
                     'nroBotellasBonificar' => $data['nroBotellasBonificar'],
+                    'marcaFormatoBonificar' => $objProductoBonificar->marca . '/' . $objProductoBonificar->formato,
                     'idProductoBonificar' => $objProductoBonificar == null ? '' : $objProductoBonificar->idProducto,
                 ];
             }

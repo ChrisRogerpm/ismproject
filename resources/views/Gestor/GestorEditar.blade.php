@@ -24,7 +24,6 @@
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item btnGuardar" href="#"><i class="fa fa-save"></i> GUARDAR</a>
                     <a class="dropdown-item btnVolver" href="#"><i class="fa fa-arrow-left"></i> VOLVER</a>
-                    <a class="dropdown-item btnBuscar" href="#"><i class="fa fa-search"></i> BUSCAR</a>
                 </div>
             </div>
         </div>

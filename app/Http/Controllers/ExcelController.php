@@ -14,7 +14,7 @@ class ExcelController extends Controller
         $spreadsheet = Excel::GenerarExcelGestor($request);
         $writer = new Xlsx($spreadsheet);
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="ListaGestoresCompacto' . $randomTime . '.xlsx"');
+        header('Content-Disposition: attachment;filename="ListaGestoresCompacto_' . $randomTime . '.xlsx"');
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
     }
@@ -24,7 +24,7 @@ class ExcelController extends Controller
         $spreadsheet = Excel::GenerarExcelGestorExcel($request);
         $writer = new Xlsx($spreadsheet);
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="ListaGestoresDetalle' . $randomTime . '.xlsx"');
+        header('Content-Disposition: attachment;filename="ListaGestoresDetalle_' . $randomTime . '.xlsx"');
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
     }
@@ -34,7 +34,17 @@ class ExcelController extends Controller
         $spreadsheet = Excel::GenerarExcelBonificacion($request);
         $writer = new Xlsx($spreadsheet);
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="Bonificaciones' . $randomTime . '.xlsx"');
+        header('Content-Disposition: attachment;filename="Bonificaciones_' . $randomTime . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+    }
+    public function PedidoMasVendidoDownload(Request $request)
+    {
+        $randomTime = time();
+        $spreadsheet = Excel::GenerarExcelReportePedido($request);
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="PedidoMasVendido_' . $randomTime . '.xlsx"');
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
     }

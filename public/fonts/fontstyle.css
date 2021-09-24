@@ -17,6 +17,11 @@ body {
     font-weight: bold;
     background-color: #d8d8d8;
 }
+.table tfoot tr {
+    color: #000000;
+    font-weight: bold;
+    background-color: #d8d8d8;
+}
 
 .table-scrollable {
     /* set the height to enable overflow of the table */

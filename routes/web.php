@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'ReportesController@ReportePedidosListarVista')->name('Conversion.Pedido');
-
+Route::get('ReporteProducto', 'ReportesController@ReporteProductoMasVendidoVista')->name('Reporte.ProductoMasVendido');
+Route::get('ReporteNroPedido', 'ReportesController@ReporteNroPedidoMasVendidoVista')->name('Reporte.NroPedidoMasVendido');
 
 Route::get('CentroOperativo', 'CentroOperativoController@CentroOperativoListarVista')->name('CentroOperativo.Listar');
 Route::get('RegistrarCentroOperativo', 'CentroOperativoController@CentroOperativoRegistrarVista');

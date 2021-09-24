@@ -20,10 +20,10 @@ class Excel
 {
     public const Columnas = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
+    #region Generar Excel
     public static function GenerarExcelGestor(Request $request)
     {
         $spreadsheet = new Spreadsheet();
-
         $styleArray = [
             'borders' => [
                 'outline' => [
@@ -93,8 +93,8 @@ class Excel
                 $fila++;
             }
         } else {
-            $sheet->mergeCells('A' . $fila . ':F' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
-            $sheet->getStyle('A' . $fila . ':F' . $fila . '')->applyFromArray($styleArray);
+            $sheet->mergeCells('A' . $fila . ':I' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
+            $sheet->getStyle('A' . $fila . ':I' . $fila . '')->applyFromArray($styleArray);
             $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
         }
         return $spreadsheet;
@@ -166,8 +166,8 @@ class Excel
                 $fila++;
             }
         } else {
-            $sheet->mergeCells('A' . $fila . ':F' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
-            $sheet->getStyle('A' . $fila . ':F' . $fila . '')->applyFromArray($styleArray);
+            $sheet->mergeCells('A' . $fila . ':J' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
+            $sheet->getStyle('A' . $fila . ':J' . $fila . '')->applyFromArray($styleArray);
             $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
         }
         return $spreadsheet;
@@ -249,8 +249,8 @@ class Excel
                 $fila++;
             }
         } else {
-            $sheet->mergeCells('A' . $fila . ':F' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
-            $sheet->getStyle('A' . $fila . ':F' . $fila . '')->applyFromArray($styleArray);
+            $sheet->mergeCells('A' . $fila . ':N' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
+            $sheet->getStyle('A' . $fila . ':N' . $fila . '')->applyFromArray($styleArray);
             $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
         }
         return $spreadsheet;
@@ -330,8 +330,8 @@ class Excel
                 $fila++;
             }
         } else {
-            $sheet->mergeCells('A' . $fila . ':F' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
-            $sheet->getStyle('A' . $fila . ':F' . $fila . '')->applyFromArray($styleArray);
+            $sheet->mergeCells('A' . $fila . ':T' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
+            $sheet->getStyle('A' . $fila . ':T' . $fila . '')->applyFromArray($styleArray);
             $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
         }
 
@@ -371,6 +371,80 @@ class Excel
         $writer->save($archivo);
         return $nombreArchivo;
     }
+    public static function GenerarExcelReportePedido(Request $request)
+    {
+        $spreadsheet = new Spreadsheet();
+        $styleArray = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ];
+        $styleArrayTitulo = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+            'font' => array(
+                'name'      =>  'Calibri',
+                'color' => ['argb' => '000000'],
+                'bold' => true
+            )
+        ];
+        $colorFondoCabecera = "F7CAAC";
+        $Titulo1 = "PEDIDOS MÁS VENDIDOS";
+        $sheet = $spreadsheet->getDefaultStyle()->getFont()->setSize(11);
+        $sheet = $spreadsheet->getDefaultStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF');
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->mergeCells('A1:C1')->setCellValue('A1', $Titulo1);
+        $sheet->getStyle('A1:C1')->applyFromArray($styleArray);
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal('center');
+        $sheet->getStyle('A1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
+        $sheet->getStyle('A1')->getFont()->setBold(true);
+
+        $TituloCabecera = ['NRO DE PEDIDO', 'PRODUCTOS', 'TOTAL DE PEDIDO'];
+        $data1 = Reporte::ReporteNroPedidoListar($request);
+        $fila = 2;
+        foreach ($TituloCabecera as $i => $d) {
+            $sheet->setCellValue(Excel::Columnas[$i] . $fila, ucwords($TituloCabecera[$i]))->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+            $valor = Excel::Columnas[$i] . $fila;
+            $sheet->getStyle($valor)->applyFromArray($styleArrayTitulo);
+            $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle($valor)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
+            $sheet->getStyle($valor)->getFont()->setBold(true);
+        }
+        $fila++;
+        $arrayData1 = [
+            'nroPedido',
+            'productosInvolucrados',
+            'TotalPedido',
+        ];
+        if (count($data1) > 0) {
+            for ($x = 0; $x < count($data1); $x++) {
+                for ($i = 0; $i < count($arrayData1); $i++) {
+                    $nombreKey = $arrayData1[$i];
+                    $sheet->setCellValue(Excel::Columnas[$i] . $fila, $data1[$x]->$nombreKey)->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+                    $valor = Excel::Columnas[$i] . $fila;
+                    $sheet->getStyle($valor)->applyFromArray($styleArray);
+                    $sheet->getStyle($valor)->getAlignment()->setHorizontal('left');
+                }
+                $fila++;
+            }
+        } else {
+            $sheet->mergeCells('A' . $fila . ':C' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
+            $sheet->getStyle('A' . $fila . ':C' . $fila . '')->applyFromArray($styleArray);
+            $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
+        }
+        return $spreadsheet;
+    }
+    #endregion
+
+    #region Metodos Convertidor Archivo
     public static function CopiarArchivosTmp($archivo)
     {
         $rutaDirectorio = public_path('Excels');
@@ -901,4 +975,5 @@ class Excel
     {
         return floor($cantidadUnidades / $cantidadUnidadesCaja);
     }
+    #endregion
 }

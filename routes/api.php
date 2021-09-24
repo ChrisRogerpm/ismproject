@@ -120,4 +120,9 @@ Route::get('PedidoDetalleListarJson', 'PedidoController@PedidoDetalleListarJson'
 Route::get('GestoresDownload', 'ExcelController@GestoresDownload');
 Route::get('BonificacionesDownload', 'ExcelController@BonificacionesDownload');
 Route::get('GestorExcelDownload', 'ExcelController@GestorExcelDownload');
+Route::get('PedidoMasVendidoDownload', 'ExcelController@PedidoMasVendidoDownload');
+#endregion
+#region Reporte
+Route::get('ReporteProductoListarJson', 'ReportesController@ReporteProductoListarJson');
+Route::get('ReporteNroPedidoListarJson', 'ReportesController@ReporteNroPedidoListarJson');
 #endregion

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Model\Reporte;
 use App\Utilitarios\Excel;
 use Illuminate\Http\Request;
 
@@ -17,8 +18,13 @@ class ReportesController extends Controller
         }
         return view('Reportes.ReportePedidos');
     }
-    public function ReporteProductoMasVendido()
+    public function ReporteProductoMasVendidoVista()
     {
+        return view('Reportes.ReporteProducto');
+    }
+    public function ReporteNroPedidoMasVendidoVista()
+    {
+        return view('Reportes.ReporteNroPedido');
     }
     #endregion
     #region JSON
@@ -55,6 +61,28 @@ class ReportesController extends Controller
             $mensaje = "Ah ocurrido un error, revíse los archivos e intente nuevamente";
         }
         return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje, 'data' => $data, 'msj' => $msj]);
+    }
+    public function ReporteProductoListarJson(Request $request)
+    {
+        $data = "";
+        $mensaje = "";
+        try {
+            $data = Reporte::ReporteProductoListar($request);
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['data' => $data, 'mensaje' => $mensaje]);
+    }
+    public function ReporteNroPedidoListarJson(Request $request)
+    {
+        $data = "";
+        $mensaje = "";
+        try {
+            $data = Reporte::ReporteNroPedidoListar($request);
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['data' => $data, 'mensaje' => $mensaje]);
     }
     #endregion
 }
