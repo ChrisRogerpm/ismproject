@@ -97,7 +97,7 @@ class Bonificacion extends Model
     public static function BonificacionImportarData(Request $request)
     {
         $archivoBonificacion = $request->file('archivoBonificacion');
-        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
         $reader->setReadDataOnly(true);
         $spreadSheet = $reader->load($archivoBonificacion);
         $workSheet = $spreadSheet->getActiveSheet();
@@ -142,7 +142,7 @@ class Bonificacion extends Model
                     'cajaX' => $data['condicionAt'] == "CAJA" ? $objProducto->caja : $objProducto->paquete,
                     'condicionAt' => $data['condicionAt'] == "CAJA" ? 1 : 0,
                     'nroBotellasBonificar' => $data['nroBotellasBonificar'],
-                    'marcaFormatoBonificar' => $objProductoBonificar->marca . '/' . $objProductoBonificar->formato,
+                    'marcaFormatoBonificar' => $objProductoBonificar == null ? '' : $objProductoBonificar->marca . '/' . $objProductoBonificar->formato,
                     'idProductoBonificar' => $objProductoBonificar == null ? '' : $objProductoBonificar->idProducto,
                 ];
             }

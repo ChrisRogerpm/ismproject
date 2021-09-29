@@ -5,10 +5,26 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Model\Linea;
 use Illuminate\Http\Request;
+use App\Model\CentroOperativo;
 
 class LineaController extends Controller
 {
     #region Vista
+    public function LineaListarVista()
+    {
+        return view('Linea.LineaListar');
+    }
+    public function LineaRegistrarVista($idCeo)
+    {
+        $nombreCeo = CentroOperativo::findOrfail($idCeo)->nombreCeo;
+        return view('Linea.LineaRegistrar', compact('nombreCeo', 'idCeo'));
+    }
+    public function LineaEditarVista($idLinea)
+    {
+        $Linea = Linea::findOrfail($idLinea);
+        $nombreCeo = CentroOperativo::findOrfail($Linea->idCeo)->nombreCeo;
+        return view('Linea.LineaEditar', compact('nombreCeo', 'Linea'));
+    }
     #endregion
     #region JSON
     public function LineaListarJson(Request $request)

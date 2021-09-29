@@ -80,7 +80,7 @@ class Gestor extends Model
     public static function GestorImportarData(Request $request)
     {
         $archivoPlantilla = $request->file('gestorExcel');
-        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
         $reader->setReadDataOnly(true);
         $spreadSheet = $reader->load($archivoPlantilla);
         $workSheet = $spreadSheet->getActiveSheet();

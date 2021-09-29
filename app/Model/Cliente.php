@@ -118,70 +118,48 @@ class Cliente extends Model
     public static function ClienteImportarData(Request $request)
     {
         $archivoPlantilla = $request->file('clienteExcel');
-        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
         $reader->setReadDataOnly(true);
         $spreadSheet = $reader->load($archivoPlantilla);
         $workSheet = $spreadSheet->getActiveSheet();
         $startRow = 2;
         $max = $spreadSheet->getActiveSheet()->getHighestRow();
         $columns = [
-            "A" => "DNI",
-            "B" => "RUTA",
-            "C" => "MODULO",
-            "D" => "CODIGO",
-            "E" => "RUC/DNI",
-            "F" => "RAZONSOCIAL",
-            "G" => "DIRECCION",
-            "H" => "REFERENCIA",
-            "I" => "NEGOCIO",
-            "J" => "CANAL",
-            "K" => "SUBCANAL",
-            "L" => "GIRONEGOCIO",
-            "M" => "DISTRITO",
-            "N" => "DIAVISITAPREVENTA",
-            "O" => "DIAREPARTO",
-            "P" => "TELEFONO",
-            "Q" => "CODIGOANTIGUO",
-            "S" => "USUARIO",
-            "T" => "CONTRASENIA",
+            "A" => "nroDocumento",
+            "B" => "ruta",
+            "C" => "modulo",
+            "D" => "codigoCliente",
+            "F" => "nombreRazonSocial",
+            "G" => "direccion",
+            "H" => "referencia",
+            "I" => "negocio",
+            "J" => "canal",
+            "K" => "subCanal",
+            "L" => "giroNegocio",
+            "M" => "distrito",
+            "N" => "diaVisita",
+            "O" => "diaReparto",
+            "P" => "telefono",
+            "Q" => "codigoAntiguo",
+            "S" => "usuario",
+            "T" => "contrasenia",
         ];
         $dataImportada = [];
         for ($i = $startRow; $i <= $max; $i++) {
             $data_row = [];
             foreach ($columns as $col => $field) {
                 $val = $workSheet->getCell("$col$i")->getValue();
-                $data_row[$field] = $val;
+                $data_row[$field] = trim($val);
                 $data_row['idCeo'] = $request->input('idCeo');
             }
             $dataImportada[] = $data_row;
         }
-        $data = array_chunk($dataImportada, 1000);
+        $clientes = array_chunk($dataImportada, 1000);
         Cliente::where('idCeo', $request->input('idCeo'))->delete();
-        foreach ($data as $index => $dt) {
-            foreach ($dt as $indexIn => $dtx) {
-                $res = new Request([
-                    'idCeo' => $dtx['idCeo'],
-                    'nroDocumento' => trim($dtx['DNI']),
-                    'ruta' => trim($dtx['RUTA']),
-                    'modulo' => trim($dtx['MODULO']),
-                    'codigoCliente' => trim($dtx['CODIGO']),
-                    'nombreRazonSocial' => trim($dtx['RAZONSOCIAL']),
-                    'direccion' => trim($dtx['DIRECCION']),
-                    'referencia' => trim($dtx['REFERENCIA']),
-                    'negocio' => trim($dtx['NEGOCIO']),
-                    'canal' => trim($dtx['CANAL']),
-                    'subCanal' => trim($dtx['SUBCANAL']),
-                    'giroNegocio' => trim($dtx['GIRONEGOCIO']),
-                    'distrito' => trim($dtx['DISTRITO']),
-                    'diaVisita' => trim($dtx['DIAVISITAPREVENTA']),
-                    'diaReparto' => trim($dtx['DIAREPARTO']),
-                    'telefono' => trim($dtx['TELEFONO']),
-                    'codigoAntiguo' => trim($dtx['CODIGOANTIGUO']),
-                    'usuario' => trim($dtx['USUARIO']),
-                    'contrasenia' => trim($dtx['CONTRASENIA']),
-                ]);
-                Cliente::ClienteRegistrar($res);
-            }
+        foreach ($clientes as $cliente) {
+            Cliente::insert($cliente);
         }
+        // Agrega rutas nuevas
+        Ruta::RutaActualizar($request);
     }
 }

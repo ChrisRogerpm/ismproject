@@ -24,6 +24,10 @@
             <i class="kt-menu__link-icon la fas fa-table"></i>
             <span class="kt-menu__link-text">MESAS</span></a>
     </li>
+    <li class="kt-menu__item"><a href="{{route('Linea.Listar')}}" class="kt-menu__link">
+            <i class="kt-menu__link-icon la fas fa-table"></i>
+            <span class="kt-menu__link-text">LINEAS</span></a>
+    </li>
     <li class="kt-menu__item"><a href="{{route('Ruta.Listar')}}" class="kt-menu__link ">
             <i class="kt-menu__link-icon la fas fa-table"></i>
             <span class="kt-menu__link-text">RUTAS</span></a>
@@ -65,8 +69,8 @@
     </li>
     <li class="kt-menu__item">
         <a href="{{route('Conversion.Pedido')}}" class="kt-menu__link ">
-            <i class="kt-menu__link-icon la fas fa-binoculars"></i>
-            <span class="kt-menu__link-text">CONVERSIÓN DE ARCHIVO DE PEDIDO</span>
+            <i class="kt-menu__link-icon la fas fa-cog"></i>
+            <span class="kt-menu__link-text">CONVERSIÓN DE ARCHIVO PEDIDO</span>
         </a>
     </li>
 </ul>

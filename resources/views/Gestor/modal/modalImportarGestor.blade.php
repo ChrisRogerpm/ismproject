@@ -14,9 +14,10 @@
                                 <label for="">SUBIR ARCHIVO:</label>
                                 <div></div>
                                 <div class="custom-file">
-                                    <input type="file" name="gestorExcel" id="gestorExcel" class="custom-file-input">
+                                    <input type="file" name="gestorExcel" id="gestorExcel" class="custom-file-input" accept=".csv">
                                     <label class="custom-file-label" for="customFile">Elegir archivo...</label>
                                 </div>
+                                <span class="form-text text-muted">Formato aceptado: .csv</span>
                             </div>
                         </div>
                     </div>

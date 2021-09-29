@@ -443,7 +443,6 @@ class Excel
         return $spreadsheet;
     }
     #endregion
-
     #region Metodos Convertidor Archivo
     public static function CopiarArchivosTmp($archivo)
     {
