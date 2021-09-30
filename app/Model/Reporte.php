@@ -19,7 +19,7 @@ class Reporte extends Model
             (SELECT p.sku FROM producto AS p WHERE p.idProducto = pd.idProducto AND p.idCeo = $idCeo) AS skuProducto,
             (SELECT p.nombre FROM producto AS p WHERE p.idProducto = pd.idProducto AND p.idCeo = $idCeo) AS nombreProducto,
             pd.precio,
-            (SELECT SUM(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.idProducto = pd.idProducto AND pdx.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pdx.idCeo = $idCeo) AS cantidad,
+            ROUND((SELECT SUM(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.idProducto = pd.idProducto AND pdx.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pdx.idCeo = $idCeo),2) AS cantidad,
             ROUND((pd.precio * (SELECT SUM(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.idProducto = pd.idProducto AND pdx.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pdx.idCeo = $idCeo)),3) as total
         FROM pedidodetalle AS pd
         WHERE pd.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pd.idCeo = $idCeo

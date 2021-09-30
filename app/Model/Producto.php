@@ -124,7 +124,7 @@ class Producto extends Model
     public static function ProductoImportarData(Request $request)
     {
         $archivoPlantilla = $request->file('productoExcel');
-        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
         $reader->setReadDataOnly(true);
         $spreadSheet = $reader->load($archivoPlantilla);
         $workSheet = $spreadSheet->getActiveSheet();
