@@ -51,11 +51,10 @@ class Pedido extends Model
             co.codigoCeo,
             p.canal,
             p.lprecio,
-            CONCAT(g.codigoGestor,' - ',g.nombre) AS nombreGestor
+            (SELECT CONCAT(TRIM(g.codigoGestor),' - ',g.nombre) FROM gestor AS g WHERE g.codigoGestor = p.idGestor) AS nombreGestor
         FROM pedido AS p
         INNER JOIN cliente AS c ON c.nroDocumento = p.nroDocumentoCliente
         INNER JOIN centrooperativo AS co ON co.idCeo = p.idCeo
-        INNER JOIN gestor as g ON g.idGestor = p.idGestor
         WHERE p.idCeo = $idCeo"));
     }
     public static function PedidoRegistrar(Request $request)
@@ -161,14 +160,21 @@ class Pedido extends Model
         $DataCLIENTEPEDIDO = Pedido::PedidoImportarClienteDataExcel($request);
         $DataPEDIDO = Pedido::PedidoImportarPedidoDataExcel($request);
         $CentroOperativo = CentroOperativo::findOrfail($request->input('idCeo'));
+        $ListaPedidosRegistrados = collect(
+            DB::table('pedido as p')
+                ->select('p.nroPedido')
+                ->where('idCeo', $request->input('idCeo'))
+                ->get()
+        )->keys()->toArray();
 
-        $Cliente = Pedido::PedidoProcesarPedidoCliente($DataGGVVRUTA, $DataCLIENTEPEDIDO, $DataDATA_CLI, $DataPEDIDO, $CentroOperativo);
-        $Pedido = Pedido::PedidoProcesarPedido($DataTB_UNI, $DataPEDIDO, $DataBONIFICACIONES, $DataGGVVRUTA, $Cliente, $CentroOperativo);
+        $Cliente = Pedido::PedidoProcesarPedidoCliente($DataGGVVRUTA, $DataCLIENTEPEDIDO, $DataDATA_CLI, $DataPEDIDO, $CentroOperativo, $ListaPedidosRegistrados);
+        $Pedido = Pedido::PedidoProcesarPedido($DataTB_UNI, $DataPEDIDO, $DataBONIFICACIONES, $DataGGVVRUTA, $Cliente, $CentroOperativo, $ListaPedidosRegistrados);
         return Excel::GenerarExcelPedidoProcesado($Cliente, $Pedido);
     }
-    public static function PedidoProcesarPedidoCliente($DataGGVVRUTA, $DataCLIENTEPEDIDO, $DataDATA_CLI, $DataPEDIDO, $CentroOperativo)
+    public static function PedidoProcesarPedidoCliente($DataGGVVRUTA, $DataCLIENTEPEDIDO, $DataDATA_CLI, $DataPEDIDO, $CentroOperativo, $ListaPedidosRegistrados)
     {
         $nuevaData = [];
+        $ListaPedidosRaw = [];
         foreach ($DataCLIENTEPEDIDO as $cp) {
             //Ruta y Modulo están
             $Cli = $DataDATA_CLI->where('nroDocumento', $cp['NRO_DOC'])->first();
@@ -214,24 +220,19 @@ class Pedido extends Model
                         'LPRECIO' => $cp['LPRECIO'],
                         'PDV' => $pdv
                     ];
-                    $dataGestor = Gestor::where('codigoGestor', $pdv)->first();
-
-                    $validar = Pedido::where('nroPedido', trim($cp['NROPEDIDO']))->first();
-                    if ($validar == null) {
-                        Pedido::PedidoRegistrar(new Request([
-                            'idCeo' => $CentroOperativo->idCeo,
-                            'nroDocumentoCliente' => $nroDocumento,
-                            'nroPedido' => $key > 0 ? $cp['NROPEDIDO'] . 'e' : $cp['NROPEDIDO'],
-                            'visita' => $cp['VISITA'],
-                            'latitud' => $cp['LATITUD'],
-                            'longitud' => $cp['LONGITUD'],
-                            'giro' => $cp['GIRO'],
-                            'email' => $cp['EMAIL'],
-                            'canal' => $cp['CANAL'],
-                            'lprecio' => $cp['LPRECIO'],
-                            'idGestor' => $dataGestor->idGestor,
-                        ]));
-                    }
+                    $ListaPedidosRaw[] = [
+                        'idCeo' => $CentroOperativo->idCeo,
+                        'nroDocumentoCliente' => $nroDocumento,
+                        'nroPedido' => $key > 0 ? $cp['NROPEDIDO'] . 'e' : $cp['NROPEDIDO'],
+                        'visita' => $cp['VISITA'],
+                        'latitud' => $cp['LATITUD'],
+                        'longitud' => $cp['LONGITUD'],
+                        'giro' => $cp['GIRO'],
+                        'email' => $cp['EMAIL'],
+                        'canal' => $cp['CANAL'],
+                        'lprecio' => $cp['LPRECIO'],
+                        'idGestor' => trim($pdv),
+                    ];
                 }
             } else {
                 $nuevaData[] = [
@@ -256,27 +257,29 @@ class Pedido extends Model
                     'LPRECIO' => $cp['LPRECIO'],
                     'PDV' => ''
                 ];
-                $validar = Pedido::where('nroPedido', trim($cp['NROPEDIDO']))->first();
-                if ($validar == null) {
-                    Pedido::PedidoRegistrar(new Request([
-                        'idCeo' => $CentroOperativo->idCeo,
-                        'nroDocumentoCliente' => $nroDocumento,
-                        'nroPedido' => $cp['NROPEDIDO'],
-                        'visita' => $cp['VISITA'],
-                        'latitud' => $cp['LATITUD'],
-                        'longitud' => $cp['LONGITUD'],
-                        'giro' => $cp['GIRO'],
-                        'email' => $cp['EMAIL'],
-                        'canal' => $cp['CANAL'],
-                        'lprecio' => $cp['LPRECIO'],
-                        'idGestor' => null,
-                    ]));
-                }
+                $ListaPedidosRaw[] = [
+                    'idCeo' => $CentroOperativo->idCeo,
+                    'nroDocumentoCliente' => $nroDocumento,
+                    'nroPedido' => $cp['NROPEDIDO'],
+                    'visita' => $cp['VISITA'],
+                    'latitud' => $cp['LATITUD'],
+                    'longitud' => $cp['LONGITUD'],
+                    'giro' => $cp['GIRO'],
+                    'email' => $cp['EMAIL'],
+                    'canal' => $cp['CANAL'],
+                    'lprecio' => $cp['LPRECIO'],
+                    'idGestor' => null,
+                ];
             }
+        }
+        $ListaNroPedidos = collect($ListaPedidosRaw)->whereNotIn('nroPedido', $ListaPedidosRegistrados)->toArray();
+        $nroPedidos = array_chunk($ListaNroPedidos, 500);
+        foreach ($nroPedidos as $nroPedido) {
+            Pedido::insert($nroPedido);
         }
         return collect($nuevaData);
     }
-    public static function PedidoProcesarPedido($DataTB_UNI, $DataPEDIDO, $DataBONIFICACIONES, $DataGGVVRUTA, $DataCLIENTEPEDIDOProcesada, $CentroOperativo)
+    public static function PedidoProcesarPedido($DataTB_UNI, $DataPEDIDO, $DataBONIFICACIONES, $DataGGVVRUTA, $DataCLIENTEPEDIDOProcesada, $CentroOperativo, $ListaPedidosRegistrados)
     {
         $DataPedidogroupBy = $DataPEDIDO->groupBy('NROPEDIDO');
         $nuevaData = [];
@@ -353,15 +356,16 @@ class Pedido extends Model
                     'TDOCTO' => $dp['TDOCTO'],
                 ];
                 $nuevaDataSinConvertir[] = [
-                    'NROPEDIDO' => $nroPedidoEspejo,
-                    'FEPVTA' => $dp['FEPVTA'],
-                    'FEMOVI' => $dp['FEMOVI'],
-                    'CODALT' => $dp['CODALT'],
-                    'CANTIDAD' => $dp['CANTIDAD'],
-                    'PRECIO' => $dp['PRECIO'],
-                    'PDSCTO' => $dp['PDSCTO'],
-                    'DESCTO' => $dp['DESCTO'],
-                    'TDOCTO' => $dp['TDOCTO'],
+                    'idCeo' => $CentroOperativo->idCeo,
+                    'nroPedido' => $nroPedidoEspejo,
+                    'fechaVenta' => Carbon::createFromFormat('d/m/Y', explode(" ", trim($dp['FEPVTA']))[0])->format('Y-m-d'),
+                    'fechaMovimiento' => Carbon::createFromFormat('d/m/Y', explode(" ", trim($dp['FEMOVI']))[0])->format('Y-m-d'),
+                    'sku' => trim($dp['CODALT']),
+                    'cantidad' => $dp['CANTIDAD'],
+                    'precio' => $dp['PRECIO'],
+                    'precioDescuento' => $dp['PDSCTO'],
+                    'descuento' => $dp['DESCTO'],
+                    'tdocto' => $dp['TDOCTO'],
                 ];
             }
             // Obtiene los n productos en bonificaciones
@@ -415,41 +419,25 @@ class Pedido extends Model
                             'TDOCTO' => 207,
                         ];
                         $nuevaDataSinConvertir[] = [
-                            'NROPEDIDO' => $NROPEDIDO,
-                            'FEPVTA' => $FEPVTA,
-                            'FEMOVI' => $FEMOVI,
-                            'CODALT' => $CODALT,
-                            'CANTIDAD' => $sumaCantidades,
-                            'PRECIO' => 0,
-                            'PDSCTO' => 0,
-                            'DESCTO' => 0,
-                            'TDOCTO' => 207,
+                            'idCeo' => $CentroOperativo->idCeo,
+                            'nroPedido' => $NROPEDIDO,
+                            'fechaVenta' => Carbon::createFromFormat('d/m/Y', explode(" ", trim($FEPVTA))[0])->format('Y-m-d'),
+                            'fechaMovimiento' => Carbon::createFromFormat('d/m/Y', explode(" ", trim($FEMOVI))[0])->format('Y-m-d'),
+                            'sku' => trim($CODALT),
+                            'cantidad' => $sumaCantidades,
+                            'precio' => 0,
+                            'precioDescuento' => 0,
+                            'descuento' => 0,
+                            'tdocto' => 207,
                         ];
                     }
                 }
             }
         }
-        $ListaNroPedidos = collect($nuevaDataSinConvertir)->groupBy('NROPEDIDO')->keys();
-        foreach ($ListaNroPedidos as $nroPedido) {
-            $objPedidoDetalle = PedidoDetalle::where('nroPedido', $nroPedido)->where('idCeo', $CentroOperativo->idCeo)->first();
-            if ($objPedidoDetalle == null) {
-                $items = collect($nuevaDataSinConvertir)->where('NROPEDIDO', $nroPedido);
-                foreach ($items as $item) {
-                    $objProducto = Producto::where('sku', $item['CODALT'])->where('idCeo', $CentroOperativo->idCeo)->first();
-                    PedidoDetalle::PedidoDetalleRegistrar(new Request([
-                        'idCeo' =>  $CentroOperativo->idCeo,
-                        'nroPedido' => $item['NROPEDIDO'],
-                        'fechaVenta' => Carbon::createFromFormat('d/m/Y', explode(" ", $item['FEPVTA'])[0])->format('Y-m-d'),
-                        'fechaMovimiento' => Carbon::createFromFormat('d/m/Y', explode(" ", $item['FEMOVI'])[0])->format('Y-m-d'),
-                        'idProducto' => $objProducto->idProducto,
-                        'cantidad' => $item['CANTIDAD'],
-                        'precio' => $item['PRECIO'],
-                        'precioDescuento' => $item['PDSCTO'],
-                        'descuento' => $item['DESCTO'],
-                        'tdocto' => $item['TDOCTO'],
-                    ]));
-                }
-            }
+        $ListaNroPedidosDetalle = collect($nuevaDataSinConvertir)->whereNotIn('nroPedido', $ListaPedidosRegistrados)->toArray();
+        $nroPedidosDetalle = array_chunk($ListaNroPedidosDetalle, 500);
+        foreach ($nroPedidosDetalle as $nroPedidodetalle) {
+            PedidoDetalle::insert($nroPedidodetalle);
         }
         return collect($nuevaData);
     }

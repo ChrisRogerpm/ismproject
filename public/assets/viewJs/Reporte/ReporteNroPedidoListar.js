@@ -53,7 +53,7 @@ let ReportePedidoListar = (function () {
             tableOrdering: false,
             tableColumns: [
                 { data: "nroPedido", title: "NRO DE PEDIDO", className: "text-center", width: "10%" },
-                { data: "productosInvolucrados", title: "PRODUCTOS" },
+                { data: "productosInvolucrados", title: "PRODUCTOS (MARCAS)" },
                 { data: "TotalPedido", title: "TOTAL DE PEDIDO", className: "text-center", width: "10%" },
 
             ],

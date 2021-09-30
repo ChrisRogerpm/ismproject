@@ -49,7 +49,7 @@ class PedidoController extends Controller
         } catch (Exception $ex) {
             $mensaje = $ex->getMessage();
         }
-        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje, 'data' => $data,]);
+        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje, 'data' => $data]);
     }
     #endregion
 }

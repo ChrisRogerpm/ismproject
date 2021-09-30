@@ -15,7 +15,7 @@ class PedidoDetalle extends Model
         'nroPedido',
         'fechaVenta',
         'fechaMovimiento',
-        'idProducto',
+        'sku',
         'cantidad',
         'precio',
         'precioDescuento',
@@ -31,30 +31,13 @@ class PedidoDetalle extends Model
         pd.nroPedido,
         pd.fechaVenta,
         pd.fechaMovimiento,
-        p.sku,
+        pd.sku,
         pd.cantidad,
         pd.precio,
         pd.precioDescuento,
         pd.descuento,
         pd.tdocto
         FROM pedidodetalle AS pd
-        INNER JOIN producto AS p ON p.idProducto = pd.idProducto
         WHERE pd.idCeo = $idCeo AND pd.nroPedido = '$nroPedido'"));
-    }
-    public static function PedidoDetalleRegistrar(Request $request)
-    {
-        $data = new PedidoDetalle();
-        $data->idCeo = $request->input('idCeo');
-        $data->nroPedido = $request->input('nroPedido');
-        $data->fechaVenta = $request->input('fechaVenta');
-        $data->fechaMovimiento = $request->input('fechaMovimiento');
-        $data->idProducto = $request->input('idProducto');
-        $data->cantidad = $request->input('cantidad');
-        $data->precio = $request->input('precio');
-        $data->precioDescuento = $request->input('precioDescuento');
-        $data->descuento = $request->input('descuento');
-        $data->tdocto = $request->input('tdocto');
-        $data->save();
-        return $data;
     }
 }
