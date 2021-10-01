@@ -17,6 +17,7 @@
                                     <input type="file" name="productoExcel" id="productoExcel" class="custom-file-input">
                                     <label class="custom-file-label" for="customFile">Elegir archivo...</label>
                                 </div>
+                                <span class="form-text text-muted">Formato aceptado: .csv</span>
                             </div>
                         </div>
                     </div>

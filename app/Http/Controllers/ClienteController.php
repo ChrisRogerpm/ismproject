@@ -96,9 +96,14 @@ class ClienteController extends Controller
         $respuesta = false;
         $mensaje = "";
         try {
-            Cliente::ClienteImportarData($request);
-            $respuesta = true;
-            $mensaje = "Se ha importado los clientes exitosamente";
+            $extension = $request->file('clienteExcel')->extension();
+            if ($extension == "txt") {
+                Cliente::ClienteImportarData($request);
+                $respuesta = true;
+                $mensaje = "Se ha importado los clientes exitosamente";
+            } else {
+                $mensaje = "El formato del archivo no es CSV";
+            }
         } catch (Exception $ex) {
             $mensaje = $ex->getMessage();
         }

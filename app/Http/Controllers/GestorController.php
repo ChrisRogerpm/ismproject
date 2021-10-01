@@ -107,9 +107,14 @@ class GestorController extends Controller
         $respuesta = false;
         $mensaje = "";
         try {
-            Gestor::GestorImportarData($request);
-            $respuesta = true;
-            $mensaje = "Se ha importado la información exitosamente";
+            $extension = $request->file('gestorExcel')->extension();
+            if ($extension == "txt") {
+                Gestor::GestorImportarData($request);
+                $respuesta = true;
+                $mensaje = "Se ha importado la información exitosamente";
+            } else {
+                $mensaje = "El formato del archivo no es CSV";
+            }
         } catch (Exception $ex) {
             $mensaje = $ex->getMessage();
         }

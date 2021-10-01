@@ -42,6 +42,7 @@ class PedidoController extends Controller
     {
         $respuesta = false;
         $mensaje = "";
+        $data = "";
         try {
             $data = Pedido::PedidoImportarData($request);
             $respuesta = true;

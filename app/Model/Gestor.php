@@ -103,7 +103,7 @@ class Gestor extends Model
             $data_row = [];
             foreach ($columns as $col => $field) {
                 $val = $workSheet->getCell("$col$i")->getValue();
-                $data_row[$field] = $val;
+                $data_row[$field] = trim($val);
                 $data_row['idCeo'] = $request->input('idCeo');
             }
             $dataImportada[] = $data_row;

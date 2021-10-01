@@ -51,7 +51,7 @@ class Pedido extends Model
             co.codigoCeo,
             p.canal,
             p.lprecio,
-            (SELECT CONCAT(TRIM(g.codigoGestor),' - ',g.nombre) FROM gestor AS g WHERE g.codigoGestor = p.idGestor) AS nombreGestor
+            (SELECT CONCAT(TRIM(g.codigoGestor),' - ',g.nombre) FROM gestor AS g WHERE TRIM(g.codigoGestor) = trim(p.idGestor)) AS nombreGestor
         FROM pedido AS p
         INNER JOIN cliente AS c ON c.nroDocumento = p.nroDocumentoCliente
         INNER JOIN centrooperativo AS co ON co.idCeo = p.idCeo
@@ -110,7 +110,7 @@ class Pedido extends Model
             $data_row = [];
             foreach ($columns as $col => $field) {
                 $val = $workSheet->getCell("$col$i")->getValue();
-                $data_row[$field] = $val;
+                $data_row[$field] = trim($val);
                 if ($field == "CANAL") {
                     $data_row[$field] = "B2B";
                 }
@@ -160,12 +160,11 @@ class Pedido extends Model
         $DataCLIENTEPEDIDO = Pedido::PedidoImportarClienteDataExcel($request);
         $DataPEDIDO = Pedido::PedidoImportarPedidoDataExcel($request);
         $CentroOperativo = CentroOperativo::findOrfail($request->input('idCeo'));
-        $ListaPedidosRegistrados = collect(
-            DB::table('pedido as p')
-                ->select('p.nroPedido')
-                ->where('idCeo', $request->input('idCeo'))
-                ->get()
-        )->keys()->toArray();
+        $ListaPedidosRegistrados = DB::table('pedido as p')
+            ->select('p.nroPedido')
+            ->where('idCeo', $request->input('idCeo'))
+            ->get();
+        $ListaPedidosRegistrados = $ListaPedidosRegistrados->groupBy('nroPedido')->keys()->toArray();
 
         $Cliente = Pedido::PedidoProcesarPedidoCliente($DataGGVVRUTA, $DataCLIENTEPEDIDO, $DataDATA_CLI, $DataPEDIDO, $CentroOperativo, $ListaPedidosRegistrados);
         $Pedido = Pedido::PedidoProcesarPedido($DataTB_UNI, $DataPEDIDO, $DataBONIFICACIONES, $DataGGVVRUTA, $Cliente, $CentroOperativo, $ListaPedidosRegistrados);

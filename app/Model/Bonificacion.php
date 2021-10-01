@@ -114,7 +114,7 @@ class Bonificacion extends Model
             $data_row = [];
             foreach ($columns as $col => $field) {
                 $val = $workSheet->getCell("$col$i")->getValue();
-                $data_row[$field] = $val;
+                $data_row[$field] = trim($val);
             }
             $dataImportada[] = $data_row;
         }

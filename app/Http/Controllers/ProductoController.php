@@ -96,9 +96,14 @@ class ProductoController extends Controller
         $respuesta = false;
         $mensaje = "";
         try {
-            Producto::ProductoImportarData($request);
-            $respuesta = true;
-            $mensaje = "Se ha importado los productos exitosamente";
+            $extension = $request->file('productoExcel')->extension();
+            if ($extension == "txt") {
+                Producto::ProductoImportarData($request);
+                $respuesta = true;
+                $mensaje = "Se ha importado los productos exitosamente";
+            } else {
+                $mensaje = "El formato del archivo no es CSV";
+            }
         } catch (Exception $ex) {
             $mensaje = $ex->getMessage();
         }
