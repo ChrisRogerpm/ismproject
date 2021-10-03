@@ -34,7 +34,6 @@ class Reporte extends Model
         $idCeo = $request->input('idCeo');
         $data = DB::select(DB::raw("SELECT
         pd.nroPedido,
-        -- (SELECT GROUP_CONCAT((SELECT p.marca FROM producto AS p WHERE p.sku = pdx.sku),' ',(SELECT p.sabor FROM producto AS p WHERE p.sku = pdx.sku) SEPARATOR ' / ') AS nombreProducto FROM pedidodetalle AS pdx WHERE pdx.nroPedido = pd.nroPedido AND pdx.idCeo = pd.idCeo) AS productosInvolucrados,
         ROUND ((SELECT SUM(pdx.cantidad * pdx.precio) AS TotalPedido FROM pedidodetalle AS pdx WHERE pdx.nroPedido = pd.nroPedido AND pdx.idCeo = pd.idCeo),3) TotalPedido
         FROM pedidodetalle AS pd
         WHERE pd.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pd.idCeo = $idCeo
@@ -46,5 +45,36 @@ class Reporte extends Model
             $d->productosInvolucrados = implode(" / ", $subData);
         }
         return $data;
+    }
+    public static function ReporteComisionesGestores(Request $request)
+    {
+        $idCeo = $request->input('idCeo');
+        $fechaInicio = $request->input('fechaInicio');
+        $fechaFin = $request->input('fechaFin');
+        $ListaGestores = Gestor::GestorListar($request);
+        $Comision = Comision::where('estado', 1)->where('idCeo', $idCeo)->first();
+        $ListaComisiones = [];
+        if ($Comision != null) {
+            $ListaComisiones = ComisionDetalle::where('idComision', $Comision->idComision)->get();
+        }
+        foreach ($ListaGestores as $gestor) {
+            $ListaSkuCodigoPadre = PedidoDetalle::PedidoDetalleListarProductosCodigoPadre(new Request([
+                'idGestor' => $gestor->codigoGestor,
+                'fechaInicio' => $fechaInicio,
+                'fechaFin' => $fechaFin,
+            ]));
+            $contador = 0.00;
+            foreach ($ListaSkuCodigoPadre as $obj) {
+                $objComision = $ListaComisiones->where('codigoPadre', $obj->codigoPadre)->first();
+                if ($objComision != null) {
+                    $calculo = round($obj->cantidad / $objComision->cantidadValor);
+                    if ($calculo > 0) {
+                        $contador += $calculo * $objComision->comisionDistribuidor;
+                    }
+                }
+            }
+            $gestor->montoComision = number_format(round($contador, 3), 2);
+        }
+        return $ListaGestores;
     }
 }

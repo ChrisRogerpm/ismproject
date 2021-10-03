@@ -117,7 +117,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="table-responsive">
-                            <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaProductoRegistrado">
+                            <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaProductoRegistrado">
                                 <thead>
                                     <tr>
                                         <th class="text-center">CODALT</th>
@@ -162,7 +162,7 @@
             <div class="kt-portlet__body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaRutaRegistrado">
+                        <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaRutaRegistrado">
                             <thead>
                                 <tr>
                                     <th>RUTA</th>
@@ -202,7 +202,7 @@
             <div class="kt-portlet__body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-striped- table-bordered table-hover table-checkable" id="tablaSupervisorRegistrado">
+                        <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaSupervisorRegistrado">
                             <thead>
                                 <tr>
                                     <th>SUPERVISOR</th>

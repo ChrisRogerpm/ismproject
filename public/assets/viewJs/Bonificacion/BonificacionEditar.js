@@ -229,11 +229,11 @@ let BonificacionEditar = (function () {
                                 </select>
                             </td>
                             <td class="text-center">${ele.sku}</td>
-                            <td><input type="text" class="form-control text-center" value="${ele.nroBotellasBonificar == null ? 0 : ele.nroBotellasBonificar}"></td>
+                            <td><input type="number" class="form-control text-center" value="${ele.nroBotellasBonificar == null ? 0 : ele.nroBotellasBonificar}"></td>
 
                             <td class="text-center valorBonificar${ele.sku}">${ele.marcaBonificar == null ? `--` : `${ele.marcaBonificar}/${ele.formatoBonificar}`}</td>
                             <td>${fncGenerarComboBonificar({ sku: ele.sku, valorSelect: ele.idProductoBonificar })}</td>
-                            <td class="text-center">
+                            <td class="text-center" style="padding-top:12px;">
                                 <div class="icheck-inline-producto text-center">
                                     <input type="checkbox" value="${ele.idBonificacionDetalle}" data-checkbox="icheckbox_square-blue">
                                 </div>
@@ -362,7 +362,7 @@ let BonificacionEditar = (function () {
             let sku = $(this).data("sku");
             let cajaX = $(this).find(`.valorCondicion${sku}`).text();
             let condicionAt = $(this).find(".CbCondicion").val();
-            let nroBotellasBonificar = $(this).find(`input[type='text']`).val();
+            let nroBotellasBonificar = $(this).find(`input[type='number']`).val();
             let idProductoBonificar = $(this).find(`.CbBonificar`).val();
 
             if (idProducto == undefined) {

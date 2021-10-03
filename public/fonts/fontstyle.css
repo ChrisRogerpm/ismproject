@@ -38,3 +38,7 @@ body {
 .custom-file-input ~ .custom-file-label::after {
     content: "Buscar";
 }
+
+span.select2-selection__rendered {
+    text-align: center;
+}

@@ -141,7 +141,7 @@ class Bonificacion extends Model
                     'estadoNombre' => $objProducto->estadoNombre,
                     'cajaX' => $data['condicionAt'] == "CAJA" ? $objProducto->caja : $objProducto->paquete,
                     'condicionAt' => $data['condicionAt'] == "CAJA" ? 1 : 0,
-                    'nroBotellasBonificar' => $data['nroBotellasBonificar'],
+                    'nroBotellasBonificar' => str_replace(',', '.', $data['nroBotellasBonificar']),
                     'marcaFormatoBonificar' => $objProductoBonificar == null ? '' : $objProductoBonificar->marca . '/' . $objProductoBonificar->formato,
                     'idProductoBonificar' => $objProductoBonificar == null ? '' : $objProductoBonificar->idProducto,
                 ];

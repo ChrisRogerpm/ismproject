@@ -222,4 +222,25 @@ class Producto extends Model
         INNER JOIN linea AS l ON l.idLinea = p.idLinea
         WHERE p.sku = $sku AND p.idCeo = $idCeo")))->first();
     }
+    public static function ProductoCodigoPadreDetalle($codigoPadre, $idCeo)
+    {
+        return collect(DB::select(DB::raw("SELECT
+            p.idProducto,
+            l.nombre AS nombreLinea,
+            p.sku,
+            p.nombre AS nombreProducto,
+            p.marca,
+            p.formato,
+            p.sabor,
+            p.unidadxCaja AS caja,
+            p.unidadxPaquete AS paquete,
+            p.cajaxpaquete,
+            p.codigoPadre,
+            p.codigoHijo,
+            p.estado,
+            IF(p.estado = 1,'ACTIVO','INACTIVO') as estadoNombre
+        FROM producto AS p
+        INNER JOIN linea AS l ON l.idLinea = p.idLinea
+        WHERE p.codigoPadre = $codigoPadre AND p.idCeo = $idCeo")))->first();
+    }
 }

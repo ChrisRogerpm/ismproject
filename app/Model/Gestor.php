@@ -31,8 +31,8 @@ class Gestor extends Model
             g.idGestor,
             g.idCeo,
             ct.nombreCeo,
-            g.codigoGestor,
-            g.nombre,
+            TRIM(g.codigoGestor) AS codigoGestor,
+            TRIM(g.nombre) AS nombre,
             g.telefono,
             g.nroDocumento,
             g.estado

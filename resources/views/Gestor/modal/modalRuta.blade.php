@@ -9,7 +9,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <table class="table table-striped- table-bordered table-hover table-checkable" id="tableRutas"></table>
+                        <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tableRutas"></table>
                     </div>
                 </div>
             </div>

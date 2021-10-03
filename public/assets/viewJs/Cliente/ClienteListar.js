@@ -139,7 +139,7 @@ let ClienteListar = (function () {
             table: "#table",
             ajaxDataSend: options.data,
             tableColumns: [
-                { data: "nroSecuencia", title: "NRO" },
+                { data: "nroSecuencia", title: "NRO", className: "text-center" },
                 { data: "nombreRazonSocial", title: "RAZÓN SOCIAL" },
                 { data: "direccion", title: "DIRECCIÓN" },
                 { data: "nroDocumento", title: "NRO DE DOCUMENTO" },

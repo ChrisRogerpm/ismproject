@@ -29,7 +29,7 @@
     <div class="col-md-12">
         <div class="kt-portlet kt-portlet--mobile">
             <div class="kt-portlet__body">
-                <table class="table table-striped- table-bordered table-hover table-checkable" id="table"></table>
+                <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="table"></table>
             </div>
         </div>
     </div>

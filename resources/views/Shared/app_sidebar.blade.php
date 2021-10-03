@@ -11,7 +11,10 @@
             <i class="kt-menu__link-icon la fas fa-comment-dollar"></i>
             <span class="kt-menu__link-text">BONIFICACIONES</span></a>
     </li>
-
+    <li class="kt-menu__item"><a href="{{route('Comision.Listar')}}" class="kt-menu__link ">
+            <i class="kt-menu__link-icon la fas fa-comment-dollar"></i>
+            <span class="kt-menu__link-text">COMISIONES</span></a>
+    </li>
     <li class="kt-menu__item"><a href="{{route('Cliente.Listar')}}" class="kt-menu__link ">
             <i class="kt-menu__link-icon la fas fa-users"></i>
             <span class="kt-menu__link-text">CLIENTES</span></a>
@@ -62,6 +65,14 @@
                             <span></span>
                         </i>
                         <span class="kt-menu__link-text">NRO PEDIDO MÁS VENDIDO</span>
+                    </a>
+                </li>
+                <li class="kt-menu__item " aria-haspopup="true">
+                    <a href="{{route('Reporte.ComisionGestores')}}" class="kt-menu__link ">
+                        <i class="kt-menu__link-bullet kt-menu__link-bullet--dot">
+                            <span></span>
+                        </i>
+                        <span class="kt-menu__link-text">COMISIONES GESTORES</span>
                     </a>
                 </li>
             </ul>

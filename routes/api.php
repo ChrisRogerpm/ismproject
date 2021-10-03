@@ -125,4 +125,17 @@ Route::get('PedidoMasVendidoDownload', 'ExcelController@PedidoMasVendidoDownload
 #region Reporte
 Route::get('ReporteProductoListarJson', 'ReportesController@ReporteProductoListarJson');
 Route::get('ReporteNroPedidoListarJson', 'ReportesController@ReporteNroPedidoListarJson');
+Route::get('ReporteComisionesGestoresJson', 'ReportesController@ReporteComisionesGestoresJson');
+Route::get('PedidoDetalleListarProductosGestorJson', 'ReportesController@PedidoDetalleListarProductosGestorJson');
+#endregion
+#region COMISION
+Route::get('ComisionListarJson', 'ComisionController@ComisionListarJson');
+Route::post('ComisionRegistrarJson', 'ComisionController@ComisionRegistrarJson');
+Route::post('ComisionEditarJson', 'ComisionController@ComisionEditarJson');
+Route::post('ComisionActivarJson', 'ComisionController@ComisionActivarJson');
+Route::post('ComisionImportarDataJson', 'ComisionController@ComisionImportarDataJson');
+#endregion
+#region COMISION DETALLE
+Route::post('ComisionDetalleRegistrarJson', 'ComisionDetalleController@ComisionDetalleRegistrarJson');
+Route::get('ComisionDetalleListarJson', 'ComisionDetalleController@ComisionDetalleListarJson');
 #endregion

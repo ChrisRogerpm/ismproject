@@ -50,7 +50,7 @@ let LineaListar = (function () {
             table: "#table",
             ajaxDataSend: options.data,
             tableColumns: [
-                { data: "nombre", title: "Linea" },
+                { data: "nombre", title: "LINEA" },
                 {
                     data: null,
                     title: "OPCIONES",

@@ -45,7 +45,7 @@
                             <div class="tab-pane active" id="kt_tabs_1_1" role="tabpanel">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <table class="table table-striped- table-bordered table-hover table-checkable" id="table"></table>
+                                        <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="table"></table>
                                     </div>
                                 </div>
                             </div>

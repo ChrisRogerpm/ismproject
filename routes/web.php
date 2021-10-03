@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'ReportesController@ReportePedidosListarVista')->name('Conversion.Pedido');
 Route::get('ReporteProducto', 'ReportesController@ReporteProductoMasVendidoVista')->name('Reporte.ProductoMasVendido');
 Route::get('ReporteNroPedido', 'ReportesController@ReporteNroPedidoMasVendidoVista')->name('Reporte.NroPedidoMasVendido');
+Route::get('ReporteComisionGestore', 'ReportesController@ReporteComisionGestoresVista')->name('Reporte.ComisionGestores');
 
 Route::get('CentroOperativo', 'CentroOperativoController@CentroOperativoListarVista')->name('CentroOperativo.Listar');
 Route::get('RegistrarCentroOperativo', 'CentroOperativoController@CentroOperativoRegistrarVista');
@@ -53,3 +54,7 @@ Route::get('RegistrarSupervisor/{idCeo}', 'SupervisorController@SupervisorRegist
 Route::get('EditarSupervisor/{idSupervisor}', 'SupervisorController@SupervisorEditarVista');
 
 Route::get('Pedido', 'PedidoController@PedidoListarVista')->name('Pedido.Listar');
+
+Route::get('Comision', 'ComisionController@ComisionListarVista')->name('Comision.Listar');
+Route::get('RegistrarComision/{idCeo}', 'ComisionController@ComisionRegistrarVista');
+Route::get('EditarComision/{idComision}', 'ComisionController@ComisionEditarVista');

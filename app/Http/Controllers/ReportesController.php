@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Model\Reporte;
 use App\Utilitarios\Excel;
+use App\Model\PedidoDetalle;
 use Illuminate\Http\Request;
 
 class ReportesController extends Controller
@@ -25,6 +26,10 @@ class ReportesController extends Controller
     public function ReporteNroPedidoMasVendidoVista()
     {
         return view('Reportes.ReporteNroPedido');
+    }
+    public function ReporteComisionGestoresVista()
+    {
+        return view('Reportes.ReporteComisiones');
     }
     #endregion
     #region JSON
@@ -84,5 +89,28 @@ class ReportesController extends Controller
         }
         return response()->json(['data' => $data, 'mensaje' => $mensaje]);
     }
+    public function ReporteComisionesGestoresJson(Request $request)
+    {
+        $data = "";
+        $mensaje = "";
+        try {
+            $data = Reporte::ReporteComisionesGestores($request);
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['data' => $data, 'mensaje' => $mensaje]);
+    }
+    public function PedidoDetalleListarProductosGestorJson(Request $request)
+    {
+        $data = "";
+        $mensaje = "";
+        try {
+            $data = PedidoDetalle::PedidoDetalleListarProductosGestor($request);
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['data' => $data, 'mensaje' => $mensaje]);
+    }
+
     #endregion
 }

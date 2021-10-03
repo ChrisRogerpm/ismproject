@@ -151,6 +151,7 @@ class Cliente extends Model
                 $val = $workSheet->getCell("$col$i")->getValue();
                 $data_row[$field] = trim($val);
                 $data_row['idCeo'] = $request->input('idCeo');
+                $data_row['estado'] = 1;
             }
             $dataImportada[] = $data_row;
         }
