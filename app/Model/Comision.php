@@ -53,7 +53,7 @@ class Comision extends Model
         $data = Comision::findOrfail($request->input('idComision'));
         $data->estado = 1;
         $data->save();
-        DB::table('Comision')
+        DB::table('comision')
             ->where('idComision', '!=', $data->idComision)
             ->where('idCeo', $data->idCeo)
             ->update(['estado' => 0]);

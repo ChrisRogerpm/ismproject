@@ -92,6 +92,6 @@ class PedidoDetalle extends Model
             $obj->montoComision = number_format(round($contador, 3), 2);
         }
 
-        return collect($ListaProductosVendidos)->orderBy('montoComision', 'ASC');
+        return $ListaProductosVendidos;
     }
 }

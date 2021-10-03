@@ -51,10 +51,11 @@ class Pedido extends Model
             co.codigoCeo,
             p.canal,
             p.lprecio,
-            (SELECT CONCAT(TRIM(g.codigoGestor),' - ',g.nombre) FROM gestor AS g WHERE TRIM(g.codigoGestor) = trim(p.idGestor)) AS nombreGestor
+            CONCAT(g.codigoGestor,' - ',g.nombre) as nombreGestor
         FROM pedido AS p
         INNER JOIN cliente AS c ON c.nroDocumento = p.nroDocumentoCliente
         INNER JOIN centrooperativo AS co ON co.idCeo = p.idCeo
+        INNER JOIN gestor AS g ON TRIM(g.codigoGestor) = TRIM(p.idGestor)
         WHERE p.idCeo = $idCeo"));
     }
     public static function PedidoRegistrar(Request $request)
