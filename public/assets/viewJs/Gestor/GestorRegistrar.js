@@ -75,6 +75,8 @@ let ProductoRegistrar = (function () {
                 );
             ListaRutasRegistrados = [];
             ListaSupervisorsRegistrados = [];
+            $("#txtTituloRutas").text(`RUTAS`);
+            $("#txtTituloSupervisores").text(`SUPERVISOR`);
         });
         //#region MODAL PRODUCTO
         $(document).on("click", "#btnModalProducto", function () {

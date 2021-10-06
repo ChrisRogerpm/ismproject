@@ -20,6 +20,12 @@ class Reporte extends Model
             (SELECT p.nombre FROM producto AS p WHERE p.sku = pd.sku AND p.idCeo = $idCeo) AS nombreProducto,
             pd.precio,
             ROUND((SELECT SUM(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.sku = pd.sku AND pdx.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pdx.idCeo = $idCeo),2) AS cantidad,
+            (SELECT p.unidadxPaquete FROM producto AS p WHERE p.sku = pd.sku AND pd.sku) as unidadPaquete,
+            ROUND(
+                ((ROUND((SELECT SUM(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.sku = pd.sku AND pdx.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pdx.idCeo = $idCeo),2))
+                /
+                ((SELECT p.unidadxPaquete FROM producto AS p WHERE p.idCeo = $idCeo AND p.sku = pd.sku))
+            ),3) AS cantidadPaquetes,
             ROUND((pd.precio * (SELECT SUM(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.sku = pd.sku AND pdx.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pdx.idCeo = $idCeo)),3) as total
         FROM pedidodetalle AS pd
         WHERE pd.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pd.idCeo = $idCeo
@@ -53,7 +59,7 @@ class Reporte extends Model
         $fechaFin = $request->input('fechaFin');
         $ListaGestores = Gestor::GestorListar($request);
         $Comision = Comision::where('estado', 1)->where('idCeo', $idCeo)->first();
-        $ListaComisiones = [];
+        $ListaComisiones = collect();
         if ($Comision != null) {
             $ListaComisiones = ComisionDetalle::where('idComision', $Comision->idComision)->get();
         }

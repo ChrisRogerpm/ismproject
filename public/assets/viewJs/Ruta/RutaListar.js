@@ -6,6 +6,10 @@ let RutaListar = (function () {
                 data: $("#frmNuevo").serializeFormJSON(),
             });
         });
+        $(document).on("click", ".btnNuevo", function () {
+            let idCeo = $("#CbidCeo").val();
+            RedirigirUrl(`RegistrarRuta/${idCeo}`);
+        });
         $(document).on("change", "#CbidCeo", function () {
             fncListarRutas({
                 data: $("#frmNuevo").serializeFormJSON(),
@@ -44,6 +48,10 @@ let RutaListar = (function () {
                 }
             });
         });
+        $(document).on("click", ".btnEditar", function () {
+            let idRuta = $(this).data("id");
+            RedirigirUrl("EditarRuta/" + idRuta);
+        });
     };
     const fncInicializarData = () => {
         CargarDataSelect({
@@ -71,6 +79,22 @@ let RutaListar = (function () {
             ajaxDataSend: options.data,
             tableColumns: [
                 { data: "descripcion", title: "RUTA" },
+                {
+                    data: null,
+                    title: "OPCIONES",
+                    width: "10%",
+                    render: function (value) {
+                        let editar = `<a class="dropdown-item btnEditar" data-id="${value.idRuta}" href="javascript:void(0)"><i class="fa fa-edit"></i> EDITAR</a>`;
+                        return `<span class="dropdown">
+                                    <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-align-justify"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-right" style="display: none;">
+                                    ${editar}
+                                    </div>
+                                </span>`;
+                    },
+                    class: "text-center",
+                },
             ],
             tabledrawCallback: function () {
                 $(".btnEditar").tooltip();

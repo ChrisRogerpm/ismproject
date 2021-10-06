@@ -52,8 +52,10 @@ let ReporteProductoListar = (function () {
             tableColumns: [
                 { data: "skuProducto", title: "SKU", className: "text-center" },
                 { data: "nombreProducto", title: "PRODUCTO" },
+                { data: "unidadPaquete", title: "PAQUETE", className: "text-center" },
                 { data: "precio", title: "PRECIO", className: "text-center" },
-                { data: "cantidad", title: "CANTIDAD", className: "text-center" },
+                { data: "cantidad", title: "CANTIDAD UNIDADES", className: "text-center" },
+                { data: "cantidadPaquetes", title: "CANTIDAD PAQUETES", className: "text-center" },
                 { data: "total", title: "TOTAL", className: "text-center" },
             ],
             callBackSuccess: function (response) {
@@ -65,7 +67,6 @@ let ReporteProductoListar = (function () {
                     $("#txtNombreProductoMasVendido").text('Producto no encontrado');
                     $("#txtCantidadTotalProductoMasVendido").text('0.00');
                 }
-                // txtNombreProductoMasVendido
             },
             tablefooterCallback: function (row, tbldata, start, end, display) {
                 var api = this.api(), tbldata;
@@ -75,21 +76,29 @@ let ReporteProductoListar = (function () {
                         typeof i === 'number' ?
                             i : 0;
                 };
-                let TotalCantidadSumado = api
-                    .column(3, { search: 'applied' })
-                    .data()
-                    .reduce(function (a, b) {
-                        return intVal(a) + intVal(b);
-                    }, 0);
-                let TotalCostoSumado = api
+                let SumaTotalProductosUnidades = api
                     .column(4, { search: 'applied' })
                     .data()
                     .reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
-                $("#MontoTotalProductosVendidos").text(TotalCantidadSumado.toFixed(2));
-                $("#txtTotalCantidadSumado").text(TotalCantidadSumado.toFixed(2));
-                $("#txtTotalCostoSumado").text(TotalCostoSumado.toFixed(2));
+                let SumaTotalProductosPaquetes = api
+                    .column(5, { search: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                let SumaTotalFinal = api
+                    .column(6, { search: 'applied' })
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                $("#MontoTotalProductosVendidos").text(SumaTotalProductosUnidades.toFixed(2));
+                $("#txtTotalProductosUnidades").text(SumaTotalProductosUnidades.toFixed(2));
+                $("#txtTotalProductosPaquetes").text(SumaTotalProductosPaquetes.toFixed(2));
+                $("#MontoTotalProductosPaquete").text(SumaTotalProductosPaquetes.toFixed(2));
+                $("#txtTotalFinal").text(SumaTotalFinal.toFixed(2));
             }
         });
     };

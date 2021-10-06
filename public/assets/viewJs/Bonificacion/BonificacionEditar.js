@@ -179,6 +179,7 @@ let BonificacionEditar = (function () {
             },
             callBackSuccess: function (response) {
                 ListaProductosIndependiente = response;
+                fncListaProductosRegistrados();
             },
         });
         $("#fechaInicio")
@@ -407,7 +408,6 @@ let BonificacionEditar = (function () {
         init: function () {
             fncAcciones();
             fncInicializarData();
-            fncListaProductosRegistrados();
             fncValidarFormularioEditar();
         },
     };
