@@ -68,6 +68,7 @@ class Reporte extends Model
                 'idGestor' => $gestor->codigoGestor,
                 'fechaInicio' => $fechaInicio,
                 'fechaFin' => $fechaFin,
+                'idCeo' => $idCeo,
             ]));
             $contador = 0.00;
             foreach ($ListaSkuCodigoPadre as $obj) {

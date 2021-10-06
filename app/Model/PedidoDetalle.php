@@ -45,10 +45,11 @@ class PedidoDetalle extends Model
         $idGestor = $request->input('idGestor');
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
+        $idCeo = $request->input('idCeo');
         return DB::select(DB::raw("SELECT
         pd.sku,
         (
-        SELECT p.codigoPadre FROM producto AS p WHERE p.sku = pd.sku
+        SELECT p.codigoPadre FROM producto AS p WHERE p.sku = pd.sku AND p.idCeo = $idCeo
         ) AS codigoPadre
         ,
         (
