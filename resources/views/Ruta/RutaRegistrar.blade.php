@@ -4,7 +4,7 @@
 <div class="kt-subheader   kt-grid__item" id="kt_subheader">
     <div class="kt-container  kt-container--fluid ">
         <div class="kt-subheader__main">
-            <h3 class="kt-subheader__title">RUTAS </h3>
+            <h3 class="kt-subheader__title">REGISTRAR RUTA </h3>
             <span class="kt-subheader__separator kt-hidden"></span>
         </div>
         <div class="kt-subheader__toolbar">
@@ -13,9 +13,8 @@
                     <i class="fa fa-cog"></i> ACCIONES
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item btnNuevo" href="javascript:void(0)"><i class="fa fa-plus-square"></i>NUEVA RUTA</a>
-                    <a class="dropdown-item btnActualizarRutas" href="javascript:void(0)"><i class="fa fa-cog"></i>ACTUALIZAR RUTAS</a>
-                    <a class="dropdown-item btnRecargar" href="javascript:void(0)"><i class="fa fa-redo"></i>RECARGAR</a>
+                    <a class="dropdown-item btnGuardar" href="#"><i class="fa fa-save"></i> GUARDAR</a>
+                    <a class="dropdown-item btnVolver" href="#"><i class="fa fa-arrow-left"></i> VOLVER</a>
                 </div>
             </div>
         </div>
@@ -27,27 +26,41 @@
 <div class="row">
     <div class="col-md-12">
         <div class="kt-portlet kt-portlet--mobile">
+            <div class="kt-portlet__head">
+                <div class="kt-portlet__head-label">
+                    <h3 class="kt-portlet__head-title">
+                        DATOS DE RUTA
+                    </h3>
+                </div>
+            </div>
             <div class="kt-portlet__body">
-                <form id="frmNuevo">
+                <form id="frmNuevo" autocomplete="off">
                     <div class="row">
                         <div class="col-lg-3">
                             <div class="form-group">
                                 <label for=""><b>CENTRO OPERATIVO</b></label>
-                                <select name="idCeo" id="CbidCeo" class="form-control" style="width: 100%;"></select>
+                                <input type="text" class="form-control" value="{{$nombreCeo}}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="form-group">
+                                <label for=""><b>NOMBRE</b></label>
+                                <input type="text" class="form-control" name="descripcion" id="descripcion">
                             </div>
                         </div>
                     </div>
                 </form>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="table"></table>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+
 @push('js')
-<script src="{{asset('assets/viewJs/Ruta/RutaListar.js')}}"></script>
+<script>
+    nombreCeo = @json($nombreCeo);
+    idCeo = @json($idCeo);
+
+</script>
+<script src="{{asset('assets/viewJs/Ruta/RutaRegistrar.js')}}"></script>
 @endpush

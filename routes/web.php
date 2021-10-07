@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'ReportesController@ReportePedidosListarVista')->name('Conversion.Pedido');
 Route::get('ReporteProducto', 'ReportesController@ReporteProductoMasVendidoVista')->name('Reporte.ProductoMasVendido');
 Route::get('ReporteNroPedido', 'ReportesController@ReporteNroPedidoMasVendidoVista')->name('Reporte.NroPedidoMasVendido');
-Route::get('ReporteComisionGestore', 'ReportesController@ReporteComisionGestoresVista')->name('Reporte.ComisionGestores');
+Route::get('ReporteComisionesGestores', 'ReportesController@ReporteComisionGestoresVista')->name('Reporte.ComisionGestores');
 
 Route::get('CentroOperativo', 'CentroOperativoController@CentroOperativoListarVista')->name('CentroOperativo.Listar');
 Route::get('RegistrarCentroOperativo', 'CentroOperativoController@CentroOperativoRegistrarVista');
@@ -32,6 +32,8 @@ Route::get('RegistrarCliente/{idCeo}', 'ClienteController@ClienteRegistrarVista'
 Route::get('EditarCliente/{idCliente}', 'ClienteController@ClienteEditarVista');
 
 Route::get('Ruta', 'RutaController@RutaListarVista')->name('Ruta.Listar');
+Route::get('RegistrarRuta/{idCeo}', 'RutaController@RutaRegistrarVista');
+Route::get('EditarRuta/{idRuta}', 'RutaController@RutaEditarVista');
 
 Route::get('Mesa', 'MesaController@MesaListarVista')->name('Mesa.Listar');
 Route::get('RegistrarMesa/{idCeo}', 'MesaController@MesaRegistrarVista');

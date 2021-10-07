@@ -55,7 +55,7 @@ let ReporteComisionesListar = (function () {
     const fncListarPedidoDetalleGestor = function (obj) {
         let objeto = {
             data: {},
-            callBackSuccess: function () {},
+            callBackSuccess: function () { },
         };
         let options = $.extend({}, objeto, obj);
         CargarTablaDatatable({
@@ -96,8 +96,8 @@ let ReporteComisionesListar = (function () {
                     return typeof i === "string"
                         ? i.replace(/[\$,]/g, "") * 1
                         : typeof i === "number"
-                        ? i
-                        : 0;
+                            ? i
+                            : 0;
                 };
                 let TotalCantidadSumado = api
                     .column(4, { search: "applied" })
@@ -174,8 +174,8 @@ let ReporteComisionesListar = (function () {
                     return typeof i === "string"
                         ? i.replace(/[\$,]/g, "") * 1
                         : typeof i === "number"
-                        ? i
-                        : 0;
+                            ? i
+                            : 0;
                 };
                 let TotalCantidadSumado = api
                     .column(4, { search: "applied" })

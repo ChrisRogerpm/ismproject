@@ -38,6 +38,7 @@ class Bonificacion extends Model
     {
         $data = new Bonificacion();
         $data->idCeo = $request->input('idCeo');
+        $data->nombreBonificacion = $request->input('nombreBonificacion');
         $data->fechaInicio = $request->input('fechaInicio');
         $data->fechaFin = $request->input('fechaFin');
         $data->diasBonificar = $request->input('diasBonificar');
@@ -48,6 +49,7 @@ class Bonificacion extends Model
     public static function BonificacionEditar(Request $request)
     {
         $data = Bonificacion::findOrfail($request->input('idBonificacion'));
+        $data->nombreBonificacion = $request->input('nombreBonificacion');
         $data->fechaInicio = $request->input('fechaInicio');
         $data->fechaFin = $request->input('fechaFin');
         $data->diasBonificar = $request->input('diasBonificar');

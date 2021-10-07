@@ -59,6 +59,8 @@ Route::post('MesaRegistrarJson', 'MesaController@MesaRegistrarJson');
 #region RUTA
 Route::get('RutaListarJson', 'RutaController@RutaListarJson');
 Route::post('RutaActualizarJson', 'RutaController@RutaActualizarJson');
+Route::post('RutaRegistrarJson', 'RutaController@RutaRegistrarJson');
+Route::post('RutaEditarJson', 'RutaController@RutaEditarJson');
 #endregion
 #region SUPERVISOR
 Route::get('SupervisorListarJson', 'SupervisorController@SupervisorListarJson');

@@ -33,6 +33,13 @@ class Ruta extends Model
         $data->save();
         return $data;
     }
+    public static function RutaEditar(Request $request)
+    {
+        $data = Ruta::findOrfail($request->input('idRuta'));
+        $data->descripcion = $request->input('descripcion');
+        $data->save();
+        return $data;
+    }
     public static function RutaActualizar(Request $request)
     {
         $rutaVacia = "";

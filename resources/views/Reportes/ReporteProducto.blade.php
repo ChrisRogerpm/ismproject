@@ -17,18 +17,29 @@
         <div class="kt-portlet">
             <div class="kt-portlet__body kt-portlet__body--fit">
                 <div class="row row-no-padding row-col-separator-xl">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="kt-widget1">
                             <div class="kt-widget1__item">
                                 <div class="kt-widget1__info">
-                                    <h3 class="kt-widget1__title">TOTAL DE PRODUCTOS VENDIDOS</h3>
+                                    <h3 class="kt-widget1__title">TOTAL DE PRODUCTOS UNIDADES</h3>
                                     <span class="kt-widget1__desc"><b>MONTO TOTAL</b></span>
                                 </div>
                                 <span class="kt-widget1__number kt-font-brand" id="MontoTotalProductosVendidos">0.00</span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
+                        <div class="kt-widget1">
+                            <div class="kt-widget1__item">
+                                <div class="kt-widget1__info">
+                                    <h3 class="kt-widget1__title">TOTAL DE PRODUCTOS PAQUETES</h3>
+                                    <span class="kt-widget1__desc"><b>MONTO TOTAL</b></span>
+                                </div>
+                                <span class="kt-widget1__number kt-font-brand" id="MontoTotalProductosPaquete">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
                         <div class="kt-widget1">
                             <div class="kt-widget1__item">
                                 <div class="kt-widget1__info">
@@ -79,10 +90,11 @@
                         <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="table">
                             <tfoot>
                                 <tr>
-                                    <td colspan="2"></td>
+                                    <td colspan="3"></td>
                                     <td class="text-center">TOTAL</td>
-                                    <td id="txtTotalCantidadSumado">0.00</td>
-                                    <td id="txtTotalCostoSumado">0.00</td>
+                                    <td id="txtTotalProductosUnidades">0.00</td>
+                                    <td id="txtTotalProductosPaquetes">0.00</td>
+                                    <td id="txtTotalFinal">0.00</td>
                                 </tr>
                             </tfoot>
                         </table>
