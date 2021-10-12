@@ -94,7 +94,7 @@ class Bonificacion extends Model
         INNER JOIN centrooperativo AS co ON co.idCeo = b.idCeo
         INNER JOIN producto AS p ON p.idProducto = bd.idProducto
         INNER JOIN linea AS l ON l.idLinea = p.idLinea
-        WHERE bd.idBonificacion = (SELECT bf.idBonificacion FROM bonificacion AS bf WHERE bf.estado = 1 ORDER BY bf.idBonificacion LIMIT 1) AND b.idCeo = $idCeo"));
+        WHERE bd.idBonificacion = (SELECT bf.idBonificacion FROM bonificacion AS bf WHERE bf.estado = 1 AND bf.idCeo = $idCeo ORDER BY bf.idBonificacion LIMIT 1) AND b.idCeo = $idCeo"));
     }
     public static function BonificacionImportarData(Request $request)
     {

@@ -188,9 +188,8 @@ class Pedido extends Model
                     return trim($item['codigo']);
                 })->unique();
             }
-
             $tipoDocumento = strlen($cp['NRO_DOC']) <= 8 ? 0 : 1;
-            $nroDocumento = $tipoDocumento == 1 ? Excel::CompletadorCerosDNI($cp['NRO_DOC']) : $cp['NRO_DOC'];
+            $nroDocumento = $tipoDocumento == 1 ? $cp['NRO_DOC'] : Excel::CompletadorCerosDNI($cp['NRO_DOC']);
             $listaPDVNueva = [];
             foreach ($listaPDV as $pdv) {
                 $listaPDVNueva[] = $pdv;
@@ -369,7 +368,7 @@ class Pedido extends Model
             }
             // Obtiene los n productos en bonificaciones
             // $ProductosBonificaciones = $DataBONIFICACIONES->whereIn('SKU', $CodigosCODALT)->groupBy('COD');
-            $ProductosBonificaciones = $DataBONIFICACIONES->whereIn('SKU', $CodigosCODALT)->groupBy(['MARCA', 'FORMATO']);
+            $ProductosBonificaciones = $DataBONIFICACIONES->whereIn('sku', $CodigosCODALT)->groupBy(['marca', 'formato']);
             if (count($CodigosIndependienteCOD) > 0) {
                 $CodigosCOD = collect($CodigosCOD)->whereIn('COD', $CodigosIndependienteCOD);
             } else {
@@ -388,7 +387,7 @@ class Pedido extends Model
                 $sumaCantidades = 0;
                 foreach ($cantidadProductosHijos as $cph) {
                     foreach ($cph as $pp) {
-                        $midata = $CodigosCOD->where('MARCA', $pp['MARCA'])->where('FORMATO', $pp['FORMATO'])->all();
+                        $midata = $CodigosCOD->where('MARCA', $pp->marca)->where('FORMATO', $pp->formato)->all();
                         $sumaCantidades = 0;
                         foreach ($midata as $lp) {
                             $sumaCantidades += $lp['CantidadPedido'];
