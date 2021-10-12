@@ -1,4 +1,5 @@
 ListadeGestores = [];
+ListaGestoresEliminar = [];
 let GestorListar = (function () {
     const fncAcciones = function () {
         $(document).on("click", ".btnNuevo", function () {
@@ -111,15 +112,61 @@ let GestorListar = (function () {
                 });
             }
         });
-        $(document).on('click', '#GenerarExcel', function () {
+        $(document).on("click", "#GenerarExcel", function () {
             let idCeo = $("#CbidCeo").val();
             let url = `${basePathApi}GestoresDownload?idCeo=${idCeo}`;
             window.open(url, "_blank");
         });
-        $(document).on('click', '#GenerarExcelDetalle', function () {
+        $(document).on("click", "#GenerarExcelDetalle", function () {
             let idCeo = $("#CbidCeo").val();
             let url = `${basePathApi}GestorExcelDownload?idCeo=${idCeo}`;
             window.open(url, "_blank");
+        });
+        $(document).on("ifChecked", "#table input:checkbox", function () {
+            let idGestor = $(this).val();
+            ListaGestoresEliminar.push(parseInt(idGestor));
+            fncActividadButtonEliminar();
+        });
+        $(document).on("ifUnchecked", "#table input:checkbox", function () {
+            let idGestor = $(this).val();
+            ListaGestoresEliminar = ListaGestoresEliminar.filter(
+                (item) => parseInt(item) != parseInt(idGestor)
+            );
+            fncActividadButtonEliminar();
+        });
+        $(document).on("click", "#btnElimnar", function () {
+            if (ListaGestoresEliminar.length > 0) {
+                Swal.fire({
+                    title: `ESTA SEGURO DE ELIMINAR LOS GESTORES SELECCIONADOS?`,
+                    text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "SI, ELIMINAR!",
+                    cancelButtonText: "NO, CANCELAR!",
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.value) {
+                        EnviarDataPost({
+                            url: "GestorEliminarJson",
+                            data: {
+                                ListaGestoresEliminar: ListaGestoresEliminar,
+                            },
+                            callBackSuccess: function () {
+                                ListaGestoresEliminar = [];
+                                fncActividadButtonEliminar();
+                                fncListarGestors();
+                            },
+                        });
+                    }
+                });
+            } else {
+                ShowAlert({
+                    type: "warning",
+                    message: "NO SE HA SELECCIONADO NINGUN GESTOR A ELIMINAR",
+                });
+            }
         });
     };
     const fncInicializarData = () => {
@@ -147,6 +194,16 @@ let GestorListar = (function () {
             table: "#table",
             ajaxDataSend: options.data,
             tableColumns: [
+                {
+                    data: null,
+                    title: "",
+                    width: "10%",
+                    sortable: false,
+                    render: function (value) {
+                        return `<div class="icheck-inline text-center"><input type="checkbox" value="${value.idGestor}" data-checkbox="icheckbox_square-blue"></div>`;
+                    },
+                    class: "text-center",
+                },
                 { data: "codigoGestor", title: "CODIGO" },
                 { data: "nombre", title: "NOMBRE" },
                 { data: "telefono", title: "TELEFONO" },
@@ -187,6 +244,11 @@ let GestorListar = (function () {
             ],
             tabledrawCallback: function () {
                 $(".btnEditar").tooltip();
+                $(".icheck-inline").iCheck({
+                    checkboxClass: "icheckbox_square-blue",
+                    radioClass: "iradio_square-red",
+                    increaseArea: "25%",
+                });
             },
             callBackSuccess: function (response) {
                 ListadeGestores = response.data;
@@ -204,6 +266,14 @@ let GestorListar = (function () {
                 gestorExcel: { required: "El campo es requerido" },
             },
         });
+    };
+    const fncActividadButtonEliminar = () => {
+        let buttonEliminar = $("#btnContenedorEliminar");
+        if (ListaGestoresEliminar.length > 0) {
+            buttonEliminar.show();
+        } else {
+            buttonEliminar.hide();
+        }
     };
     return {
         init: function () {

@@ -36,6 +36,7 @@ Route::post('GestorEditarJson', 'GestorController@GestorEditarJson');
 Route::post('GestorBloquearJson', 'GestorController@GestorBloquearJson');
 Route::post('GestorRestablecerJson', 'GestorController@GestorRestablecerJson');
 Route::post('GestorImportarDataJson', 'GestorController@GestorImportarDataJson');
+Route::post('GestorEliminarJson', 'GestorController@GestorEliminarJson');
 #endregion
 #region PRODUCTO
 Route::get('ProductoListarJson', 'ProductoController@ProductoListarJson');

@@ -86,6 +86,9 @@ class Gestor extends Model
         $workSheet = $spreadSheet->getActiveSheet();
         $startRow = 2;
         $max = $spreadSheet->getActiveSheet()->getHighestRow();
+        $objRetorno = new \stdClass();
+        $objRetorno->respuesta = true;
+        $objRetorno->mensaje = "";
         $columns = [
             "A" => "ruta",
             "B" => "linea",
@@ -98,113 +101,192 @@ class Gestor extends Model
             "I" => "sku",
             "J" => "marca",
         ];
-        $dataImportada = [];
-        for ($i = $startRow; $i <= $max; $i++) {
-            $data_row = [];
-            foreach ($columns as $col => $field) {
-                $val = $workSheet->getCell("$col$i")->getValue();
-                $data_row[$field] = trim($val);
-                $data_row['idCeo'] = $request->input('idCeo');
+        $fila = 1;
+        foreach ($columns as $col => $field) {
+            $val = trim($workSheet->getCell("$col$fila")->getValue());
+            switch ($col) {
+                case "A":
+                    if ($val != "RUTA") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna A";
+                        break 2;
+                    }
+                    break;
+                case "B":
+                    if ($val != "LINEA") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna B";
+                        break 2;
+                    }
+                    break;
+                case "C":
+                    if ($val != "MESA") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna C";
+                        break 2;
+                    }
+                    break;
+                case "D":
+                    if ($val != "GESTOR") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna D";
+                        break 2;
+                    }
+                    break;
+                case "E":
+                    if ($val != "SUPERVISOR") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna E";
+                        break 2;
+                    }
+                    break;
+                case "F":
+                    if ($val != "TELEFONO") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna F";
+                        break 2;
+                    }
+                    break;
+                case "G":
+                    if ($val != "DNI") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna G";
+                        break 2;
+                    }
+                    break;
+                case "H":
+                    if ($val != "CODIGO") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna H";
+                        break 2;
+                    }
+                    break;
+                case "I":
+                    if ($val != "SKU") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna I";
+                        break 2;
+                    }
+                    break;
+                case "J":
+                    if ($val != "MARCAS") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna J";
+                        break 2;
+                    }
+                    break;
             }
-            $dataImportada[] = $data_row;
         }
-        $dataImportada = collect($dataImportada);
+        if ($objRetorno->respuesta) {
+            $dataImportada = [];
+            for ($i = $startRow; $i <= $max; $i++) {
+                $data_row = [];
+                foreach ($columns as $col => $field) {
+                    $val = $workSheet->getCell("$col$i")->getValue();
+                    $data_row[$field] = trim($val);
+                    $data_row['idCeo'] = $request->input('idCeo');
+                }
+                $dataImportada[] = $data_row;
+            }
+            $dataImportada = collect($dataImportada);
 
-        $dataGrupoGestor = $dataImportada->groupBy('codigoGestor');
-        foreach ($dataGrupoGestor as $key => $dg) {
-            $codigoGestor = trim($key);
-            $objEntranteGestor = $dg->where('codigoGestor', $key)->first();
-            $listaMesa = $dg->groupBy('mesa')->keys()->toArray();
-            $nombreMesa = count($listaMesa) > 0 ? $listaMesa[0] : null;
-            $objGestor = Gestor::where('codigoGestor', $codigoGestor)->where('idCeo', $request->input('idCeo'))->first();
-            $objMesa = Mesa::where('nombre', $nombreMesa)->where('idCeo', $request->input('idCeo'))->first();
-            if ($objMesa == null) {
-                $data = new Mesa();
-                $data->idCeo = $request->input('idCeo');
-                $data->nombre = $nombreMesa;
-                $data->estado = 1;
-                $data->save();
-                $objMesa = $data;
-            }
-            if ($objGestor != null) {
-                $objGestor->idMesa = $objMesa->idMesa;
-                $objGestor->nombre = $objEntranteGestor['gestor'];
-                $objGestor->telefono = $objEntranteGestor['telefono'];
-                $objGestor->nroDocumento = $objEntranteGestor['nroDocumento'];
-                $objGestor->estado = 1;
-                $objGestor->save();
-            } else {
-                $req = new Request([
-                    'idCeo' => $request->input('idCeo'),
-                    'codigoGestor' => $objEntranteGestor['codigoGestor'],
-                    'idMesa' => $objMesa->idMesa,
-                    'nombre' => $objEntranteGestor['gestor'],
-                    'telefono' => $objEntranteGestor['telefono'],
-                    'nroDocumento' => $objEntranteGestor['nroDocumento'],
-                ]);
-                $objGestor = Gestor::GestorRegistrar($req);
-            }
-            $listaSku = $dg->groupBy('sku')->keys()->toArray();
-            foreach ($listaSku as $sku) {
-                $objProducto = Producto::where('sku', $sku)->where('idCeo', $request->input('idCeo'))->first();
-                if ($objProducto != null) {
-                    $objSku = GestorProducto::where('idProducto', $objProducto->idProducto)->where('idGestor', $objGestor->idGestor)->first();
-                    if ($objSku == null) {
-                        $data = new GestorProducto();
-                        $data->idGestor = $objGestor->idGestor;
-                        $data->idProducto = $objProducto->idProducto;
-                        $data->save();
+            $dataGrupoGestor = $dataImportada->groupBy('codigoGestor');
+            foreach ($dataGrupoGestor as $key => $dg) {
+                $codigoGestor = trim($key);
+                $objEntranteGestor = $dg->where('codigoGestor', $key)->first();
+                $listaMesa = $dg->groupBy('mesa')->keys()->toArray();
+                $nombreMesa = count($listaMesa) > 0 ? $listaMesa[0] : null;
+                $objGestor = Gestor::where('codigoGestor', $codigoGestor)->where('idCeo', $request->input('idCeo'))->first();
+                $objMesa = Mesa::where('nombre', $nombreMesa)->where('idCeo', $request->input('idCeo'))->first();
+                if ($objMesa == null) {
+                    $data = new Mesa();
+                    $data->idCeo = $request->input('idCeo');
+                    $data->nombre = $nombreMesa;
+                    $data->estado = 1;
+                    $data->save();
+                    $objMesa = $data;
+                }
+                if ($objGestor != null) {
+                    $objGestor->idMesa = $objMesa->idMesa;
+                    $objGestor->nombre = $objEntranteGestor['gestor'];
+                    $objGestor->telefono = $objEntranteGestor['telefono'];
+                    $objGestor->nroDocumento = $objEntranteGestor['nroDocumento'];
+                    $objGestor->estado = 1;
+                    $objGestor->save();
+                } else {
+                    $req = new Request([
+                        'idCeo' => $request->input('idCeo'),
+                        'codigoGestor' => $objEntranteGestor['codigoGestor'],
+                        'idMesa' => $objMesa->idMesa,
+                        'nombre' => $objEntranteGestor['gestor'],
+                        'telefono' => $objEntranteGestor['telefono'],
+                        'nroDocumento' => $objEntranteGestor['nroDocumento'],
+                    ]);
+                    $objGestor = Gestor::GestorRegistrar($req);
+                }
+                $listaSku = $dg->groupBy('sku')->keys()->toArray();
+                foreach ($listaSku as $sku) {
+                    $objProducto = Producto::where('sku', $sku)->where('idCeo', $request->input('idCeo'))->first();
+                    if ($objProducto != null) {
+                        $objSku = GestorProducto::where('idProducto', $objProducto->idProducto)->where('idGestor', $objGestor->idGestor)->first();
+                        if ($objSku == null) {
+                            $data = new GestorProducto();
+                            $data->idGestor = $objGestor->idGestor;
+                            $data->idProducto = $objProducto->idProducto;
+                            $data->save();
+                        }
                     }
                 }
-            }
-            $listaRutas = $dg->groupBy('ruta')->keys()->toArray();
-            foreach ($listaRutas as $ruta) {
-                $objRuta = Ruta::where('descripcion', $ruta)->where('idCeo', $request->input('idCeo'))->first();
-                if ($objRuta != null) {
-                    $objGestoRuta = GestorRuta::where('idRuta', $objRuta->idRuta)->where('idGestor', $objGestor->idGestor)->first();
-                    if ($objGestoRuta == null) {
-                        $data = new GestorRuta();
-                        $data->idGestor = $objGestor->idGestor;
-                        $data->idRuta = $objRuta->idRuta;
-                        $data->save();
-
-                        $objMesaRuta = MesaRuta::where('idRuta', $objRuta->idRuta)->where('idMesa', $objMesa->idMesa)->first();
-                        if ($objMesaRuta == null) {
-                            $data = new MesaRuta();
-                            $data->idMesa = $objMesa->idMesa;
+                $listaRutas = $dg->groupBy('ruta')->keys()->toArray();
+                foreach ($listaRutas as $ruta) {
+                    $objRuta = Ruta::where('descripcion', $ruta)->where('idCeo', $request->input('idCeo'))->first();
+                    if ($objRuta != null) {
+                        $objGestoRuta = GestorRuta::where('idRuta', $objRuta->idRuta)->where('idGestor', $objGestor->idGestor)->first();
+                        if ($objGestoRuta == null) {
+                            $data = new GestorRuta();
+                            $data->idGestor = $objGestor->idGestor;
                             $data->idRuta = $objRuta->idRuta;
+                            $data->save();
+
+                            $objMesaRuta = MesaRuta::where('idRuta', $objRuta->idRuta)->where('idMesa', $objMesa->idMesa)->first();
+                            if ($objMesaRuta == null) {
+                                $data = new MesaRuta();
+                                $data->idMesa = $objMesa->idMesa;
+                                $data->idRuta = $objRuta->idRuta;
+                                $data->save();
+                            }
+                        }
+                    }
+                }
+                $listaSupervisor = $dg->groupBy('supervisor')->keys()->toArray();
+                foreach ($listaSupervisor as $supervisor) {
+                    $objSupervisor = Supervisor::where('nombre', $supervisor)->where('idCeo', $request->input('idCeo'))->first();
+                    if ($objSupervisor == null) {
+                        $req = new Request([
+                            'idCeo' => $request->input('idCeo'),
+                            'nombre' => $supervisor,
+                        ]);
+                        $data = Supervisor::SupervisorRegistrar($req);
+                        $objSupervisor = $data;
+                    }
+                    $objGestorSupervisor = GestorSupervisor::where('idSupervisor', $objSupervisor->idSupervisor)->where('idGestor', $objGestor->idGestor)->first();
+                    if ($objGestorSupervisor == null) {
+                        $data = new GestorSupervisor();
+                        $data->idGestor =  $objGestor->idGestor;
+                        $data->idSupervisor = $objSupervisor->idSupervisor;
+                        $data->save();
+                        $objMesaRuta = MesaSupervisor::where('idSupervisor', $objSupervisor->idSupervisor)->where('idMesa', $objMesa->idMesa)->first();
+                        if ($objMesaRuta == null) {
+                            $data = new MesaSupervisor();
+                            $data->idMesa = $objMesa->idMesa;
+                            $data->idSupervisor = $objSupervisor->idSupervisor;
                             $data->save();
                         }
                     }
                 }
             }
-            $listaSupervisor = $dg->groupBy('supervisor')->keys()->toArray();
-            foreach ($listaSupervisor as $supervisor) {
-                $objSupervisor = Supervisor::where('nombre', $supervisor)->where('idCeo', $request->input('idCeo'))->first();
-                if ($objSupervisor == null) {
-                    $req = new Request([
-                        'idCeo' => $request->input('idCeo'),
-                        'nombre' => $supervisor,
-                    ]);
-                    $data = Supervisor::SupervisorRegistrar($req);
-                    $objSupervisor = $data;
-                }
-                $objGestorSupervisor = GestorSupervisor::where('idSupervisor', $objSupervisor->idSupervisor)->where('idGestor', $objGestor->idGestor)->first();
-                if ($objGestorSupervisor == null) {
-                    $data = new GestorSupervisor();
-                    $data->idGestor =  $objGestor->idGestor;
-                    $data->idSupervisor = $objSupervisor->idSupervisor;
-                    $data->save();
-                    $objMesaRuta = MesaSupervisor::where('idSupervisor', $objSupervisor->idSupervisor)->where('idMesa', $objMesa->idMesa)->first();
-                    if ($objMesaRuta == null) {
-                        $data = new MesaSupervisor();
-                        $data->idMesa = $objMesa->idMesa;
-                        $data->idSupervisor = $objSupervisor->idSupervisor;
-                        $data->save();
-                    }
-                }
-            }
         }
+        return $objRetorno;
     }
     public static function GestorListarProcesado(Request $request)
     {
@@ -260,5 +342,13 @@ class Gestor extends Model
             }
         }
         return $Lista;
+    }
+    public static function GestorEliminar(Request $request)
+    {
+        $ListaGestoresEliminar = $request->input('ListaGestoresEliminar');
+        GestorProducto::whereIn('idGestor', $ListaGestoresEliminar)->delete();
+        GestorRuta::whereIn('idGestor', $ListaGestoresEliminar)->delete();
+        GestorSupervisor::whereIn('idGestor', $ListaGestoresEliminar)->delete();
+        Gestor::whereIn('idGestor', $ListaGestoresEliminar)->delete();
     }
 }

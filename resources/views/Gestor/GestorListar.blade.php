@@ -34,12 +34,17 @@
                     <div class="row">
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label for=""><b>CENTRO OPERATIVO</b></label>
+                                <label><b>CENTRO OPERATIVO</b></label>
                                 <select name="idCeo" id="CbidCeo" class="form-control" style="width: 100%;"></select>
                             </div>
                         </div>
                     </div>
                 </form>
+                <div class="row pb-3" id="btnContenedorEliminar" style="display:none">
+                    <div class="col-xl-1 col-md-2 ml-auto">
+                        <button type="button" class="btn btn-danger btn-block" id="btnElimnar"><i class="fa fa-trash mr-1"></i> ELIMINAR</button>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="table"></table>

@@ -47,37 +47,37 @@
                     <div class="row">
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label for=""><b>CENTRO OPERATIVO</b></label>
+                                <label><b>CENTRO OPERATIVO</b></label>
                                 <input type="text" class="form-control" value="{{$nombreCeo}}" readonly>
                             </div>
                         </div>
                         <div class="col-lg-9">
                             <div class="form-group">
-                                <label for=""><b>NOMBRE</b></label>
+                                <label><b>NOMBRE</b></label>
                                 <input type="text" class="form-control" name="nombre" id="nombre">
                             </div>
                         </div>
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label for=""><b>CODIGO</b></label>
+                                <label><b>CODIGO</b></label>
                                 <input type="text" class="form-control" name="codigoGestor" id="codigoGestor">
                             </div>
                         </div>
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label for=""><b>TELEFONO</b></label>
+                                <label><b>TELEFONO</b></label>
                                 <input type="text" class="form-control" name="telefono" id="telefono">
                             </div>
                         </div>
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label for=""><b>DNI</b></label>
+                                <label><b>DNI</b></label>
                                 <input type="text" class="form-control" name="nroDocumento" id="nroDocumento">
                             </div>
                         </div>
                         <div class="col-lg-3">
                             <div class="form-group">
-                                <label for=""><b>MESA</b></label>
+                                <label><b>MESA</b></label>
                                 <select name="idMesa" id="CbidMesa" class="form-control" style="width:100%"></select>
                             </div>
                         </div>

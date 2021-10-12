@@ -18,6 +18,7 @@
                                     <label class="custom-file-label" for="customFile">Elegir archivo...</label>
                                 </div>
                                 <span class="form-text text-muted">Formato aceptado: .csv</span>
+                                <span class="form-text text-muted">Descargar Formato: <a href="{{asset('assets/ModeloFormatos/ListaGestores-formato.csv')}}" target="_blank">Descargar</a> </span>
                             </div>
                         </div>
                     </div>

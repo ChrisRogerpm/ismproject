@@ -102,19 +102,37 @@ class GestorController extends Controller
         }
         return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje]);
     }
-    public static function GestorImportarDataJson(Request $request)
+    public function GestorImportarDataJson(Request $request)
+    {
+        $respuesta = false;
+        $mensaje = "";
+        $data = "";
+        try {
+            $extension = $request->file('gestorExcel')->extension();
+            if ($extension == "txt") {
+                $data = Gestor::GestorImportarData($request);
+                if ($data->respuesta) {
+                    $respuesta = true;
+                    $mensaje = "Se ha importado la información exitosamente";
+                } else {
+                    $mensaje = $data->mensaje;
+                }
+            } else {
+                $mensaje = "El formato del archivo no es CSV";
+            }
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje]);
+    }
+    public function GestorEliminarJson(Request $request)
     {
         $respuesta = false;
         $mensaje = "";
         try {
-            $extension = $request->file('gestorExcel')->extension();
-            if ($extension == "txt") {
-                Gestor::GestorImportarData($request);
-                $respuesta = true;
-                $mensaje = "Se ha importado la información exitosamente";
-            } else {
-                $mensaje = "El formato del archivo no es CSV";
-            }
+            Gestor::GestorEliminar($request);
+            $respuesta = true;
+            $mensaje = "Se ha eliminado los Gestores exitosamente";
         } catch (Exception $ex) {
             $mensaje = $ex->getMessage();
         }

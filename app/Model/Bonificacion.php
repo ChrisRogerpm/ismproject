@@ -105,6 +105,9 @@ class Bonificacion extends Model
         $workSheet = $spreadSheet->getActiveSheet();
         $startRow = 2;
         $max = $spreadSheet->getActiveSheet()->getHighestRow();
+        $objRetorno = new \stdClass();
+        $objRetorno->respuesta = true;
+        $objRetorno->mensaje = "";
         $columns = [
             "G" => "condicionAt",
             "H" => "sku",
@@ -123,9 +126,11 @@ class Bonificacion extends Model
         $dataImportada = collect($dataImportada);
         $ListaDetalle = [];
         foreach ($dataImportada as $data) {
-            $objProducto = Producto::ProductoDetalle($data['sku'], $request->input('idCeo'));
+            $skuFormat = str_pad(trim($data['sku']), 3, '0', STR_PAD_LEFT);
+            $productoBonificarFormat = str_pad(trim($data['idProductoBonificar']), 3, '0', STR_PAD_LEFT);
+            $objProducto = Producto::ProductoDetalle($skuFormat, $request->input('idCeo'));
             if ($objProducto != null) {
-                $objProductoBonificar = Producto::where('sku', $data['idProductoBonificar'])->where('idCeo', $request->input('idCeo'))->first();
+                $objProductoBonificar = Producto::where('sku', $productoBonificarFormat)->where('idCeo', $request->input('idCeo'))->first();
                 $ListaDetalle[] = [
                     'idProducto' => $objProducto->idProducto,
                     'nombreLinea' => $objProducto->nombreLinea,

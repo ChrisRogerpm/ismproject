@@ -130,6 +130,9 @@ class Producto extends Model
         $workSheet = $spreadSheet->getActiveSheet();
         $startRow = 2;
         $max = $spreadSheet->getActiveSheet()->getHighestRow();
+        $objRetorno = new \stdClass();
+        $objRetorno->respuesta = true;
+        $objRetorno->mensaje = "";
         $columns = [
             "A" => "sku",
             "B" => "nombre",
@@ -143,63 +146,149 @@ class Producto extends Model
             "J" => "codigoHijo",
             "K" => "nombreLinea",
         ];
-        $dataImportada = [];
-        for ($i = $startRow; $i <= $max; $i++) {
-            $data_row = [];
-            foreach ($columns as $col => $field) {
-                $val = $workSheet->getCell("$col$i")->getValue();
-                $data_row[$field] = trim($val);
-                $data_row['idCeo'] = $request->input('idCeo');
+        $fila = 1;
+        foreach ($columns as $col => $field) {
+            $val = trim($workSheet->getCell("$col$fila")->getValue());
+            switch ($col) {
+                case "A":
+                    if ($val != "CODALT") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna A";
+                        break 2;
+                    }
+                    break;
+                case "B":
+                    if ($val != "PRODUCTO") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna B";
+                        break 2;
+                    }
+                    break;
+                case "C":
+                    if ($val != "MARCA") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna C";
+                        break 2;
+                    }
+                    break;
+                case "D":
+                    if ($val != "FORMATO") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna D";
+                        break 2;
+                    }
+                    break;
+                case "E":
+                    if ($val != "SABOR") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna E";
+                        break 2;
+                    }
+                    break;
+                case "F":
+                    if ($val != "CAJA") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna F";
+                        break 2;
+                    }
+                    break;
+                case "G":
+                    if ($val != "PAQUETE") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna G";
+                        break 2;
+                    }
+                    break;
+                case "H":
+                    if ($val != "CAJAXPAQUETE") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna H";
+                        break 2;
+                    }
+                    break;
+                case "I":
+                    if ($val != "CODIGO PADRE") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna I";
+                        break 2;
+                    }
+                    break;
+                case "J":
+                    if ($val != "CODIGO HIJO") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna J";
+                        break 2;
+                    }
+                    break;
+                case "K":
+                    if ($val != "LINEA") {
+                        $objRetorno->respuesta = false;
+                        $objRetorno->mensaje = "El documento no cumple con el formato indicado: revisar la columna K";
+                        break 2;
+                    }
+                    break;
             }
-            $dataImportada[] = $data_row;
         }
-        $data = array_chunk($dataImportada, 1000);
-        foreach ($data as $dt) {
-            foreach ($dt as $dtx) {
-                $idLinea = "";
-                $obj = Producto::where('idCeo', $dtx['idCeo'])->where('sku', $dtx['sku'])->first();
-                $objLinea = Linea::where('idCeo', $dtx['idCeo'])->where('nombre', $dtx['nombreLinea'])->first();
-                if ($objLinea != null) {
-                    $idLinea = $objLinea->idLinea;
-                } else {
-                    $res = new Request([
-                        'idCeo' => $dtx['idCeo'],
-                        'nombre' => $dtx['nombreLinea'],
-                    ]);
-                    $data = Linea::LineaRegistrar($res);
-                    $idLinea = $data->idLinea;
+        if ($objRetorno->respuesta) {
+            $dataImportada = [];
+            for ($i = $startRow; $i <= $max; $i++) {
+                $data_row = [];
+                foreach ($columns as $col => $field) {
+                    $val = $workSheet->getCell("$col$i")->getValue();
+                    $data_row[$field] = trim($val);
+                    $data_row['idCeo'] = $request->input('idCeo');
                 }
-                if ($obj != null) {
-                    $obj->nombre = trim($dtx['nombre']);
-                    $obj->marca = trim($dtx['marca']);
-                    $obj->formato = trim($dtx['formato']);
-                    $obj->sabor = trim($dtx['sabor']);
-                    $obj->unidadxCaja = trim($dtx['unidadxCaja']);
-                    $obj->unidadxPaquete = trim($dtx['unidadxPaquete']);
-                    $obj->cajaxpaquete = trim($dtx['cajaxpaquete']);
-                    $obj->codigoPadre = trim($dtx['codigoPadre']);
-                    $obj->codigoHijo = trim($dtx['codigoHijo']);
-                    $obj->idLinea = $idLinea;
-                    $obj->save();
-                } else {
-                    $res = new Request([
-                        'idCeo' => $dtx['idCeo'],
-                        'sku' => trim($dtx['sku']),
-                        'nombre' => trim($dtx['nombre']),
-                        'marca' => trim($dtx['marca']),
-                        'formato' => trim($dtx['formato']),
-                        'sabor' => trim($dtx['sabor']),
-                        'unidadxCaja' => trim($dtx['unidadxCaja']),
-                        'unidadxPaquete' => trim($dtx['unidadxPaquete']),
-                        'cajaxpaquete' => trim($dtx['cajaxpaquete']),
-                        'codigoPadre' => trim($dtx['codigoPadre']),
-                        'codigoHijo' => trim($dtx['codigoHijo']),
-                        'idLinea' => $idLinea,
-                    ]);
-                    Producto::ProductoRegistrar($res);
+                $dataImportada[] = $data_row;
+            }
+            $data = array_chunk($dataImportada, 1000);
+            foreach ($data as $dt) {
+                foreach ($dt as $dtx) {
+                    $idLinea = "";
+                    $obj = Producto::where('idCeo', $dtx['idCeo'])->where('sku', str_pad(trim($dtx['sku']), 3, '0', STR_PAD_LEFT))->first();
+                    $objLinea = Linea::where('idCeo', $dtx['idCeo'])->where('nombre', str_pad(trim($dtx['sku']), 3, '0', STR_PAD_LEFT))->first();
+                    if ($objLinea != null) {
+                        $idLinea = $objLinea->idLinea;
+                    } else {
+                        $res = new Request([
+                            'idCeo' => $dtx['idCeo'],
+                            'nombre' => $dtx['nombreLinea'],
+                        ]);
+                        $data = Linea::LineaRegistrar($res);
+                        $idLinea = $data->idLinea;
+                    }
+                    if ($obj != null) {
+                        $obj->nombre = trim($dtx['nombre']);
+                        $obj->marca = trim($dtx['marca']);
+                        $obj->formato = trim($dtx['formato']);
+                        $obj->sabor = trim($dtx['sabor']);
+                        $obj->unidadxCaja = trim($dtx['unidadxCaja']);
+                        $obj->unidadxPaquete = trim($dtx['unidadxPaquete']);
+                        $obj->cajaxpaquete = trim($dtx['cajaxpaquete']);
+                        $obj->codigoPadre = trim($dtx['codigoPadre']);
+                        $obj->codigoHijo = trim($dtx['codigoHijo']);
+                        $obj->idLinea = $idLinea;
+                        $obj->save();
+                    } else {
+                        $res = new Request([
+                            'idCeo' => $dtx['idCeo'],
+                            'sku' => str_pad(trim($dtx['sku']), 3, '0', STR_PAD_LEFT),
+                            'nombre' => trim($dtx['nombre']),
+                            'marca' => trim($dtx['marca']),
+                            'formato' => trim($dtx['formato']),
+                            'sabor' => trim($dtx['sabor']),
+                            'unidadxCaja' => trim($dtx['unidadxCaja']),
+                            'unidadxPaquete' => trim($dtx['unidadxPaquete']),
+                            'cajaxpaquete' => trim($dtx['cajaxpaquete']),
+                            'codigoPadre' => trim($dtx['codigoPadre']),
+                            'codigoHijo' => trim($dtx['codigoHijo']),
+                            'idLinea' => $idLinea,
+                        ]);
+                        Producto::ProductoRegistrar($res);
+                    }
                 }
             }
         }
+        return $objRetorno;
     }
     public static function ProductoDetalle($sku, $idCeo)
     {
