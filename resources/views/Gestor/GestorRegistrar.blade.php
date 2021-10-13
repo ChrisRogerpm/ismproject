@@ -104,43 +104,53 @@
                 </div>
                 <div class="kt-portlet__head-toolbar">
                     <div class="kt-portlet__head-actions">
-                        <a href="javascript:void(0)" id="btnModalProducto" class="btn btn-primary">
-                            <i class="fa fa-plus-square mr-1"></i>ABRIR PRODUCTOS
-                        </a>
-                        <a href="javascript:void(0)" id="btnEliminarProductos" class="btn btn-danger">
-                            <i class="fa fa-trash mr-1"></i>ELIMINAR PRODUCTOS
-                        </a>
+                        <button type="button" class="btn btn-primary btn-icon" id="btnModalProducto" data-skin="dark" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="AGREGAR PRODUCTOS">
+                            <i class="fa fa-plus-square mr-1"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-icon" id="btnEliminarProductos" data-skin="dark" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="ELIMINAR PRODUCTOS">
+                            <i class="fa fa-trash mr-1"></i>
+                        </button>
                     </div>
                 </div>
             </div>
             <div class="kt-portlet__body">
                 <div class="row">
+                    <div class="col-xl-2 col-md-3 ml-auto pb-4">
+                        <div class="form-group row">
+                            <label class="col-2 col-form-label">Buscar:</label>
+                            <div class="col-10">
+                                <input type="text" class="form-control" placeholder="Buscar..." id="inputBuscadorProducto">
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-lg-12">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaProductoRegistrado">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">CODALT</th>
-                                        <th>PRODUCTO</th>
-                                        <th>MARCA</th>
-                                        <th>FORMATO</th>
-                                        <th>SABOR</th>
-                                        <th class="text-center" style="width:10%">OPCIONES</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="6" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="table-scrollable">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaProductoRegistrado">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">CODALT</th>
+                                            <th>PRODUCTO</th>
+                                            <th>MARCA</th>
+                                            <th>FORMATO</th>
+                                            <th>SABOR</th>
+                                            <th class="text-center" style="width:10%">OPCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="6" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-6">
         <div class="kt-portlet kt-portlet--mobile">
             <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
@@ -150,37 +160,49 @@
                 </div>
                 <div class="kt-portlet__head-toolbar">
                     <div class="kt-portlet__head-actions">
-                        <a href="javascript:void(0)" id="btnModalRutas" class="btn btn-primary">
-                            <i class="fa fa-plus-square mr-1"></i>ABRIR RUTAS
-                        </a>
-                        <a href="javascript:void(0)" id="btnEliminarRutas" class="btn btn-danger">
-                            <i class="fa fa-trash mr-1"></i>ELIMINAR RUTAS
-                        </a>
+                        <button type="button" class="btn btn-primary btn-icon" id="btnModalRutas" data-skin="dark" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="AGREGAR RUTAS">
+                            <i class="fa fa-plus-square mr-1"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-icon" id="btnEliminarRutas" data-skin="dark" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="ELIMINAR RUTAS">
+                            <i class="fa fa-trash mr-1"></i>
+                        </button>
                     </div>
                 </div>
             </div>
             <div class="kt-portlet__body">
                 <div class="row">
+                    <div class="col-xl-4 col-md-6 ml-auto pb-4">
+                        <div class="form-group row">
+                            <label class="col-2 col-form-label">Buscar:</label>
+                            <div class="col-10">
+                                <input type="text" class="form-control" placeholder="Buscar..." id="inputBuscadorRuta">
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-lg-12">
-                        <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaRutaRegistrado">
-                            <thead>
-                                <tr>
-                                    <th>RUTA</th>
-                                    <th class="text-center" style="width:10%">OPCIONES</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="5" class="text-center">NO SE HA REGISTRADO RUTAS</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-scrollable">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaRutaRegistrado">
+                                    <thead>
+                                        <tr>
+                                            <th>RUTA</th>
+                                            <th class="text-center" style="width:10%">OPCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="5" class="text-center">NO SE HA REGISTRADO RUTAS</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-7">
+    <div class="col-md-6">
         <div class="kt-portlet kt-portlet--mobile">
             <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
@@ -190,37 +212,48 @@
                 </div>
                 <div class="kt-portlet__head-toolbar">
                     <div class="kt-portlet__head-actions">
-                        <a href="javascript:void(0)" id="btnModalSupervisors" class="btn btn-primary">
-                            <i class="fa fa-plus-square mr-1"></i>ABRIR SUPERVISORES
-                        </a>
-                        <a href="javascript:void(0)" id="btnEliminarSupervisors" class="btn btn-danger">
-                            <i class="fa fa-trash mr-1"></i>ELIMINAR SUPERVISORES
-                        </a>
+                        <button type="button" class="btn btn-primary btn-icon" id="btnModalSupervisors" data-skin="dark" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="AGREGAR SUPERVISORES">
+                            <i class="fa fa-plus-square mr-1"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-icon" id="btnEliminarSupervisors" data-skin="dark" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="ELIMINAR SUPERVISORES">
+                            <i class="fa fa-trash mr-1"></i>
+                        </button>
                     </div>
                 </div>
             </div>
             <div class="kt-portlet__body">
                 <div class="row">
+                    <div class="col-xl-4 col-md-6 ml-auto pb-4">
+                        <div class="form-group row">
+                            <label class="col-2 col-form-label">Buscar:</label>
+                            <div class="col-10">
+                                <input type="text" class="form-control" placeholder="Buscar..." id="inputBuscadorSupervisor">
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-lg-12">
-                        <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaSupervisorRegistrado">
-                            <thead>
-                                <tr>
-                                    <th>SUPERVISOR</th>
-                                    <th class="text-center" style="width:10%">OPCIONES</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="5" class="text-center">NO SE HA REGISTRADO SUPERVISORES</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-scrollable">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaSupervisorRegistrado">
+                                    <thead>
+                                        <tr>
+                                            <th>SUPERVISOR</th>
+                                            <th class="text-center" style="width:10%">OPCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="5" class="text-center">NO SE HA REGISTRADO SUPERVISORES</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     @include('Gestor.modal.modalProducto')
     @include('Gestor.modal.modalRuta')
     @include('Gestor.modal.modalSupervisor')

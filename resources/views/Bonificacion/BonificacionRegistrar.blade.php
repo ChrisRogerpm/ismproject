@@ -101,6 +101,14 @@
             </div>
             <div class="kt-portlet__body">
                 <div class="row">
+                    <div class="col-lg-3 ml-auto pb-4">
+                        <div class="form-group row">
+                            <label class="col-2 col-form-label">Buscar:</label>
+                            <div class="col-10">
+                                <input type="text" class="form-control" placeholder="Buscar..." id="inputBuscador">
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-lg-12">
                         <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaProductoRegistrado">
                             <thead>

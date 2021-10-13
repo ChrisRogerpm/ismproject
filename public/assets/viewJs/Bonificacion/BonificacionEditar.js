@@ -96,21 +96,53 @@ let BonificacionEditar = (function () {
                 });
             } else {
                 ShowAlert({
-                    type: 'warning',
-                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A BORRAR"
-                })
+                    type: "warning",
+                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A BORRAR",
+                });
                 return false;
             }
         });
-        $(document).on("ifChecked", "#tablaProductoRegistrado input:checkbox", function () {
-            let idProducto = $(this).val();
-            ListaProductosEliminar.push(parseInt(idProducto));
-        });
-        $(document).on("ifUnchecked", "#tablaProductoRegistrado input:checkbox", function () {
-            let idProducto = $(this).val();
-            ListaProductosEliminar = ListaProductosEliminar.filter(
-                (item) => item != parseInt(idProducto)
-            );
+        $(document).on(
+            "ifChecked",
+            "#tablaProductoRegistrado input:checkbox",
+            function () {
+                let idProducto = $(this).val();
+                ListaProductosEliminar.push(parseInt(idProducto));
+            }
+        );
+        $(document).on(
+            "ifUnchecked",
+            "#tablaProductoRegistrado input:checkbox",
+            function () {
+                let idProducto = $(this).val();
+                ListaProductosEliminar = ListaProductosEliminar.filter(
+                    (item) => item != parseInt(idProducto)
+                );
+            }
+        );
+        $(document).on("input", "#inputBuscador", function () {
+            let buscando = $(this).val().toLowerCase();
+            let filtroLista = [];
+            if (buscando == "") {
+                filtroLista = ListaProductosRegistrados;
+                fncListaProductosRegistrados({
+                    buscador: true,
+                    lista: filtroLista,
+                });
+            } else {
+                filtroLista = ListaProductosRegistrados.filter((ele) => {
+                    return (
+                        ele.marca.toLowerCase().includes(buscando) ||
+                        ele.formato.toLowerCase().includes(buscando) ||
+                        ele.codigoPadre.toLowerCase().includes(buscando) ||
+                        ele.sku.toLowerCase().includes(buscando)
+                    );
+                });
+                fncListaProductosRegistrados({
+                    buscador: true,
+                    lista: filtroLista,
+                });
+            }
         });
         //#region MODAL PRODUCTO
         $(document).on("click", "#btnModalProducto", function () {
@@ -140,7 +172,9 @@ let BonificacionEditar = (function () {
                 });
             }
         });
-        $(document).on("ifChecked", "#tableProductos input:checkbox",
+        $(document).on(
+            "ifChecked",
+            "#tableProductos input:checkbox",
             function () {
                 let idProducto = $(this).val();
                 let objProducto = ListaProductos.find(
@@ -149,7 +183,9 @@ let BonificacionEditar = (function () {
                 ListaProductosTabla.push(objProducto);
             }
         );
-        $(document).on("ifUnchecked", "#tableProductos input:checkbox",
+        $(document).on(
+            "ifUnchecked",
+            "#tableProductos input:checkbox",
             function () {
                 let idProducto = $(this).val();
                 ListaProductosTabla = ListaProductosTabla.filter(
@@ -199,66 +235,125 @@ let BonificacionEditar = (function () {
     };
     const fncListaProductosRegistrados = (obj) => {
         let objeto = {
-            callBackSuccess: function () { },
+            buscador: false,
+            lista: [],
+            callBackSuccess: function () {},
         };
         let options = $.extend({}, objeto, obj);
 
-        CargarDataGET({
-            url: "BonificacionDetalleListarJson",
-            dataForm: {
-                idBonificacion: Bonificacion.idBonificacion,
-            },
-            callBackSuccess: function (response) {
-                let contenedor = $("#tablaProductoRegistrado tbody");
-                contenedor.html("");
-                if (response.length > 0) {
-                    response.map((ele) => {
-                        contenedor.append(`
-                        <tr data-id="${ele.idProducto}" data-sku="${ele.sku
-                            }" data-idbonificaciondetalle="${ele.idBonificacionDetalle
-                            }">
-                            <td class="text-center">${ele.nombreLinea}</td>
-                            <td class="text-center">${ele.marca}</td>
-                            <td class="text-center">${ele.formato}</td>
-                            <td class="text-center">${ele.codigoPadre}</td>
-                            <td class="text-center valorCondicion${ele.sku}">${ele.condicionAt == null ? `--` : ele.cajaX}</td>
-                            <td>
-                                <select class="form-control CbCondicion" data-sku="${ele.sku}" style="width:100%;">
-                                    <option value="">-- Seleccione --</option>
-                                    <option value="1" ${ele.condicionAt == 1 ? `selected` : ``} data-valor="${ele.caja}">CAJA</option>
-                                    <option value="0" ${ele.condicionAt == 0 ? `selected` : ``} data-valor="${ele.paquete}">PAQUETE</option>
-                                </select>
-                            </td>
-                            <td class="text-center">${ele.sku}</td>
-                            <td><input type="number" class="form-control text-center" value="${ele.nroBotellasBonificar == null ? 0 : ele.nroBotellasBonificar}"></td>
+        if (options.buscador == false) {
+            CargarDataGET({
+                url: "BonificacionDetalleListarJson",
+                dataForm: {
+                    idBonificacion: Bonificacion.idBonificacion,
+                },
+                callBackSuccess: function (response) {
+                    ListaProductosRegistrados = response;
+                    fncVisualizarProductos({
+                        lista: response,
+                        callBackSuccess: function () {
+                            options.callBackSuccess();
+                        },
+                    });
+                },
+            });
+        } else {
+            fncVisualizarProductos({
+                lista: options.lista,
+                callBackSuccess: function () {
+                    options.callBackSuccess();
+                },
+            });
+        }
+    };
+    const fncVisualizarProductos = (obj) => {
+        let objeto = {
+            lista: [],
+            callBackSuccess: function () {},
+        };
+        let options = $.extend({}, objeto, obj);
 
-                            <td class="text-center valorBonificar${ele.sku}">${ele.marcaBonificar == null ? `--` : `${ele.marcaBonificar}/${ele.formatoBonificar}`}</td>
-                            <td>${fncGenerarComboBonificar({ sku: ele.sku, valorSelect: ele.idProductoBonificar })}</td>
-                            <td class="text-center" style="padding-top:12px;">
-                                <div class="icheck-inline-producto text-center">
-                                    <input type="checkbox" value="${ele.idBonificacionDetalle}" data-checkbox="icheckbox_square-blue">
-                                </div>
-                            </td>
-                        </tr>
-                        `);
-                    });
-                    $(".icheck-inline-producto").iCheck({
-                        checkboxClass: "icheckbox_square-blue",
-                        radioClass: "iradio_square-red",
-                        increaseArea: "25%",
-                    });
-                    $("#txtTituloProductos").text(`PRODUCTOS : AGREGADOS(S) ${response.length}`);
-                } else {
-                    $("#txtTituloProductos").text(`PRODUCTOS`);
-                    contenedor.append(
-                        `<tr><td colspan="11" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
-                    );
-                }
-                options.callBackSuccess();
-                $(".CbCondicion").select2();
-                $(".CbBonificar").select2();
-            },
-        });
+        let contenedor = $("#tablaProductoRegistrado tbody");
+        contenedor.html("");
+        if (options.lista.length > 0) {
+            options.lista.map((ele) => {
+                contenedor.append(`
+                            <tr data-id="${ele.idProducto}" data-sku="${
+                    ele.sku
+                }" data-idbonificaciondetalle="${ele.idBonificacionDetalle}">
+                                <td class="text-center">${ele.nombreLinea}</td>
+                                <td class="text-center">${ele.marca}</td>
+                                <td class="text-center">${ele.formato}</td>
+                                <td class="text-center">${ele.codigoPadre}</td>
+                                <td class="text-center valorCondicion${
+                                    ele.sku
+                                }">${
+                    ele.condicionAt == null ? `--` : ele.cajaX
+                }</td>
+                                <td>
+                                    <select class="form-control CbCondicion" data-sku="${
+                                        ele.sku
+                                    }" style="width:100%;">
+                                        <option value="">-- Seleccione --</option>
+                                        <option value="1" ${
+                                            ele.condicionAt == 1
+                                                ? `selected`
+                                                : ``
+                                        } data-valor="${ele.caja}">CAJA</option>
+                                        <option value="0" ${
+                                            ele.condicionAt == 0
+                                                ? `selected`
+                                                : ``
+                                        } data-valor="${
+                    ele.paquete
+                }">PAQUETE</option>
+                                    </select>
+                                </td>
+                                <td class="text-center">${ele.sku}</td>
+                                <td><input type="number" class="form-control text-center" value="${
+                                    ele.nroBotellasBonificar == null
+                                        ? 0
+                                        : ele.nroBotellasBonificar
+                                }"></td>
+
+                                <td class="text-center valorBonificar${
+                                    ele.sku
+                                }">${
+                    ele.marcaBonificar == null
+                        ? `--`
+                        : `${ele.marcaBonificar}/${ele.formatoBonificar}`
+                }</td>
+                                <td>${fncGenerarComboBonificar({
+                                    sku: ele.sku,
+                                    valorSelect: ele.idProductoBonificar,
+                                })}</td>
+                                <td class="text-center" style="padding-top:12px;">
+                                    <div class="icheck-inline-producto text-center">
+                                        <input type="checkbox" value="${
+                                            ele.idBonificacionDetalle
+                                        }" data-checkbox="icheckbox_square-blue">
+                                    </div>
+                                </td>
+                            </tr>
+                            `);
+            });
+            $(".icheck-inline-producto").iCheck({
+                checkboxClass: "icheckbox_square-blue",
+                radioClass: "iradio_square-red",
+                increaseArea: "25%",
+            });
+            $("#txtTituloProductos").text(
+                `PRODUCTOS : AGREGADOS(S) ${options.lista.length}`
+            );
+        } else {
+            $("#txtTituloProductos").text(`PRODUCTOS`);
+            contenedor.append(
+                `<tr><td colspan="11" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
+            );
+        }
+        options.callBackSuccess();
+        $(".CbCondicion").select2();
+        $(".CbBonificar").select2();
     };
     const fncListarProductos = function () {
         CargarTablaDatatable({
@@ -347,7 +442,11 @@ let BonificacionEditar = (function () {
         let opciones = $.extend({}, objeto, obj);
         let options = `<option value="">-- Seleccione --</option>`;
         ListaProductosIndependiente.map((ele) => {
-            options += `<option value="${ele.idProducto}" ${opciones.valorSelect == ele.idProducto ? `selected` : ``} data-formato="${ele.formato}" data-marca="${ele.marca}">${ele.sku}</option>`;
+            options += `<option value="${ele.idProducto}" ${
+                opciones.valorSelect == ele.idProducto ? `selected` : ``
+            } data-formato="${ele.formato}" data-marca="${ele.marca}">${
+                ele.sku
+            }</option>`;
         });
         return `<select class="form-control CbBonificar" data-sku="${opciones.sku}" style="width:100%">${options}</select>`;
     };
@@ -363,7 +462,9 @@ let BonificacionEditar = (function () {
             let sku = $(this).data("sku");
             let cajaX = $(this).find(`.valorCondicion${sku}`).text();
             let condicionAt = $(this).find(".CbCondicion").val();
-            let nroBotellasBonificar = $(this).find(`input[type='number']`).val();
+            let nroBotellasBonificar = $(this)
+                .find(`input[type='number']`)
+                .val();
             let idProductoBonificar = $(this).find(`.CbBonificar`).val();
 
             if (idProducto == undefined) {

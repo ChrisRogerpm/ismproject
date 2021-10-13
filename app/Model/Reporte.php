@@ -20,7 +20,7 @@ class Reporte extends Model
             (SELECT p.nombre FROM producto AS p WHERE p.sku = pd.sku AND p.idCeo = $idCeo) AS nombreProducto,
             pd.precio,
             ROUND((SELECT SUM(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.sku = pd.sku AND pdx.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pdx.idCeo = $idCeo),2) AS cantidad,
-            (SELECT p.unidadxPaquete FROM producto AS p WHERE p.sku = pd.sku AND pd.sku) as unidadPaquete,
+            (SELECT p.unidadxPaquete FROM producto AS p WHERE p.sku = pd.sku AND p.idCeo = $idCeo) as unidadPaquete,
             ROUND(
                 ((ROUND((SELECT SUM(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.sku = pd.sku AND pdx.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pdx.idCeo = $idCeo),2))
                 /
@@ -47,7 +47,7 @@ class Reporte extends Model
         ORDER BY (SELECT SUM(pdx.cantidad * pdx.precio) AS TotalPedido FROM pedidodetalle AS pdx WHERE pdx.nroPedido = pd.nroPedido AND pdx.idCeo = pd.idCeo) DESC
         "));
         foreach ($data as $d) {
-            $subData = collect(DB::select(DB::raw("SELECT (SELECT p.marca FROM producto AS p WHERE p.sku = pdx.sku) AS marca FROM pedidodetalle AS pdx WHERE pdx.nroPedido = '$d->nroPedido' AND pdx.idCeo = $idCeo")))->groupBy('marca')->keys()->toArray();
+            $subData = collect(DB::select(DB::raw("SELECT (SELECT p.marca FROM producto AS p WHERE p.sku = pdx.sku AND p.idCeo = $idCeo) AS marca FROM pedidodetalle AS pdx WHERE pdx.nroPedido = '$d->nroPedido' AND pdx.idCeo = $idCeo")))->groupBy('marca')->keys()->toArray();
             $d->productosInvolucrados = implode(" / ", $subData);
         }
         return $data;

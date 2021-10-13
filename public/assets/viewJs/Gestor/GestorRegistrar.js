@@ -78,6 +78,53 @@ let ProductoRegistrar = (function () {
             $("#txtTituloRutas").text(`RUTAS`);
             $("#txtTituloSupervisores").text(`SUPERVISOR`);
         });
+        $(document).on("input", "#inputBuscadorProducto", function () {
+            let buscando = $(this).val().toLowerCase();
+            let filtroLista = [];
+            if (buscando == "") {
+                filtroLista = ListaProductosRegistrados;
+            } else {
+                filtroLista = ListaProductosRegistrados.filter((ele) => {
+                    return (
+                        ele.marca.toLowerCase().includes(buscando) ||
+                        ele.nombreProducto.toLowerCase().includes(buscando) ||
+                        ele.codigoPadre.toLowerCase().includes(buscando) ||
+                        ele.sku.toLowerCase().includes(buscando)
+                    );
+                });
+            }
+            fncListaProductosRegistrados({
+                lista: filtroLista,
+            });
+        });
+        $(document).on("input", "#inputBuscadorRuta", function () {
+            let buscando = $(this).val().toLowerCase();
+            let filtroLista = [];
+            if (buscando == "") {
+                filtroLista = ListaRutasRegistrados;
+            } else {
+                filtroLista = ListaRutasRegistrados.filter((ele) => {
+                    return ele.descripcion.toLowerCase().includes(buscando);
+                });
+            }
+            fncListaRutasRegistrados({
+                lista: filtroLista,
+            });
+        });
+        $(document).on("input", "#inputBuscadorSupervisor", function () {
+            let buscando = $(this).val().toLowerCase();
+            let filtroLista = [];
+            if (buscando == "") {
+                filtroLista = ListaSupervisorsRegistrados;
+            } else {
+                filtroLista = ListaSupervisorsRegistrados.filter((ele) => {
+                    return ele.nombre.toLowerCase().includes(buscando);
+                });
+            }
+            fncListaSupervisorsRegistrados({
+                lista: filtroLista,
+            });
+        });
         //#region MODAL PRODUCTO
         $(document).on("click", "#btnModalProducto", function () {
             ListaProductosTabla = [];
@@ -105,56 +152,76 @@ let ProductoRegistrar = (function () {
                 });
             }
         });
-        $(document).on("ifChecked", "#tableProductos input:checkbox", function () {
-            let idProducto = $(this).val();
-            let objProducto = ListaProductos.find(
-                (ele) => ele.idProducto == idProducto
-            );
-            ListaProductosTabla.push(objProducto);
-        }
+        $(document).on(
+            "ifChecked",
+            "#tableProductos input:checkbox",
+            function () {
+                let idProducto = $(this).val();
+                let objProducto = ListaProductos.find(
+                    (ele) => ele.idProducto == idProducto
+                );
+                ListaProductosTabla.push(objProducto);
+            }
         );
-        $(document).on("ifUnchecked", "#tableProductos input:checkbox", function () {
-            let idProducto = $(this).val();
-            ListaProductosTabla = ListaProductosTabla.filter(
-                (item) => item.idProducto != parseInt(idProducto)
-            );
-        }
+        $(document).on(
+            "ifUnchecked",
+            "#tableProductos input:checkbox",
+            function () {
+                let idProducto = $(this).val();
+                ListaProductosTabla = ListaProductosTabla.filter(
+                    (item) => item.idProducto != parseInt(idProducto)
+                );
+            }
         );
         $(document).on("click", "#btnEliminarProductos", function () {
             if (ListaProductosEliminar.length > 0) {
-                ListaProductosRegistrados = ListaProductosRegistrados.filter((ele) => {
-                    return !ListaProductosEliminar.find((arg) => {
-                        return arg === ele.idProducto;
-                    });
-                });
-                ListaProductosEliminar.map(ele => {
+                ListaProductosRegistrados = ListaProductosRegistrados.filter(
+                    (ele) => {
+                        return !ListaProductosEliminar.find((arg) => {
+                            return arg === ele.idProducto;
+                        });
+                    }
+                );
+                ListaProductosEliminar.map((ele) => {
                     $(`.Fila${ele}`).remove();
                 });
                 ListaProductosEliminar = [];
                 if (ListaProductosRegistrados.length > 0) {
-                    $("#txtTituloProductos").text(`PRODUCTOS : SELECCIONADO(S) ${ListaProductosRegistrados.length}`);
+                    $("#txtTituloProductos").text(
+                        `PRODUCTOS : SELECCIONADO(S) ${ListaProductosRegistrados.length}`
+                    );
                 } else {
                     $("#txtTituloProductos").text(`PRODUCTOS`);
-                    $("#tablaProductoRegistrado tbody").append(`<tr><td colspan="11" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`);
+                    $("#tablaProductoRegistrado tbody").append(
+                        `<tr><td colspan="11" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
+                    );
                 }
             } else {
                 ShowAlert({
-                    type: 'warning',
-                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A BORRAR"
-                })
+                    type: "warning",
+                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A BORRAR",
+                });
                 return false;
             }
         });
-        $(document).on("ifChecked", "#tablaProductoRegistrado input:checkbox", function () {
-            let idProducto = $(this).val();
-            ListaProductosEliminar.push(parseInt(idProducto));
-        });
-        $(document).on("ifUnchecked", "#tablaProductoRegistrado input:checkbox", function () {
-            let idProducto = $(this).val();
-            ListaProductosEliminar = ListaProductosEliminar.filter(
-                (item) => item != parseInt(idProducto)
-            );
-        });
+        $(document).on(
+            "ifChecked",
+            "#tablaProductoRegistrado input:checkbox",
+            function () {
+                let idProducto = $(this).val();
+                ListaProductosEliminar.push(parseInt(idProducto));
+            }
+        );
+        $(document).on(
+            "ifUnchecked",
+            "#tablaProductoRegistrado input:checkbox",
+            function () {
+                let idProducto = $(this).val();
+                ListaProductosEliminar = ListaProductosEliminar.filter(
+                    (item) => item != parseInt(idProducto)
+                );
+            }
+        );
         //#endregion
         //#region MODAL RUTAS
         $(document).on("click", "#btnModalRutas", function () {
@@ -188,12 +255,16 @@ let ProductoRegistrar = (function () {
             let objRuta = ListaRutas.find((ele) => ele.idRuta == idRuta);
             ListaRutasTabla.push(objRuta);
         });
-        $(document).on("ifUnchecked", "#tableRutas input:checkbox", function () {
-            let idRuta = $(this).val();
-            ListaRutasTabla = ListaRutasTabla.filter(
-                (item) => item.idRuta != parseInt(idRuta)
-            );
-        });
+        $(document).on(
+            "ifUnchecked",
+            "#tableRutas input:checkbox",
+            function () {
+                let idRuta = $(this).val();
+                ListaRutasTabla = ListaRutasTabla.filter(
+                    (item) => item.idRuta != parseInt(idRuta)
+                );
+            }
+        );
         $(document).on("click", ".btnRemoverRuta", function () {
             let idRuta = $(this).data("id");
             ListaRutasRegistrados = ListaRutasRegistrados.filter(
@@ -213,34 +284,46 @@ let ProductoRegistrar = (function () {
                         return arg === ele.idRuta;
                     });
                 });
-                ListaRutasEliminar.map(ele => {
+                ListaRutasEliminar.map((ele) => {
                     $(`.FilaRuta${ele}`).remove();
                 });
                 ListaRutasEliminar = [];
                 if (ListaRutasRegistrados.length > 0) {
-                    $("#txtTituloRutas").text(`RUTAS : SELECCIONADO(S) ${ListaRutasRegistrados.length}`);
+                    $("#txtTituloRutas").text(
+                        `RUTAS : SELECCIONADO(S) ${ListaRutasRegistrados.length}`
+                    );
                 } else {
                     $("#txtTituloRutas").text(`RUTAS`);
-                    $("#tablaRutaRegistrado tbody").append(`<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO RUTAS</td></tr>`);
+                    $("#tablaRutaRegistrado tbody").append(
+                        `<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO RUTAS</td></tr>`
+                    );
                 }
             } else {
                 ShowAlert({
-                    type: 'warning',
-                    message: "NO SE HA SELECCIONADO RUTA(S) A BORRAR"
-                })
+                    type: "warning",
+                    message: "NO SE HA SELECCIONADO RUTA(S) A BORRAR",
+                });
                 return false;
             }
         });
-        $(document).on("ifChecked", "#tablaRutaRegistrado input:checkbox", function () {
-            let idRuta = $(this).val();
-            ListaRutasEliminar.push(parseInt(idRuta));
-        });
-        $(document).on("ifUnchecked", "#tablaRutaRegistrado input:checkbox", function () {
-            let idRuta = $(this).val();
-            ListaRutasEliminar = ListaRutasEliminar.filter(
-                (item) => item != parseInt(idRuta)
-            );
-        });
+        $(document).on(
+            "ifChecked",
+            "#tablaRutaRegistrado input:checkbox",
+            function () {
+                let idRuta = $(this).val();
+                ListaRutasEliminar.push(parseInt(idRuta));
+            }
+        );
+        $(document).on(
+            "ifUnchecked",
+            "#tablaRutaRegistrado input:checkbox",
+            function () {
+                let idRuta = $(this).val();
+                ListaRutasEliminar = ListaRutasEliminar.filter(
+                    (item) => item != parseInt(idRuta)
+                );
+            }
+        );
         //#endregion
         //#region MODAL SUPERVISOR
         $(document).on("click", "#btnModalSupervisors", function () {
@@ -271,54 +354,75 @@ let ProductoRegistrar = (function () {
                 });
             }
         });
-        $(document).on("ifChecked", "#tableSupervisores input:checkbox", function () {
-            let idSupervisor = $(this).val();
-            let objSupervisor = ListaSupervisors.find(
-                (ele) => ele.idSupervisor == idSupervisor
-            );
-            ListaSupervisorsTabla.push(objSupervisor);
-        });
-        $(document).on("ifUnchecked", "#tableSupervisores input:checkbox", function () {
-            let idSupervisor = $(this).val();
-            ListaSupervisorsTabla = ListaSupervisorsTabla.filter(
-                (item) => item.idSupervisor != parseInt(idSupervisor)
-            );
-        });
+        $(document).on(
+            "ifChecked",
+            "#tableSupervisores input:checkbox",
+            function () {
+                let idSupervisor = $(this).val();
+                let objSupervisor = ListaSupervisors.find(
+                    (ele) => ele.idSupervisor == idSupervisor
+                );
+                ListaSupervisorsTabla.push(objSupervisor);
+            }
+        );
+        $(document).on(
+            "ifUnchecked",
+            "#tableSupervisores input:checkbox",
+            function () {
+                let idSupervisor = $(this).val();
+                ListaSupervisorsTabla = ListaSupervisorsTabla.filter(
+                    (item) => item.idSupervisor != parseInt(idSupervisor)
+                );
+            }
+        );
         $(document).on("click", "#btnEliminarSupervisors", function () {
             if (ListaSupervisorsEliminar.length > 0) {
-                ListaSupervisorsRegistrados = ListaSupervisorsRegistrados.filter((ele) => {
-                    return !ListaSupervisorsEliminar.find((arg) => {
-                        return arg === ele.idSupervisor;
+                ListaSupervisorsRegistrados =
+                    ListaSupervisorsRegistrados.filter((ele) => {
+                        return !ListaSupervisorsEliminar.find((arg) => {
+                            return arg === ele.idSupervisor;
+                        });
                     });
-                });
-                ListaSupervisorsEliminar.map(ele => {
+                ListaSupervisorsEliminar.map((ele) => {
                     $(`.FilaSupervisor${ele}`).remove();
                 });
                 ListaSupervisorsEliminar = [];
                 if (ListaSupervisorsRegistrados.length > 0) {
-                    $("#txtTituloSupervisores").text(`SUPERVISOR : SELECCIONADO(S) ${ListaSupervisorsRegistrados.length}`);
+                    $("#txtTituloSupervisores").text(
+                        `SUPERVISOR : SELECCIONADO(S) ${ListaSupervisorsRegistrados.length}`
+                    );
                 } else {
                     $("#txtTituloSupervisores").text(`SUPERVISOR`);
-                    $("#tablaSupervisorRegistrado tbody").append(`<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO SUPERVISORES</td></tr>`);
+                    $("#tablaSupervisorRegistrado tbody").append(
+                        `<tr><td colspan="2" class="text-center">NO SE HA REGISTRADO SUPERVISORES</td></tr>`
+                    );
                 }
             } else {
                 ShowAlert({
-                    type: 'warning',
-                    message: "NO SE HA SELECCIONADO Supervisor(S) A BORRAR"
-                })
+                    type: "warning",
+                    message: "NO SE HA SELECCIONADO Supervisor(S) A BORRAR",
+                });
                 return false;
             }
         });
-        $(document).on("ifChecked", "#tablaSupervisorRegistrado input:checkbox", function () {
-            let idSupervisor = $(this).val();
-            ListaSupervisorsEliminar.push(parseInt(idSupervisor));
-        });
-        $(document).on("ifUnchecked", "#tablaSupervisorRegistrado input:checkbox", function () {
-            let idSupervisor = $(this).val();
-            ListaSupervisorsEliminar = ListaSupervisorsEliminar.filter(
-                (item) => item != parseInt(idSupervisor)
-            );
-        });
+        $(document).on(
+            "ifChecked",
+            "#tablaSupervisorRegistrado input:checkbox",
+            function () {
+                let idSupervisor = $(this).val();
+                ListaSupervisorsEliminar.push(parseInt(idSupervisor));
+            }
+        );
+        $(document).on(
+            "ifUnchecked",
+            "#tablaSupervisorRegistrado input:checkbox",
+            function () {
+                let idSupervisor = $(this).val();
+                ListaSupervisorsEliminar = ListaSupervisorsEliminar.filter(
+                    (item) => item != parseInt(idSupervisor)
+                );
+            }
+        );
         //#endregion
     };
     const fncInicializarData = () => {
@@ -336,7 +440,7 @@ let ProductoRegistrar = (function () {
     const fncListaProductosRegistrados = (obj) => {
         let objeto = {
             lista: [],
-            callBackSuccess: function () { },
+            callBackSuccess: function () {},
         };
         let options = $.extend({}, objeto, obj);
 
@@ -362,7 +466,9 @@ let ProductoRegistrar = (function () {
                 radioClass: "iradio_square-red",
                 increaseArea: "25%",
             });
-            $("#txtTituloProductos").text(`PRODUCTOS : SELECCIONADO(S) ${options.lista.length}`);
+            $("#txtTituloProductos").text(
+                `PRODUCTOS : SELECCIONADO(S) ${options.lista.length}`
+            );
         } else {
             $("#txtTituloProductos").text(`PRODUCTOS`);
             contenedor.append(
@@ -374,7 +480,7 @@ let ProductoRegistrar = (function () {
     const fncListaRutasRegistrados = (obj) => {
         let objeto = {
             lista: [],
-            callBackSuccess: function () { },
+            callBackSuccess: function () {},
         };
         let options = $.extend({}, objeto, obj);
 
@@ -397,7 +503,9 @@ let ProductoRegistrar = (function () {
                 radioClass: "iradio_square-red",
                 increaseArea: "25%",
             });
-            $("#txtTituloRutas").text(`RUTAS : SELECCIONADO(S) ${options.lista.length}`);
+            $("#txtTituloRutas").text(
+                `RUTAS : SELECCIONADO(S) ${options.lista.length}`
+            );
         } else {
             $("#txtTituloRutas").text(`RUTAS`);
             contenedor.append(
@@ -409,7 +517,7 @@ let ProductoRegistrar = (function () {
     const fncListaSupervisorsRegistrados = (obj) => {
         let objeto = {
             lista: [],
-            callBackSuccess: function () { },
+            callBackSuccess: function () {},
         };
         let options = $.extend({}, objeto, obj);
 
@@ -432,7 +540,9 @@ let ProductoRegistrar = (function () {
                 radioClass: "iradio_square-red",
                 increaseArea: "25%",
             });
-            $("#txtTituloSupervisores").text(`SUPERVISORES : SELECCIONADO(S) ${options.lista.length}`);
+            $("#txtTituloSupervisores").text(
+                `SUPERVISORES : SELECCIONADO(S) ${options.lista.length}`
+            );
         } else {
             $("#txtTituloSupervisores").text(`SUPERVISORES`);
             contenedor.append(
