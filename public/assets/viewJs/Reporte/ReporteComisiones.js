@@ -55,7 +55,7 @@ let ReporteComisionesListar = (function () {
     const fncListarPedidoDetalleGestor = function (obj) {
         let objeto = {
             data: {},
-            callBackSuccess: function () { },
+            callBackSuccess: function () {},
         };
         let options = $.extend({}, objeto, obj);
         CargarTablaDatatable({
@@ -63,21 +63,14 @@ let ReporteComisionesListar = (function () {
             ajaxUrl: "PedidoDetalleListarProductosGestorJson",
             table: "#tablePedidoDetalleGestor",
             ajaxDataSend: options.data,
-            tableOrdering: false,
             tableColumns: [
-                {
-                    data: "sku",
-                    title: "SKU",
-                    className: "text-center",
-                    width: "10%",
-                },
                 {
                     data: "codigoPadre",
                     title: "CODIGO PADRE",
                     className: "text-center",
                     width: "10%",
                 },
-                { data: "nombreProducto", title: "PRODUCTO" },
+                { data: "marca", title: "MARCA DE PRODUCTO" },
                 {
                     data: "cantidad",
                     title: "CANTIDAD",
@@ -96,11 +89,11 @@ let ReporteComisionesListar = (function () {
                     return typeof i === "string"
                         ? i.replace(/[\$,]/g, "") * 1
                         : typeof i === "number"
-                            ? i
-                            : 0;
+                        ? i
+                        : 0;
                 };
                 let TotalCantidadSumado = api
-                    .column(4, { search: "applied" })
+                    .column(3, { search: "applied" })
                     .data()
                     .reduce(function (a, b) {
                         return intVal(a) + intVal(b);
@@ -124,7 +117,7 @@ let ReporteComisionesListar = (function () {
             ajaxUrl: "ReporteComisionesGestoresJson",
             table: "#table",
             ajaxDataSend: options.data,
-            tableOrdering: false,
+            tableOrdering: true,
             tableColumns: [
                 {
                     data: "codigoGestor",
@@ -174,8 +167,8 @@ let ReporteComisionesListar = (function () {
                     return typeof i === "string"
                         ? i.replace(/[\$,]/g, "") * 1
                         : typeof i === "number"
-                            ? i
-                            : 0;
+                        ? i
+                        : 0;
                 };
                 let TotalCantidadSumado = api
                     .column(4, { search: "applied" })

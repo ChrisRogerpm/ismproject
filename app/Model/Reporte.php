@@ -72,9 +72,9 @@ class Reporte extends Model
             ]));
             $contador = 0.00;
             foreach ($ListaSkuCodigoPadre as $obj) {
-                $objComision = $ListaComisiones->where('codigoPadre', $obj->codigoPadre)->first();
+                $objComision = $ListaComisiones->where('codigoPadre', $obj['codigoPadre'])->first();
                 if ($objComision != null) {
-                    $calculo = round($obj->cantidad / $objComision->cantidadValor);
+                    $calculo = round($obj['cantidad'] / $objComision->cantidadValor);
                     if ($calculo > 0) {
                         $contador += $calculo * $objComision->comisionDistribuidor;
                     }

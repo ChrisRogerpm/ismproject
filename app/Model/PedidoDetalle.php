@@ -46,18 +46,24 @@ class PedidoDetalle extends Model
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
         $idCeo = $request->input('idCeo');
-        return DB::select(DB::raw("SELECT
-        pd.sku,
-        (
-        SELECT p.codigoPadre FROM producto AS p WHERE p.sku = pd.sku AND p.idCeo = $idCeo
-        ) AS codigoPadre
-        ,
-        (
-        SELECT COUNT(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.nroPedido IN (SELECT p.nroPedido FROM pedido AS p WHERE p.idGestor = '$idGestor') AND pdx.sku = pd.sku
-        ) AS cantidad
+        $data = collect(DB::select(DB::raw("SELECT
+        pd.nroPedido,
+        (SELECT p.codigoPadre FROM producto AS p WHERE p.sku = pd.sku AND p.idCeo = $idCeo) AS codigoPadre,
+        pd.cantidad
         FROM pedidodetalle AS pd
-        WHERE pd.nroPedido IN (SELECT p.nroPedido FROM pedido AS p WHERE p.idGestor = '$idGestor') AND pd.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin'
-        GROUP BY pd.sku"));
+        WHERE
+        pd.nroPedido IN (SELECT p.nroPedido FROM pedido AS p WHERE p.idGestor = '$idGestor' AND p.idCeo = $idCeo)
+        AND pd.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin'")));
+        $lista = [];
+        $codigoPadres = $data->groupBy('codigoPadre')->keys()->toArray();
+        foreach ($codigoPadres as $codigo) {
+            $lista[] = [
+                'codigoPadre' => $codigo,
+                'marca' => Producto::where('codigoPadre', $codigo)->where('idCeo', $idCeo)->first()->marca,
+                'cantidad' => $data->where('codigoPadre', $codigo)->sum('cantidad')
+            ];
+        }
+        return $lista;
     }
     public static function PedidoDetalleListarProductosGestor(Request $request)
     {
@@ -65,34 +71,35 @@ class PedidoDetalle extends Model
         $idGestor = $request->input('idGestor');
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
-        $ListaProductosVendidos = DB::select(DB::raw("SELECT
-            pd.sku,
-            (SELECT p.nombre FROM producto AS p WHERE p.sku = pd.sku) AS nombreProducto,
-            (SELECT p.codigoPadre FROM producto AS p WHERE p.sku = pd.sku) AS codigoPadre,
-            (
-            SELECT COUNT(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.nroPedido IN (SELECT p.nroPedido FROM pedido AS p WHERE p.idGestor = '$idGestor') AND pdx.sku = pd.sku
-            ) AS cantidad
-        FROM pedidodetalle AS pd
-        WHERE pd.nroPedido IN (SELECT p.nroPedido FROM pedido AS p WHERE p.idGestor = '$idGestor' AND p.idCeo = $idCeo) AND pd.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin'
-        GROUP BY pd.sku"));
-
+        $ListaProductosVendidos = self::PedidoDetalleListarProductosCodigoPadre(new Request([
+            'idGestor' => $idGestor,
+            'fechaInicio' => $fechaInicio,
+            'fechaFin' => $fechaFin,
+            'idCeo' => $idCeo,
+        ]));
         $Comision = Comision::where('estado', 1)->where('idCeo', $request->input('idCeo'))->first();
         $ListaComisiones = [];
         if ($Comision != null) {
             $ListaComisiones = ComisionDetalle::where('idComision', $Comision->idComision)->get();
         }
+        $ListaFinal = [];
         foreach ($ListaProductosVendidos as $obj) {
-            $objComision = $ListaComisiones->where('codigoPadre', $obj->codigoPadre)->first();
+            $objComision = $ListaComisiones->where('codigoPadre', $obj['codigoPadre'])->first();
             $contador = 0.00;
             if ($objComision != null) {
-                $calculo = round($obj->cantidad / $objComision->cantidadValor);
+                $calculo = round($obj['cantidad'] / $objComision->cantidadValor);
                 if ($calculo > 0) {
                     $contador += $calculo * $objComision->comisionDistribuidor;
                 }
             }
-            $obj->montoComision = number_format(round($contador, 3), 2);
+            $ListaFinal[] = [
+                'codigoPadre' => $obj['codigoPadre'],
+                'marca' => $obj['marca'],
+                'cantidad' => $obj['cantidad'],
+                'montoComision' => number_format(round($contador, 3), 2)
+            ];
         }
 
-        return $ListaProductosVendidos;
+        return $ListaFinal;
     }
 }

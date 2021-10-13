@@ -13,7 +13,7 @@
                             <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablePedidoDetalleGestor">
                                 <tfoot>
                                     <tr>
-                                        <td colspan="3"></td>
+                                        <td colspan="2"></td>
                                         <td class="text-center">TOTAL</td>
                                         <td id="txtTotalDetalleGestor">0.00</td>
                                     </tr>
