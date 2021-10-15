@@ -199,7 +199,7 @@ let ProductoRegistrar = (function () {
             } else {
                 ShowAlert({
                     type: "warning",
-                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A BORRAR",
+                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A ELIMINAR",
                 });
                 return false;
             }
@@ -301,7 +301,7 @@ let ProductoRegistrar = (function () {
             } else {
                 ShowAlert({
                     type: "warning",
-                    message: "NO SE HA SELECCIONADO RUTA(S) A BORRAR",
+                    message: "NO SE HA SELECCIONADO RUTA(S) A ELIMINAR",
                 });
                 return false;
             }
@@ -400,7 +400,7 @@ let ProductoRegistrar = (function () {
             } else {
                 ShowAlert({
                     type: "warning",
-                    message: "NO SE HA SELECCIONADO Supervisor(S) A BORRAR",
+                    message: "NO SE HA SELECCIONADO Supervisor(S) A ELIMINAR",
                 });
                 return false;
             }

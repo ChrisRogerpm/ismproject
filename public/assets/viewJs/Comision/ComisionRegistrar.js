@@ -17,7 +17,8 @@ let ProductoRegistrar = (function () {
                 let objCalculado = fncObtenerListaProductosRegistrados();
                 if (objCalculado.respuesta) {
                     dataForm = Object.assign(dataForm, {
-                        ListaProductosComision: objCalculado.ListaProductosComision,
+                        ListaProductosComision:
+                            objCalculado.ListaProductosComision,
                         idCeo: idCeo,
                     });
                     EnviarDataPost({
@@ -49,7 +50,8 @@ let ProductoRegistrar = (function () {
                         return arg.codigoPadre === ele.codigoPadre;
                     });
                 });
-                ListaProductosRegistrados = ListaProductosRegistrados.concat(ProductosFiltrados);
+                ListaProductosRegistrados =
+                    ListaProductosRegistrados.concat(ProductosFiltrados);
                 fncListaProductosRegistrados({
                     lista: ListaProductosRegistrados,
                     callBackSuccess: function () {
@@ -63,58 +65,79 @@ let ProductoRegistrar = (function () {
                 });
             }
         });
-        $(document).on("ifChecked", "#tableProductos input:checkbox", function () {
-            let idProducto = $(this).val();
-            let objProducto = ListaProductos.find(
-                (ele) => ele.idProducto == idProducto
-            );
-            ListaProductosTabla.push(objProducto);
-        });
-        $(document).on("ifUnchecked", "#tableProductos input:checkbox", function () {
-            let idProducto = $(this).val();
-            ListaProductosTabla = ListaProductosTabla.filter(
-                (item) => item.idProducto != parseInt(idProducto)
-            );
-        });
+        $(document).on(
+            "ifChecked",
+            "#tableProductos input:checkbox",
+            function () {
+                let idProducto = $(this).val();
+                let objProducto = ListaProductos.find(
+                    (ele) => ele.idProducto == idProducto
+                );
+                ListaProductosTabla.push(objProducto);
+            }
+        );
+        $(document).on(
+            "ifUnchecked",
+            "#tableProductos input:checkbox",
+            function () {
+                let idProducto = $(this).val();
+                ListaProductosTabla = ListaProductosTabla.filter(
+                    (item) => item.idProducto != parseInt(idProducto)
+                );
+            }
+        );
         $(document).on("click", "#btnEliminarProductos", function () {
             if (ListaProductosEliminar.length > 0) {
-                ListaProductosRegistrados = ListaProductosRegistrados.filter((ele) => {
-                    return !ListaProductosEliminar.find((arg) => {
-                        return arg === parseInt(ele.codigoPadre);
-                    });
-                });
-                ListaProductosEliminar.map(ele => {
+                ListaProductosRegistrados = ListaProductosRegistrados.filter(
+                    (ele) => {
+                        return !ListaProductosEliminar.find((arg) => {
+                            return arg === parseInt(ele.codigoPadre);
+                        });
+                    }
+                );
+                ListaProductosEliminar.map((ele) => {
                     $(`.Fila${ele}`).remove();
                 });
                 ListaProductosEliminar = [];
                 if (ListaProductosRegistrados.length > 0) {
-                    $("#txtTituloProductos").text(`PRODUCTOS : SELECCIONADO(S) ${ListaProductosRegistrados.length}`);
+                    $("#txtTituloProductos").text(
+                        `PRODUCTOS : SELECCIONADO(S) ${ListaProductosRegistrados.length}`
+                    );
                 } else {
                     $("#txtTituloProductos").text(`PRODUCTOS`);
-                    $("#tablaProductoRegistrado tbody").append(`<tr><td colspan="11" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`);
+                    $("#tablaProductoRegistrado tbody").append(
+                        `<tr><td colspan="11" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
+                    );
                 }
-
             } else {
                 ShowAlert({
-                    type: 'warning',
-                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A BORRAR"
-                })
+                    type: "warning",
+                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A ELIMINAR",
+                });
                 return false;
             }
         });
-        $(document).on("ifChecked", "#tablaProductoRegistrado input:checkbox", function () {
-            let codigoPadre = $(this).val();
-            ListaProductosEliminar.push(parseInt(codigoPadre));
-        });
-        $(document).on("ifUnchecked", "#tablaProductoRegistrado input:checkbox", function () {
-            let codigoPadre = $(this).val();
-            ListaProductosEliminar = ListaProductosEliminar.filter(
-                (item) => item != parseInt(codigoPadre)
-            );
-        });
+        $(document).on(
+            "ifChecked",
+            "#tablaProductoRegistrado input:checkbox",
+            function () {
+                let codigoPadre = $(this).val();
+                ListaProductosEliminar.push(parseInt(codigoPadre));
+            }
+        );
+        $(document).on(
+            "ifUnchecked",
+            "#tablaProductoRegistrado input:checkbox",
+            function () {
+                let codigoPadre = $(this).val();
+                ListaProductosEliminar = ListaProductosEliminar.filter(
+                    (item) => item != parseInt(codigoPadre)
+                );
+            }
+        );
         //#endregion
         //#region IMPORTAR DATA
-        $(document).on('click', '#btnImportarComisionModal', function () {
+        $(document).on("click", "#btnImportarComisionModal", function () {
             LimpiarFormulario({
                 formulario: "frmImportarComision",
                 nameVariable: "frmImportarComision",
@@ -124,7 +147,7 @@ let ProductoRegistrar = (function () {
                 keyboard: false,
                 backdrop: "static",
             });
-        })
+        });
         $(document).on("change", "#archivoComision", function (e) {
             const files = e.target.files;
             if (files[0] === undefined) {
@@ -156,13 +179,15 @@ let ProductoRegistrar = (function () {
         //#endregion
     };
     const fncInicializarData = () => {
-        $(".Fecha").datepicker({ language: "es" }).datepicker("setDate", new Date());
+        $(".Fecha")
+            .datepicker({ language: "es" })
+            .datepicker("setDate", new Date());
     };
     const fncListaProductosRegistrados = (obj) => {
         let objeto = {
             lista: [],
-            callBackSuccess: function () { },
-            importado: false
+            callBackSuccess: function () {},
+            importado: false,
         };
         let options = $.extend({}, objeto, obj);
         let contenedor = $("#tablaProductoRegistrado tbody");
@@ -170,23 +195,43 @@ let ProductoRegistrar = (function () {
         if (options.lista.length > 0) {
             options.lista.map((ele) => {
                 contenedor.append(`
-                <tr class="Fila${ele.codigoPadre}" data-id="${ele.idProducto}" data-codigopadre="${ele.codigoPadre}">
+                <tr class="Fila${ele.codigoPadre}" data-id="${
+                    ele.idProducto
+                }" data-codigopadre="${ele.codigoPadre}">
                     <td class="text-center">${ele.codigoPadre}</td>
                     <td class="text-left">${ele.nombreProducto}</td>
                     <td>
                         <select class="form-control CbCondicion" style="width:100%;">
                             <option value="">-- Seleccione --</option>
-                            <option value="CAJA" ${ele.condicion == "CAJA" ? 'selected' : ''}>CAJA</option>
-                            <option value="PAQUETE" ${ele.condicion == "PAQUETE" ? 'selected' : ''}>PAQUETE</option>
-                            <option value="UNIDAD" ${ele.condicion == "UNIDAD" ? 'selected' : ''}>UNIDAD</option>
+                            <option value="CAJA" ${
+                                ele.condicion == "CAJA" ? "selected" : ""
+                            }>CAJA</option>
+                            <option value="PAQUETE" ${
+                                ele.condicion == "PAQUETE" ? "selected" : ""
+                            }>PAQUETE</option>
+                            <option value="UNIDAD" ${
+                                ele.condicion == "UNIDAD" ? "selected" : ""
+                            }>UNIDAD</option>
                         </select>
                     </td>
-                    <td><input type="number" class="form-control text-center cantidadValor" value="${ele.cantidadValor == undefined ? 0 : ele.cantidadValor}"></td>
-                    <td><input type="number" class="form-control text-center comisionPtoVenta" value="${ele.comisionPtoVenta == undefined ? 0 : ele.comisionPtoVenta}"></td>
-                    <td><input type="number" class="form-control text-center comisionDistribuidor" value="${ele.comisionDistribuidor == undefined ? 0 : ele.comisionDistribuidor}"></td>
+                    <td><input type="number" class="form-control text-center cantidadValor" value="${
+                        ele.cantidadValor == undefined ? 0 : ele.cantidadValor
+                    }"></td>
+                    <td><input type="number" class="form-control text-center comisionPtoVenta" value="${
+                        ele.comisionPtoVenta == undefined
+                            ? 0
+                            : ele.comisionPtoVenta
+                    }"></td>
+                    <td><input type="number" class="form-control text-center comisionDistribuidor" value="${
+                        ele.comisionDistribuidor == undefined
+                            ? 0
+                            : ele.comisionDistribuidor
+                    }"></td>
                     <td class="text-center" style="padding-top:12px;">
                         <div class="icheck-inline-producto text-center">
-                            <input type="checkbox" value="${ele.codigoPadre}" data-checkbox="icheckbox_square-blue">
+                            <input type="checkbox" value="${
+                                ele.codigoPadre
+                            }" data-checkbox="icheckbox_square-blue">
                         </div>
                     </td>
                 </tr>`);
@@ -196,10 +241,14 @@ let ProductoRegistrar = (function () {
                 radioClass: "iradio_square-red",
                 increaseArea: "25%",
             });
-            $("#txtTituloProductos").text(`PRODUCTOS : SELECCIONADO(S) ${options.lista.length}`);
+            $("#txtTituloProductos").text(
+                `PRODUCTOS : SELECCIONADO(S) ${options.lista.length}`
+            );
         } else {
             $("#txtTituloProductos").text(`PRODUCTOS`);
-            contenedor.append(`<tr><td colspan="7" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`);
+            contenedor.append(
+                `<tr><td colspan="7" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
+            );
         }
         $(".CbCondicion").select2();
         options.callBackSuccess();
@@ -276,8 +325,12 @@ let ProductoRegistrar = (function () {
             let codigoPadre = $(this).data("codigopadre");
             let condicion = $(this).find(".CbCondicion").val();
             let cantidadValor = parseInt($(this).find(".cantidadValor").val());
-            let comisionPtoVenta = parseFloat($(this).find(".comisionPtoVenta").val().replace(/,/g, '.'));
-            let comisionDistribuidor = parseFloat($(this).find(".comisionDistribuidor").val().replace(/,/g, '.'));
+            let comisionPtoVenta = parseFloat(
+                $(this).find(".comisionPtoVenta").val().replace(/,/g, ".")
+            );
+            let comisionDistribuidor = parseFloat(
+                $(this).find(".comisionDistribuidor").val().replace(/,/g, ".")
+            );
             if (codigoPadre == undefined) {
                 obj.respuesta = false;
                 obj.mensaje = "NO SE HA REGISTRADO PRODUCTOS";
@@ -292,21 +345,24 @@ let ProductoRegistrar = (function () {
             }
             if (isNaN(cantidadValor) || cantidadValor < 0) {
                 obj.respuesta = false;
-                obj.mensaje = "EL VALOR EN UNIDADES (PRODUCTOS) LO MINIMO ACEPTADO ES 1";
+                obj.mensaje =
+                    "EL VALOR EN UNIDADES (PRODUCTOS) LO MINIMO ACEPTADO ES 1";
                 obj.ListaProductosComision = [];
                 return false;
             }
 
             if (isNaN(comisionPtoVenta) || comisionPtoVenta < 0) {
                 obj.respuesta = false;
-                obj.mensaje = "EL VALOR DE COMISIÓN DE PUNTO DE VENTA DEBE SER MAYOR A 0";
+                obj.mensaje =
+                    "EL VALOR DE COMISIÓN DE PUNTO DE VENTA DEBE SER MAYOR A 0";
                 obj.ListaProductosComision = [];
                 return false;
             }
 
             if (isNaN(comisionDistribuidor) || comisionDistribuidor < 0) {
                 obj.respuesta = false;
-                obj.mensaje = "EL VALOR DE COMISIÓN DE DISTRIBUIDOR DEBE SER MAYOR A 0";
+                obj.mensaje =
+                    "EL VALOR DE COMISIÓN DE DISTRIBUIDOR DEBE SER MAYOR A 0";
                 obj.ListaProductosComision = [];
                 return false;
             }

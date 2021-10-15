@@ -97,7 +97,7 @@ let BonificacionEditar = (function () {
             } else {
                 ShowAlert({
                     type: "warning",
-                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A BORRAR",
+                    message: "NO SE HA SELECCIONADO PRODUCTO(S) A ELIMINAR",
                 });
                 return false;
             }

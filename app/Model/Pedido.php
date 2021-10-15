@@ -333,11 +333,11 @@ class Pedido extends Model
 
                 if (count($lineasProducto) > 1) {
                     $objGGVVRUTA = $DataGGVVRUTA
-                        ->where('SKU', $dp['CODALT'])
-                        ->where('RUTA', $objCliente['RUTA'])
+                        ->where('sku', $dp['CODALT'])
+                        ->where('ruta', $objCliente['RUTA'])
                         ->first();
                     if ($objGGVVRUTA != null) {
-                        if ($objGGVVRUTA['LINEA'] == 2) {
+                        if ($objGGVVRUTA['linea'] == 2) {
                             $nroPedidoEspejo = $dp['NROPEDIDO'] . 'e';
                         }
                     }
