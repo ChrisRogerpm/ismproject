@@ -27,7 +27,7 @@ let BonificacionEditar = (function () {
                         data: dataForm,
                         callBackSuccess: function () {
                             setTimeout(function () {
-                                RedirigirUrl(`Bonificacion`);
+                                RefrescarVentana();
                             }, 1100);
                         },
                     });
@@ -42,6 +42,7 @@ let BonificacionEditar = (function () {
         $(document).on("change", ".CbBonificar", function () {
             let valor = $(this).val();
             let sku = $(this).data("sku");
+            let idProducto = $(this).data("id");
             let formato = $(this).find("option:selected").data("formato");
             let marca = $(this).find("option:selected").data("marca");
             if (valor != "") {
@@ -49,16 +50,29 @@ let BonificacionEditar = (function () {
             } else {
                 $(`.valorBonificar${sku}`).text(`--`);
             }
+            let obj = ListaProductosRegistrados.find((ele) => {
+                return parseInt(ele.idProducto) == parseInt(idProducto);
+            });
+            obj.idProductoBonificar = valor;
+            obj.marcaFormatoBonificar =
+                valor == "" ? undefined : `${marca}/${formato}`;
         });
         $(document).on("change", ".CbCondicion", function () {
             let valor = $(this).val();
             let sku = $(this).data("sku");
+            let idProducto = $(this).data("id");
             let valorCondicion = $(this).find("option:selected").data("valor");
             if (valor != "") {
                 $(`.valorCondicion${sku}`).text(valorCondicion);
             } else {
                 $(`.valorCondicion${sku}`).text("--");
             }
+
+            let obj = ListaProductosRegistrados.find((ele) => {
+                return parseInt(ele.idProducto) == parseInt(idProducto);
+            });
+            obj.condicionAt = valor;
+            obj.cajaX = valorCondicion;
         });
         $(document).on("change", ".Fecha", function () {
             let fechaInicio = moment($("#fechaInicio").val(), "YYYY-MM-DD");
@@ -67,6 +81,14 @@ let BonificacionEditar = (function () {
                 .duration(fechafin.diff(fechaInicio))
                 .asDays();
             $("#diasBonificar").val(diasBonificar);
+        });
+        $(document).on("input", ".inputBonifBotellas", function () {
+            let nroBotellasBonificar = $(this).val();
+            let idProducto = $(this).data("id");
+            let obj = ListaProductosRegistrados.find((ele) => {
+                return parseInt(ele.idProducto) == parseInt(idProducto);
+            });
+            obj.nroBotellasBonificar = nroBotellasBonificar;
         });
         $(document).on("click", "#btnEliminarProductos", function () {
             if (ListaProductosEliminar.length > 0) {
@@ -86,10 +108,25 @@ let BonificacionEditar = (function () {
                             url: "BonificacionDetalleEliminarJson",
                             data: {
                                 ListaProductosEliminar: ListaProductosEliminar,
+                                idBonificacion: Bonificacion.idBonificacion,
                             },
                             callBackSuccess: function () {
+                                ListaProductosRegistrados =
+                                    ListaProductosRegistrados.filter((ele) => {
+                                        return !ListaProductosEliminar.find(
+                                            (arg) => {
+                                                return (
+                                                    parseInt(ele.idProducto) ===
+                                                    parseInt(arg)
+                                                );
+                                            }
+                                        );
+                                    });
                                 ListaProductosEliminar = [];
-                                fncListaProductosRegistrados();
+                                fncListaProductosRegistrados({
+                                    buscador: true,
+                                    lista: ListaProductosRegistrados,
+                                });
                             },
                         });
                     }
@@ -108,6 +145,10 @@ let BonificacionEditar = (function () {
             function () {
                 let idProducto = $(this).val();
                 ListaProductosEliminar.push(parseInt(idProducto));
+                let obj = ListaProductosRegistrados.find((ele) => {
+                    return parseInt(ele.idProducto) == parseInt(idProducto);
+                });
+                obj.estadoEliminar = 1;
             }
         );
         $(document).on(
@@ -118,6 +159,10 @@ let BonificacionEditar = (function () {
                 ListaProductosEliminar = ListaProductosEliminar.filter(
                     (item) => item != parseInt(idProducto)
                 );
+                let obj = ListaProductosRegistrados.find((ele) => {
+                    return parseInt(ele.idProducto) == parseInt(idProducto);
+                });
+                obj.estadoEliminar = 0;
             }
         );
         $(document).on("input", "#inputBuscador", function () {
@@ -151,20 +196,43 @@ let BonificacionEditar = (function () {
         });
         $(document).on("click", "#btnAgregarProducto", function () {
             if (ListaProductosTabla.length > 0) {
-                EnviarDataPost({
-                    url: "BonificacionDetalleRegistrarJson",
-                    data: {
-                        ListaProductosBonificacion: ListaProductosTabla,
-                        idBonificacion: Bonificacion.idBonificacion,
-                    },
-                    callBackSuccess: function (response) {
-                        fncListaProductosRegistrados({
-                            callBackSuccess: function () {
-                                $("#ModalProducto").modal("hide");
-                            },
-                        });
+                let ProductosFiltrados = ListaProductosTabla.filter((ele) => {
+                    return !ListaProductosRegistrados.find((arg) => {
+                        return arg.idProducto === ele.idProducto;
+                    });
+                });
+                ListaProductosRegistrados =
+                    ListaProductosRegistrados.concat(ProductosFiltrados);
+                ListaProductosRegistrados = ListaProductosRegistrados.map(
+                    (ele) => ({
+                        condicionAt: null,
+                        nroBotellasBonificar: 0,
+                        idProductoBonificar: null,
+                        estadoEliminar: 0,
+                        ...ele,
+                    })
+                );
+                fncListaProductosRegistrados({
+                    lista: ListaProductosRegistrados,
+                    buscador: true,
+                    callBackSuccess: function () {
+                        $("#ModalProducto").modal("hide");
                     },
                 });
+                // EnviarDataPost({
+                //     url: "BonificacionDetalleRegistrarJson",
+                //     data: {
+                //         ListaProductosBonificacion: ListaProductosTabla,
+                //         idBonificacion: Bonificacion.idBonificacion,
+                //     },
+                //     callBackSuccess: function (response) {
+                //         fncListaProductosRegistrados({
+                //             callBackSuccess: function () {
+                //                 $("#ModalProducto").modal("hide");
+                //             },
+                //         });
+                //     },
+                // });
             } else {
                 ShowAlert({
                     type: "warning",
@@ -278,64 +346,71 @@ let BonificacionEditar = (function () {
         if (options.lista.length > 0) {
             options.lista.map((ele) => {
                 contenedor.append(`
-                            <tr data-id="${ele.idProducto}" data-sku="${
-                    ele.sku
-                }" data-idbonificaciondetalle="${ele.idBonificacionDetalle}">
-                                <td class="text-center">${ele.nombreLinea}</td>
-                                <td class="text-center">${ele.marca}</td>
-                                <td class="text-center">${ele.formato}</td>
-                                <td class="text-center">${ele.codigoPadre}</td>
-                                <td class="text-center valorCondicion${
-                                    ele.sku
-                                }">${
-                    ele.condicionAt == null ? `--` : ele.cajaX
-                }</td>
-                                <td>
-                                    <select class="form-control CbCondicion" data-sku="${
-                                        ele.sku
-                                    }" style="width:100%;">
-                                        <option value="">-- Seleccione --</option>
-                                        <option value="1" ${
-                                            ele.condicionAt == 1
-                                                ? `selected`
-                                                : ``
-                                        } data-valor="${ele.caja}">CAJA</option>
-                                        <option value="0" ${
-                                            ele.condicionAt == 0
-                                                ? `selected`
-                                                : ``
-                                        } data-valor="${
-                    ele.paquete
-                }">PAQUETE</option>
-                                    </select>
-                                </td>
-                                <td class="text-center">${ele.sku}</td>
-                                <td><input type="number" class="form-control text-center" value="${
-                                    ele.nroBotellasBonificar == null
-                                        ? 0
-                                        : ele.nroBotellasBonificar
-                                }"></td>
-
-                                <td class="text-center valorBonificar${
-                                    ele.sku
-                                }">${
-                    ele.marcaBonificar == null
-                        ? `--`
-                        : `${ele.marcaBonificar}/${ele.formatoBonificar}`
-                }</td>
-                                <td>${fncGenerarComboBonificar({
-                                    sku: ele.sku,
-                                    valorSelect: ele.idProductoBonificar,
-                                })}</td>
-                                <td class="text-center" style="padding-top:12px;">
-                                    <div class="icheck-inline-producto text-center">
-                                        <input type="checkbox" value="${
-                                            ele.idBonificacionDetalle
-                                        }" data-checkbox="icheckbox_square-blue">
-                                    </div>
-                                </td>
-                            </tr>
-                            `);
+                <tr class="Fila${ele.idProducto}" data-id="${
+                    ele.idProducto
+                }" data-sku="${ele.sku}">
+                    <td class="text-center">${ele.nombreLinea}</td>
+                    <td class="text-center">${ele.marca}</td>
+                    <td class="text-center">${ele.formato}</td>
+                    <td class="text-center">${ele.codigoPadre}</td>
+                    <td class="text-center valorCondicion${ele.sku}">
+                        ${ele.cajaX == undefined ? "" : ele.cajaX}
+                    </td>
+                    <td>
+                        <select
+                        class="form-control CbCondicion"
+                        data-id="${ele.idProducto}"
+                        data-sku="${ele.sku}"
+                        style="width:100%;"
+                        >
+                            <option
+                            value=""
+                            ${
+                                ele.condicionAt === `` ? "selected" : ``
+                            }>-- Seleccione --</option>
+                            <option
+                            value="1"
+                            ${ele.condicionAt == 1 ? "selected" : ""}
+                            data-valor="${ele.caja}">CAJA</option>
+                            <option
+                            value="0"
+                            ${ele.condicionAt == 0 ? "selected" : ""}
+                            data-valor="${ele.paquete}">PAQUETE</option>
+                        </select>
+                    </td>
+                    <td class="text-center">${ele.sku}</td>
+                    <td>
+                        <input type="number" class="form-control text-center inputBonifBotellas"
+                        data-id="${ele.idProducto}"
+                        value="${
+                            ele.nroBotellasBonificar == undefined
+                                ? 0
+                                : ele.nroBotellasBonificar
+                        }">
+                    </td>
+                    <td class="text-center valorBonificar${ele.sku}">
+                    ${
+                        ele.marcaFormatoBonificar == undefined
+                            ? "--"
+                            : ele.marcaFormatoBonificar
+                    }</td>
+                    <td>
+                        ${fncGenerarComboBonificar({
+                            sku: ele.sku,
+                            valorSelect: ele.idProductoBonificar,
+                            idProducto: ele.idProducto,
+                        })}
+                    </td>
+                    <td class="text-center" style="padding-top:12px;">
+                        <div class="icheck-inline-producto text-center">
+                            <input type="checkbox"
+                            value="${ele.idProducto}"
+                            data-checkbox="icheckbox_square-blue"
+                            ${ele.estadoEliminar == 0 ? "" : "checked"}
+                            >
+                        </div>
+                    </td>
+                </tr>`);
             });
             $(".icheck-inline-producto").iCheck({
                 checkboxClass: "icheckbox_square-blue",
@@ -343,7 +418,7 @@ let BonificacionEditar = (function () {
                 increaseArea: "25%",
             });
             $("#txtTituloProductos").text(
-                `PRODUCTOS : AGREGADOS(S) ${options.lista.length}`
+                `PRODUCTOS : SELECCIONADO(S) ${options.lista.length}`
             );
         } else {
             $("#txtTituloProductos").text(`PRODUCTOS`);
@@ -438,6 +513,7 @@ let BonificacionEditar = (function () {
         let objeto = {
             sku: "",
             valorSelect: "",
+            idProducto: "",
         };
         let opciones = $.extend({}, objeto, obj);
         let options = `<option value="">-- Seleccione --</option>`;
@@ -448,7 +524,13 @@ let BonificacionEditar = (function () {
                 ele.sku
             }</option>`;
         });
-        return `<select class="form-control CbBonificar" data-sku="${opciones.sku}" style="width:100%">${options}</select>`;
+        return `<select
+        class="form-control CbBonificar"
+        data-id="${opciones.idProducto}"
+        data-sku="${opciones.sku}"
+        style="width:100%">
+        ${options}
+        </select>`;
     };
     const fncObtenerListaProductosRegistrados = () => {
         let obj = {
@@ -496,7 +578,7 @@ let BonificacionEditar = (function () {
                 idBonificacionDetalle: idBonificacionDetalle,
                 idProducto: idProducto,
                 sku: sku,
-                cajaX: cajaX,
+                cajaX: cajaX.trim(),
                 condicionAt: condicionAt,
                 nroBotellasBonificar: nroBotellasBonificar,
                 idProductoBonificar: idProductoBonificar,

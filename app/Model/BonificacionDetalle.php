@@ -36,9 +36,11 @@ class BonificacionDetalle extends Model
             bd.nroBotellasBonificar,
             (SELECT px.marca FROM producto AS px WHERE px.idProducto = bd.idProductoBonificar) AS marcaBonificar,
             (SELECT px.formato FROM producto AS px WHERE px.idProducto = bd.idProductoBonificar) AS formatoBonificar,
+            CONCAT((SELECT px.marca FROM producto AS px WHERE px.idProducto = bd.idProductoBonificar),'/',(SELECT px.formato FROM producto AS px WHERE px.idProducto = bd.idProductoBonificar)) AS marcaFormatoBonificar,
             bd.idProductoBonificar,
             p.unidadxCaja AS caja,
-            p.unidadxPaquete AS paquete
+            p.unidadxPaquete AS paquete,
+            0 AS estadoEliminar
         FROM bonificaciondetalle AS bd
         INNER JOIN producto AS p ON p.idProducto = bd.idProducto
         INNER JOIN linea AS l ON l.idLinea = p.idLinea
@@ -67,6 +69,10 @@ class BonificacionDetalle extends Model
                 $data = new BonificacionDetalle();
                 $data->idBonificacion = $request->input('idBonificacion');
                 $data->idProducto = $lista['idProducto'];
+                $data->cajaX = $lista['cajaX'];
+                $data->condicionAt = $lista['condicionAt'];
+                $data->nroBotellasBonificar = $lista['nroBotellasBonificar'];
+                $data->idProductoBonificar = $lista['idProductoBonificar'];
                 $data->save();
             }
         }
@@ -74,19 +80,31 @@ class BonificacionDetalle extends Model
     public static function BonificacionDetalleEliminar(Request $request)
     {
         $ListaProductosEliminar = $request->input('ListaProductosEliminar');
-        return BonificacionDetalle::whereIn('idBonificacionDetalle', $ListaProductosEliminar)->delete();
+        return BonificacionDetalle::whereIn('idProducto', $ListaProductosEliminar)
+            ->where('idBonificacion', $request->input('idBonificacion'))
+            ->delete();
     }
     public static function BonificacionDetalleEditarLista(Request $request)
     {
         $ListaProductosBonificacion = $request->input('ListaProductosBonificacion');
         foreach ($ListaProductosBonificacion as $lista) {
-            $data = BonificacionDetalle::findOrfail($lista['idBonificacionDetalle']);
-            $data->idProducto = $lista['idProducto'];
-            $data->cajaX = $lista['cajaX'];
-            $data->condicionAt = $lista['condicionAt'];
-            $data->nroBotellasBonificar = $lista['nroBotellasBonificar'];
-            $data->idProductoBonificar = $lista['idProductoBonificar'];
-            $data->save();
+            $obj = BonificacionDetalle::where('idBonificacion', $request->input('idBonificacion'))->where('idProducto', $lista['idProducto'])->first();
+            if ($obj == null) {
+                $data = new BonificacionDetalle();
+                $data->idBonificacion = $request->input('idBonificacion');
+                $data->idProducto = $lista['idProducto'];
+                $data->cajaX = $lista['cajaX'];
+                $data->condicionAt = $lista['condicionAt'];
+                $data->nroBotellasBonificar = $lista['nroBotellasBonificar'];
+                $data->idProductoBonificar = $lista['idProductoBonificar'];
+                $data->save();
+            } else {
+                $obj->cajaX = $lista['cajaX'];
+                $obj->condicionAt = $lista['condicionAt'];
+                $obj->nroBotellasBonificar = $lista['nroBotellasBonificar'];
+                $obj->idProductoBonificar = $lista['idProductoBonificar'];
+                $obj->save();
+            }
         }
     }
 }

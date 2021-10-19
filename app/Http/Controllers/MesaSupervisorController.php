@@ -9,6 +9,19 @@ use App\Model\MesaSupervisor;
 class MesaSupervisorController extends Controller
 {
     #region JSON
+    public function MesaSupervisorRegistrarJson(Request $request)
+    {
+        $respuesta = false;
+        $mensaje = "";
+        try {
+            MesaSupervisor::MesaSupervisorRegistrar($request);
+            $respuesta = true;
+            $mensaje = "Se ha registrado supervisor(es) exitosamente";
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje]);
+    }
     public function MesaSupervisorListarJson(Request $request)
     {
         $data = "";

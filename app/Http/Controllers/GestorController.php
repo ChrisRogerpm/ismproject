@@ -16,7 +16,6 @@ class GestorController extends Controller
     #region Vista
     public function GestorListarVista()
     {
-        // return count(Gestor::GestorListarData(new Request()));
         return view('Gestor.GestorListar');
     }
     public function GestorRegistrarVista($idCeo)
@@ -69,6 +68,9 @@ class GestorController extends Controller
         $mensaje = "";
         try {
             Gestor::GestorEditar($request);
+            GestorProducto::GestorProductoRegistrar($request);
+            GestorRuta::GestorRutaRegistrar($request);
+            GestorSupervisor::GestorSupervisorRegistrar($request);
             $respuesta = true;
             $mensaje = "Se ha editado el Gestor exitosamente";
         } catch (Exception $ex) {

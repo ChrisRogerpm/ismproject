@@ -12,7 +12,6 @@ class ComisionDetalle extends Model
     protected $primaryKey = "idComisionDetalle";
     protected $fillable = [
         'idComision',
-        'idProducto',
         'codigoPadre',
         'condicion',
         'cantidadValor',
@@ -26,7 +25,6 @@ class ComisionDetalle extends Model
         foreach ($ListaProductosComision as $lista) {
             $data = new ComisionDetalle();
             $data->idComision = $obj->idComision;
-            $data->idProducto = $lista['idProducto'];
             $data->codigoPadre = $lista['codigoPadre'];
             $data->condicion = $lista['condicion'];
             $data->cantidadValor = $lista['cantidadValor'];
@@ -45,7 +43,6 @@ class ComisionDetalle extends Model
             if ($obj == null) {
                 $data = new ComisionDetalle();
                 $data->idComision = $obj->idComision;
-                $data->idProducto = $lista['idProducto'];
                 $data->codigoPadre = $lista['codigoPadre'];
                 $data->condicion = $lista['condicion'];
                 $data->cantidadValor = $lista['cantidadValor'];
@@ -59,12 +56,23 @@ class ComisionDetalle extends Model
     {
         $ListaProductosComision = $request->input('ListaProductosComision');
         foreach ($ListaProductosComision as $lista) {
-            $data = ComisionDetalle::findOrfail($lista['idComisionDetalle']);
-            $data->condicion = $lista['condicion'];
-            $data->cantidadValor = $lista['cantidadValor'];
-            $data->comisionPtoVenta = $lista['comisionPtoVenta'];
-            $data->comisionDistribuidor = $lista['comisionDistribuidor'];
-            $data->save();
+            $data = ComisionDetalle::where('codigoPadre', $lista['codigoPadre'])->where('idComision', $request->input('idComision'))->first();
+            if ($data != null) {
+                $data->condicion = $lista['condicion'];
+                $data->cantidadValor = $lista['cantidadValor'];
+                $data->comisionPtoVenta = $lista['comisionPtoVenta'];
+                $data->comisionDistribuidor = $lista['comisionDistribuidor'];
+                $data->save();
+            } else {
+                $obj = new ComisionDetalle();
+                $obj->idComision = $request->input('idComision');
+                $obj->codigoPadre = $lista['codigoPadre'];
+                $obj->condicion = $lista['condicion'];
+                $obj->cantidadValor = $lista['cantidadValor'];
+                $obj->comisionPtoVenta = $lista['comisionPtoVenta'];
+                $obj->comisionDistribuidor = $lista['comisionDistribuidor'];
+                $obj->save();
+            }
         }
     }
     public static function ComisionDetalleListar(Request $request)
@@ -72,19 +80,25 @@ class ComisionDetalle extends Model
         $idComision = $request->input('idComision');
         return DB::select(DB::raw("SELECT
             cd.idComisionDetalle,
-            cd.idProducto,
             cd.codigoPadre,
-            (SELECT p.nombre FROM producto AS p WHERE p.idProducto = cd.idProducto) AS nombreProducto,
+            CONCAT(
+            (SELECT px.marca FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre ORDER BY px.marca DESC LIMIT 1),
+            ' ',
+            (SELECT px.formato FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre ORDER BY px.formato DESC LIMIT 1),
+            ' ',
+            (SELECT px.sabor FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre ORDER BY px.sabor DESC LIMIT 1)
+            ) AS nombreProducto,
             cd.condicion,
             cd.cantidadValor,
             cd.comisionPtoVenta,
-            cd.comisionDistribuidor
+            cd.comisionDistribuidor,
+            0 as estadoEliminar
         FROM comisiondetalle AS cd
         WHERE cd.idComision = $idComision"));
     }
     public static function ComisionDetalleEliminar(Request $request)
     {
         $ListaProductosEliminar = $request->input('ListaProductosEliminar');
-        ComisionDetalle::whereIn('idComisionDetalle', $ListaProductosEliminar)->deleted();
+        ComisionDetalle::whereIn('codigoPadre', $ListaProductosEliminar)->where('idComision', $request->input('idComision'))->delete();
     }
 }

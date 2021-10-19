@@ -41,6 +41,7 @@ let ProductoRegistrar = (function () {
         $(document).on("change", ".CbBonificar", function () {
             let valor = $(this).val();
             let sku = $(this).data("sku");
+            let idProducto = $(this).data("id");
             let formato = $(this).find("option:selected").data("formato");
             let marca = $(this).find("option:selected").data("marca");
             if (valor != "") {
@@ -48,16 +49,29 @@ let ProductoRegistrar = (function () {
             } else {
                 $(`.valorBonificar${sku}`).text(`--`);
             }
+            let obj = ListaProductosRegistrados.find((ele) => {
+                return parseInt(ele.idProducto) == parseInt(idProducto);
+            });
+            obj.idProductoBonificar = valor;
+            obj.marcaFormatoBonificar =
+                valor == "" ? undefined : `${marca}/${formato}`;
         });
         $(document).on("change", ".CbCondicion", function () {
             let valor = $(this).val();
             let sku = $(this).data("sku");
+            let idProducto = $(this).data("id");
             let valorCondicion = $(this).find("option:selected").data("valor");
             if (valor != "") {
                 $(`.valorCondicion${sku}`).text(valorCondicion);
             } else {
                 $(`.valorCondicion${sku}`).text("--");
             }
+
+            let obj = ListaProductosRegistrados.find((ele) => {
+                return parseInt(ele.idProducto) == parseInt(idProducto);
+            });
+            obj.condicionAt = valor;
+            obj.cajaX = valorCondicion;
         });
         $(document).on("change", ".Fecha", function () {
             let fechaInicio = moment($("#fechaInicio").val(), "YYYY-MM-DD");
@@ -66,6 +80,14 @@ let ProductoRegistrar = (function () {
                 .duration(fechafin.diff(fechaInicio))
                 .asDays();
             $("#diasBonificar").val(diasBonificar);
+        });
+        $(document).on("input", ".inputBonifBotellas", function () {
+            let nroBotellasBonificar = $(this).val();
+            let idProducto = $(this).data("id");
+            let obj = ListaProductosRegistrados.find((ele) => {
+                return parseInt(ele.idProducto) == parseInt(idProducto);
+            });
+            obj.nroBotellasBonificar = nroBotellasBonificar;
         });
         $(document).on("input", "#inputBuscador", function () {
             let buscando = $(this).val().toLowerCase();
@@ -98,12 +120,25 @@ let ProductoRegistrar = (function () {
                         return arg.idProducto === ele.idProducto;
                     });
                 });
-                ListaProductosRegistrados =
+
+                let NuevaListaProductosRegistrados =
                     ListaProductosRegistrados.concat(ProductosFiltrados);
+
+                NuevaListaProductosRegistrados =
+                    NuevaListaProductosRegistrados.map((ele) => ({
+                        condicionAt: null,
+                        nroBotellasBonificar: 0,
+                        idProductoBonificar: null,
+                        estadoEliminar: 0,
+                        ...ele,
+                    }));
+
                 fncListaProductosRegistrados({
-                    lista: ListaProductosRegistrados,
+                    lista: NuevaListaProductosRegistrados,
                     callBackSuccess: function () {
                         $("#ModalProducto").modal("hide");
+                        ListaProductosRegistrados =
+                            NuevaListaProductosRegistrados;
                     },
                 });
             } else {
@@ -171,6 +206,10 @@ let ProductoRegistrar = (function () {
             function () {
                 let idProducto = $(this).val();
                 ListaProductosEliminar.push(parseInt(idProducto));
+                let obj = ListaProductosRegistrados.find((ele) => {
+                    return parseInt(ele.idProducto) == parseInt(idProducto);
+                });
+                obj.estadoEliminar = 1;
             }
         );
         $(document).on(
@@ -181,6 +220,10 @@ let ProductoRegistrar = (function () {
                 ListaProductosEliminar = ListaProductosEliminar.filter(
                     (item) => item != parseInt(idProducto)
                 );
+                let obj = ListaProductosRegistrados.find((ele) => {
+                    return parseInt(ele.idProducto) == parseInt(idProducto);
+                });
+                obj.estadoEliminar = 0;
             }
         );
         //#endregion
@@ -213,11 +256,30 @@ let ProductoRegistrar = (function () {
                     url: "BonificacionImportarDataJson",
                     data: dataForm,
                     callBackSuccess: function (response) {
-                        ListaProductosRegistrados = response;
+                        let ListaProductosTabla = response;
+                        let ProductosFiltrados = ListaProductosTabla.filter(
+                            (ele) => {
+                                return !ListaProductosRegistrados.find(
+                                    (arg) => {
+                                        return (
+                                            arg.idProducto === ele.idProducto
+                                        );
+                                    }
+                                );
+                            }
+                        );
+
+                        let NuevaListaProductosRegistrados =
+                            ListaProductosRegistrados.concat(
+                                ProductosFiltrados
+                            );
+
                         fncListaProductosRegistrados({
-                            lista: response,
+                            lista: NuevaListaProductosRegistrados,
                             callBackSuccess: function () {
                                 $("#ModalImportarBonificacion").modal("hide");
+                                ListaProductosRegistrados =
+                                    NuevaListaProductosRegistrados;
                             },
                         });
                     },
@@ -267,46 +329,64 @@ let ProductoRegistrar = (function () {
                     <td class="text-center">${ele.marca}</td>
                     <td class="text-center">${ele.formato}</td>
                     <td class="text-center">${ele.codigoPadre}</td>
-                    <td class="text-center valorCondicion${ele.sku}">${
-                    ele.cajaX == undefined ? "" : ele.cajaX
-                }</td>
+                    <td class="text-center valorCondicion${ele.sku}">
+                        ${ele.cajaX == undefined ? "" : ele.cajaX}
+                    </td>
                     <td>
-                    <select class="form-control CbCondicion" data-sku="${
-                        ele.sku
-                    }" style="width:100%;">
-                        <option value="">-- Seleccione --</option>
-                        <option value="1" ${
-                            ele.condicionAt == 1 ? "selected" : ""
-                        } data-valor="${ele.caja}">CAJA</option>
-                        <option value="0" ${
-                            ele.condicionAt == 0 ? "selected" : ""
-                        } data-valor="${ele.paquete}">PAQUETE</option>
-                    </select>
+                        <select
+                        class="form-control CbCondicion"
+                        data-id="${ele.idProducto}"
+                        data-sku="${ele.sku}"
+                        style="width:100%;"
+                        >
+                            <option
+                            value=""
+                            ${
+                                ele.condicionAt === `` ? "selected" : ``
+                            }>-- Seleccione --</option>
+                            <option
+                            value="1"
+                            ${ele.condicionAt == 1 ? "selected" : ""}
+                            data-valor="${ele.caja}"
+                            >
+                            CAJA
+                            </option>
+                            <option
+                            value="0"
+                            ${ele.condicionAt == 0 ? "selected" : ""}
+                            data-valor="${ele.paquete}">PAQUETE</option>
+                        </select>
                     </td>
                     <td class="text-center">${ele.sku}</td>
                     <td>
-                        <input type="number" class="form-control text-center" value="${
+                        <input type="number" class="form-control text-center inputBonifBotellas"
+                        data-id="${ele.idProducto}"
+                        value="${
                             ele.nroBotellasBonificar == undefined
                                 ? 0
                                 : ele.nroBotellasBonificar
                         }">
                     </td>
-                    <td class="text-center valorBonificar${ele.sku}">${
-                    ele.marcaFormatoBonificar == undefined
-                        ? "--"
-                        : ele.marcaFormatoBonificar
-                }</td>
+                    <td class="text-center valorBonificar${ele.sku}">
+                    ${
+                        ele.marcaFormatoBonificar == undefined
+                            ? "--"
+                            : ele.marcaFormatoBonificar
+                    }</td>
                     <td>
                         ${fncGenerarComboBonificar({
                             sku: ele.sku,
                             valorSelect: ele.idProductoBonificar,
+                            idProducto: ele.idProducto,
                         })}
                     </td>
                     <td class="text-center" style="padding-top:12px;">
                         <div class="icheck-inline-producto text-center">
-                            <input type="checkbox" value="${
-                                ele.idProducto
-                            }" data-checkbox="icheckbox_square-blue">
+                            <input type="checkbox"
+                            value="${ele.idProducto}"
+                            data-checkbox="icheckbox_square-blue"
+                            ${ele.estadoEliminar == 0 ? "" : "checked"}
+                            >
                         </div>
                     </td>
                 </tr>`);
@@ -412,6 +492,7 @@ let ProductoRegistrar = (function () {
         let objeto = {
             sku: "",
             valorSelect: "",
+            idProducto: "",
         };
         let opciones = $.extend({}, objeto, obj);
         let options = `<option value="">-- Seleccione --</option>`;
@@ -422,7 +503,13 @@ let ProductoRegistrar = (function () {
                 ele.sku
             }</option>`;
         });
-        return `<select class="form-control CbBonificar" data-sku="${opciones.sku}" style="width:100%">${options}</select>`;
+        return `<select
+        class="form-control CbBonificar"
+        data-id="${opciones.idProducto}"
+        data-sku="${opciones.sku}"
+        style="width:100%">
+        ${options}
+        </select>`;
     };
     const fncObtenerListaProductosRegistrados = () => {
         let obj = {

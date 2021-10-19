@@ -111,6 +111,17 @@ class ReportesController extends Controller
         }
         return response()->json(['data' => $data, 'mensaje' => $mensaje]);
     }
+    public function ReporteGestoresBonificacionCentroOperativoJson(Request $request)
+    {
+        $data = "";
+        $mensaje = "";
+        try {
+            $data = Reporte::ReporteGestoresBonificacionCentroOperativo($request);
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['data' => $data, 'mensaje' => $mensaje]);
+    }
 
     #endregion
 }

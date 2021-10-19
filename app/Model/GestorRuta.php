@@ -36,7 +36,9 @@ class GestorRuta extends Model
         return DB::select(DB::raw("SELECT
             gr.idGestorRuta,
             gr.idGestor,
-            r.descripcion
+            gr.idRuta,
+            r.descripcion,
+            0 as estadoEliminar
         FROM gestorruta AS gr
         INNER JOIN ruta AS r ON r.idRuta = gr.idRuta
         WHERE gr.idGestor = $idGestor"));

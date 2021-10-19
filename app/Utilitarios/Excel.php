@@ -5,6 +5,7 @@ namespace App\Utilitarios;
 use Carbon\Carbon;
 use App\Model\Gestor;
 use App\Model\Reporte;
+use App\Model\Producto;
 use App\Model\Solicitud;
 use App\Model\Liquidacion;
 use App\Model\Bonificacion;
@@ -438,6 +439,90 @@ class Excel
         } else {
             $sheet->mergeCells('A' . $fila . ':C' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
             $sheet->getStyle('A' . $fila . ':C' . $fila . '')->applyFromArray($styleArray);
+            $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
+        }
+        return $spreadsheet;
+    }
+    public static function GenerarExcelProducto(Request $request)
+    {
+        $spreadsheet = new Spreadsheet();
+
+        $styleArray = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ];
+        $styleArrayTitulo = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+            'font' => array(
+                'name'      =>  'Calibri',
+                'color' => ['argb' => '000000'],
+                'bold' => true
+            )
+        ];
+        $colorFondoCabecera = "F7CAAC";
+        $sheet = $spreadsheet->getDefaultStyle()->getFont()->setSize(11);
+        $sheet = $spreadsheet->getDefaultStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF');
+        $sheet = $spreadsheet->getActiveSheet();
+        $TituloCabecera = [
+            'CODATL',
+            'PRODUCTO',
+            'MARCA',
+            'FORMATO',
+            'SABOR',
+            'CAJA',
+            'PAQUETE',
+            'CAJAXPAQUETE',
+            'CODIGO PADRE',
+            'CODIGO HIJO',
+            'LINEA'
+        ];
+        $data1 = Producto::ProductoListar($request);
+        $fila = 1;
+        foreach ($TituloCabecera as $i => $d) {
+            $sheet->setCellValue(Excel::Columnas[$i] . $fila, ucwords($TituloCabecera[$i]))->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+            $valor = Excel::Columnas[$i] . $fila;
+            $sheet->getStyle($valor)->applyFromArray($styleArrayTitulo);
+            $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle($valor)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
+            $sheet->getStyle($valor)->getFont()->setBold(true);
+        }
+        $fila++;
+        $arrayData1 = [
+            'sku',
+            'nombreProducto',
+            'marca',
+            'formato',
+            'sabor',
+            'caja',
+            'paquete',
+            'cajaxpaquete',
+            'codigoPadre',
+            'codigoHijo',
+            'nombreLinea',
+        ];
+        if (count($data1) > 0) {
+            for ($x = 0; $x < count($data1); $x++) {
+                for ($i = 0; $i < count($arrayData1); $i++) {
+                    $nombreKey = $arrayData1[$i];
+                    $sheet->setCellValue(Excel::Columnas[$i] . $fila, $data1[$x]->$nombreKey)->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+                    $valor = Excel::Columnas[$i] . $fila;
+                    $sheet->getStyle($valor)->applyFromArray($styleArray);
+                    $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+                }
+                $fila++;
+            }
+        } else {
+            $sheet->mergeCells('A' . $fila . ':K' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
+            $sheet->getStyle('A' . $fila . ':K' . $fila . '')->applyFromArray($styleArray);
             $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
         }
         return $spreadsheet;

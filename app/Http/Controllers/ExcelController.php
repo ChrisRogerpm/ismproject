@@ -48,5 +48,15 @@ class ExcelController extends Controller
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
     }
+    public function ProductoDownload(Request $request)
+    {
+        $randomTime = time();
+        $spreadsheet = Excel::GenerarExcelProducto($request);
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="Productos_' . $randomTime . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+    }
     // GenerarExcelBonificacion
 }

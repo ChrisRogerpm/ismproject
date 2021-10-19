@@ -17,6 +17,7 @@ ListaSupervisorsRegistrados = [];
 
 let ProductoEditar = (function () {
     const fncAcciones = () => {
+        //#region GENERAL
         $(document).on("click", ".btnVolver", function () {
             RedirigirUrl(`Gestor`);
         });
@@ -27,15 +28,13 @@ let ProductoEditar = (function () {
                 dataForm = Object.assign(dataForm, {
                     idCeo: idCeo,
                     idGestor: Gestor.idGestor,
+                    ListaProductosRegistrados: ListaProductosRegistrados,
+                    ListaRutasRegistrados: ListaRutasRegistrados,
+                    ListaSupervisorsRegistrados: ListaSupervisorsRegistrados,
                 });
                 EnviarDataPost({
                     url: "GestorEditarJson",
                     data: dataForm,
-                    callBackSuccess: function () {
-                        setTimeout(function () {
-                            RedirigirUrl(`Gestor`);
-                        }, 1100);
-                    },
                 });
             }
         });
@@ -89,6 +88,7 @@ let ProductoEditar = (function () {
                 lista: filtroLista,
             });
         });
+        //#endregion
         //#region MODAL PRODUCTO
         $(document).on("click", "#btnModalProducto", function () {
             ListaProductosTabla = [];
@@ -96,19 +96,25 @@ let ProductoEditar = (function () {
         });
         $(document).on("click", "#btnAgregarProducto", function () {
             if (ListaProductosTabla.length > 0) {
-                let ListaProductosRegistrados = ListaProductosTabla;
-                EnviarDataPost({
-                    url: "GestorProductoRegistrarJson",
-                    data: {
-                        ListaProductosRegistrados: ListaProductosRegistrados,
-                        idGestor: Gestor.idGestor,
-                    },
+                let ProductosFiltrados = ListaProductosTabla.filter((ele) => {
+                    return !ListaProductosRegistrados.find((arg) => {
+                        return arg.idProducto === ele.idProducto;
+                    });
+                });
+                let NuevaListaProductosRegistrados =
+                    ListaProductosRegistrados.concat(ProductosFiltrados);
+                NuevaListaProductosRegistrados =
+                    NuevaListaProductosRegistrados.map((ele) => ({
+                        estadoEliminar: 0,
+                        ...ele,
+                    }));
+                fncListaProductosRegistrados({
+                    lista: NuevaListaProductosRegistrados,
+                    buscador: true,
                     callBackSuccess: function () {
-                        fncListaProductosRegistrados({
-                            callBackSuccess: function () {
-                                $("#ModalProducto").modal("hide");
-                            },
-                        });
+                        $("#ModalProducto").modal("hide");
+                        ListaProductosRegistrados =
+                            NuevaListaProductosRegistrados;
                     },
                 });
             } else {
@@ -157,10 +163,25 @@ let ProductoEditar = (function () {
                             url: "GestorProductoEliminarJson",
                             data: {
                                 ListaProductosEliminar: ListaProductosEliminar,
+                                idGestor: Gestor.idGestor,
                             },
                             callBackSuccess: function () {
+                                ListaProductosRegistrados =
+                                    ListaProductosRegistrados.filter((ele) => {
+                                        return !ListaProductosEliminar.find(
+                                            (arg) => {
+                                                return (
+                                                    parseInt(ele.idProducto) ===
+                                                    parseInt(arg)
+                                                );
+                                            }
+                                        );
+                                    });
                                 ListaProductosEliminar = [];
-                                fncListaProductosRegistrados();
+                                fncListaProductosRegistrados({
+                                    buscador: true,
+                                    lista: ListaProductosRegistrados,
+                                });
                             },
                         });
                     }
@@ -177,18 +198,26 @@ let ProductoEditar = (function () {
             "ifChecked",
             "#tablaProductoRegistrado input:checkbox",
             function () {
-                let idGestorProducto = $(this).val();
-                ListaProductosEliminar.push(parseInt(idGestorProducto));
+                let idProducto = $(this).val();
+                ListaProductosEliminar.push(parseInt(idProducto));
+                let obj = ListaProductosRegistrados.find((ele) => {
+                    return parseInt(ele.idProducto) == parseInt(idProducto);
+                });
+                obj.estadoEliminar = 1;
             }
         );
         $(document).on(
             "ifUnchecked",
             "#tablaProductoRegistrado input:checkbox",
             function () {
-                let idGestorProducto = $(this).val();
+                let idProducto = $(this).val();
                 ListaProductosEliminar = ListaProductosEliminar.filter(
-                    (item) => item != parseInt(idGestorProducto)
+                    (item) => item != parseInt(idProducto)
                 );
+                let obj = ListaProductosRegistrados.find((ele) => {
+                    return parseInt(ele.idProducto) == parseInt(idProducto);
+                });
+                obj.estadoEliminar = 0;
             }
         );
         //#endregion
@@ -199,19 +228,25 @@ let ProductoEditar = (function () {
         });
         $(document).on("click", "#btnAgregarRuta", function () {
             if (ListaRutasTabla.length > 0) {
-                let ListaRutasRegistrados = ListaRutasTabla;
-                EnviarDataPost({
-                    url: "GestorRutaRegistrarJson",
-                    data: {
-                        ListaRutasRegistrados: ListaRutasRegistrados,
-                        idGestor: Gestor.idGestor,
-                    },
+                let RutasFiltrados = ListaRutasTabla.filter((ele) => {
+                    return !ListaRutasRegistrados.find((arg) => {
+                        return arg.idRuta === ele.idRuta;
+                    });
+                });
+                let NuevaListaRutasRegistrados =
+                    ListaRutasRegistrados.concat(RutasFiltrados);
+                NuevaListaRutasRegistrados = NuevaListaRutasRegistrados.map(
+                    (ele) => ({
+                        estadoEliminar: 0,
+                        ...ele,
+                    })
+                );
+                fncListaRutasRegistrados({
+                    lista: NuevaListaRutasRegistrados,
+                    buscador: true,
                     callBackSuccess: function () {
-                        fncListaRutasRegistrados({
-                            callBackSuccess: function () {
-                                $("#ModalRuta").modal("hide");
-                            },
-                        });
+                        $("#ModalRuta").modal("hide");
+                        ListaRutasRegistrados = NuevaListaRutasRegistrados;
                     },
                 });
             } else {
@@ -254,10 +289,25 @@ let ProductoEditar = (function () {
                             url: "GestorRutaEliminarJson",
                             data: {
                                 ListaRutasEliminar: ListaRutasEliminar,
+                                idGestor: Gestor.idGestor,
                             },
                             callBackSuccess: function () {
-                                ListaRutasEliminar = [];
-                                fncListaRutasRegistrados();
+                                ListaRutasRegistrados =
+                                    ListaRutasRegistrados.filter((ele) => {
+                                        return !ListaRutasEliminar.find(
+                                            (arg) => {
+                                                return (
+                                                    parseInt(ele.idRuta) ===
+                                                    parseInt(arg)
+                                                );
+                                            }
+                                        );
+                                    });
+                                ListaProductosEliminar = [];
+                                fncListaRutasRegistrados({
+                                    buscador: true,
+                                    lista: ListaRutasRegistrados,
+                                });
                             },
                         });
                     }
@@ -274,18 +324,26 @@ let ProductoEditar = (function () {
             "ifChecked",
             "#tablaRutaRegistrado input:checkbox",
             function () {
-                let idGestorRuta = $(this).val();
-                ListaRutasEliminar.push(parseInt(idGestorRuta));
+                let idRuta = $(this).val();
+                ListaRutasEliminar.push(parseInt(idRuta));
+                let obj = ListaRutasRegistrados.find((ele) => {
+                    return parseInt(ele.idRuta) == parseInt(idRuta);
+                });
+                obj.estadoEliminar = 1;
             }
         );
         $(document).on(
             "ifUnchecked",
             "#tablaRutaRegistrado input:checkbox",
             function () {
-                let idGestorRuta = $(this).val();
+                let idRuta = $(this).val();
                 ListaRutasEliminar = ListaRutasEliminar.filter(
-                    (item) => item != parseInt(idGestorRuta)
+                    (item) => item != parseInt(idRuta)
                 );
+                let obj = ListaRutasRegistrados.find((ele) => {
+                    return parseInt(ele.idRuta) == parseInt(idRuta);
+                });
+                obj.estadoEliminar = 1;
             }
         );
         //#endregion
@@ -296,20 +354,27 @@ let ProductoEditar = (function () {
         });
         $(document).on("click", "#btnAgregarSupervisor", function () {
             if (ListaSupervisorsTabla.length > 0) {
-                let ListaSupervisorsRegistrados = ListaSupervisorsTabla;
-                EnviarDataPost({
-                    url: "GestorSupervisorRegistrarJson",
-                    data: {
-                        ListaSupervisorsRegistrados:
-                            ListaSupervisorsRegistrados,
-                        idGestor: Gestor.idGestor,
-                    },
-                    callBackSuccess: function () {
-                        fncListaSupervisorsRegistrados({
-                            callBackSuccess: function () {
-                                $("#ModalSupervisor").modal("hide");
-                            },
+                let SupervisorsFiltrados = ListaSupervisorsTabla.filter(
+                    (ele) => {
+                        return !ListaSupervisorsRegistrados.find((arg) => {
+                            return arg.idSupervisor === ele.idSupervisor;
                         });
+                    }
+                );
+                let NuevaListaSupervisorsRegistrados =
+                    ListaSupervisorsRegistrados.concat(SupervisorsFiltrados);
+                NuevaListaSupervisorsRegistrados =
+                    NuevaListaSupervisorsRegistrados.map((ele) => ({
+                        estadoEliminar: 0,
+                        ...ele,
+                    }));
+                fncListaSupervisorsRegistrados({
+                    lista: NuevaListaSupervisorsRegistrados,
+                    buscador: true,
+                    callBackSuccess: function () {
+                        $("#ModalSupervisor").modal("hide");
+                        ListaSupervisorsRegistrados =
+                            NuevaListaSupervisorsRegistrados;
                     },
                 });
             } else {
@@ -359,10 +424,27 @@ let ProductoEditar = (function () {
                             data: {
                                 ListaSupervisorsEliminar:
                                     ListaSupervisorsEliminar,
+                                idGestor: Gestor.idGestor,
                             },
                             callBackSuccess: function () {
+                                ListaSupervisorsRegistrados =
+                                    ListaSupervisorsRegistrados.filter(
+                                        (ele) => {
+                                            return !ListaSupervisorsEliminar.find(
+                                                (arg) => {
+                                                    return (
+                                                        parseInt(ele.idRuta) ===
+                                                        parseInt(arg)
+                                                    );
+                                                }
+                                            );
+                                        }
+                                    );
                                 ListaSupervisorsEliminar = [];
-                                fncListaSupervisorsRegistrados();
+                                fncListaSupervisorsRegistrados({
+                                    buscador: true,
+                                    lista: ListaSupervisorsRegistrados,
+                                });
                             },
                         });
                     }
@@ -379,18 +461,26 @@ let ProductoEditar = (function () {
             "ifChecked",
             "#tablaSupervisorRegistrado input:checkbox",
             function () {
-                let idGestorSupervisor = $(this).val();
-                ListaSupervisorsEliminar.push(parseInt(idGestorSupervisor));
+                let idSupervisor = $(this).val();
+                ListaSupervisorsEliminar.push(parseInt(idSupervisor));
+                let obj = ListaSupervisorsRegistrados.find((ele) => {
+                    return parseInt(ele.idSupervisor) == parseInt(idSupervisor);
+                });
+                obj.estadoEliminar = 1;
             }
         );
         $(document).on(
             "ifUnchecked",
             "#tablaSupervisorRegistrado input:checkbox",
             function () {
-                let idGestorSupervisor = $(this).val();
+                let idSupervisor = $(this).val();
                 ListaSupervisorsEliminar = ListaSupervisorsEliminar.filter(
-                    (item) => item != parseInt(idGestorSupervisor)
+                    (item) => item != parseInt(idSupervisor)
                 );
+                let obj = ListaSupervisorsRegistrados.find((ele) => {
+                    return parseInt(ele.idSupervisor) == parseInt(idSupervisor);
+                });
+                obj.estadoEliminar = 0;
             }
         );
         //#endregion
@@ -660,8 +750,7 @@ let ProductoEditar = (function () {
         contenedor.html("");
         if (options.lista.length > 0) {
             options.lista.map((ele) => {
-                contenedor.append(`
-                        <tr>
+                contenedor.append(`<tr>
                             <td class="text-center">${ele.sku}</td>
                             <td>${ele.nombreProducto}</td>
                             <td>${ele.marca}</td>
@@ -669,7 +758,12 @@ let ProductoEditar = (function () {
                             <td>${ele.sabor}</td>
                             <td class="text-center">
                                 <div class="icheck-inline-producto text-center">
-                                    <input type="checkbox" value="${ele.idGestorProducto}" data-checkbox="icheckbox_square-blue">
+                                    <input
+                                    type="checkbox"
+                                    value="${ele.idProducto}"
+                                    ${ele.estadoEliminar == 0 ? "" : "checked"}
+                                    data-checkbox="icheckbox_square-blue"
+                                    >
                                 </div>
                             </td>
                         </tr>`);
@@ -696,20 +790,22 @@ let ProductoEditar = (function () {
             callBackSuccess: function () {},
         };
         let options = $.extend({}, objeto, obj);
-
         let contenedor = $("#tablaRutaRegistrado tbody");
         contenedor.html("");
         if (options.lista.length > 0) {
             options.lista.map((ele) => {
-                contenedor.append(`
-                            <tr>
-                                <td>${ele.descripcion}</td>
-                                <td class="text-center">
-                                    <div class="icheck-inline-ruta text-center">
-                                        <input type="checkbox" value="${ele.idGestorRuta}" data-checkbox="icheckbox_square-blue">
-                                    </div>
-                                </td>
-                            </tr>`);
+                contenedor.append(`<tr>
+                    <td>${ele.descripcion}</td>
+                    <td class="text-center">
+                        <div class="icheck-inline-ruta text-center">
+                            <input
+                            type="checkbox"
+                            value="${ele.idRuta}"
+                            ${ele.estadoEliminar == 0 ? "" : "checked"}
+                            data-checkbox="icheckbox_square-blue">
+                        </div>
+                    </td>
+                </tr>`);
             });
             $(".icheck-inline-ruta").iCheck({
                 checkboxClass: "icheckbox_square-blue",
@@ -733,17 +829,20 @@ let ProductoEditar = (function () {
             callBackSuccess: function () {},
         };
         let options = $.extend({}, objeto, obj);
-
         let contenedor = $("#tablaSupervisorRegistrado tbody");
         contenedor.html("");
         if (options.lista.length > 0) {
             options.lista.map((ele) => {
-                contenedor.append(`
-                <tr>
+                contenedor.append(`<tr>
                     <td>${ele.nombre}</td>
                     <td class="text-center">
                         <div class="icheck-inline-supervisor text-center">
-                            <input type="checkbox" value="${ele.idGestorSupervisor}" data-checkbox="icheckbox_square-blue">
+                            <input
+                            type="checkbox"
+                            value="${ele.idSupervisor}"
+                            ${ele.estadoEliminar == 0 ? "" : "checked"}
+                            data-checkbox="icheckbox_square-blue"
+                            >
                         </div>
                     </td>
                 </tr>`);
@@ -764,7 +863,6 @@ let ProductoEditar = (function () {
         }
         options.callBackSuccess();
     };
-
     const fncValidarFormularioEditar = () => {
         ValidarFormulario({
             contenedor: "#frmNuevo",

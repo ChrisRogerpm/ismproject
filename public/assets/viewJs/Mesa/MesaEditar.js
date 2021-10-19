@@ -114,10 +114,19 @@ let MesaEditar = (function () {
                 );
                 ListaSupervisorsRegistrados =
                     ListaSupervisorsRegistrados.concat(SupervisorsFiltrados);
-                fncListaSupervisorsRegistrados({
-                    lista: ListaSupervisorsRegistrados,
+                EnviarDataPost({
+                    url: "MesaSupervisorRegistrarJson",
+                    data: {
+                        ListaSupervisorsRegistrados:
+                            ListaSupervisorsRegistrados,
+                        idMesa: Mesa.idMesa,
+                    },
                     callBackSuccess: function () {
-                        $("#ModalSupervisor").modal("hide");
+                        fncListaSupervisorsRegistrados({
+                            callBackSuccess: function () {
+                                $("#ModalSupervisor").modal("hide");
+                            },
+                        });
                     },
                 });
             } else {

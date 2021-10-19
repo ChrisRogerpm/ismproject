@@ -99,6 +99,22 @@ class Producto extends Model
         INNER JOIN linea AS l ON l.idLinea = p.idLinea
         WHERE p.idCeo =  $idCeo"));
     }
+    public static function ProductoCodigoPadreListar(Request $request)
+    {
+        $idCeo = $request->input('idCeo');
+        return DB::select(DB::raw("SELECT
+            p.codigoPadre,
+            CONCAT(
+            (SELECT px.marca FROM producto AS px WHERE px.codigoPadre = p.codigoPadre ORDER BY px.marca DESC LIMIT 1),
+            ' ',
+            (SELECT px.formato FROM producto AS px WHERE px.codigoPadre = p.codigoPadre ORDER BY px.formato DESC LIMIT 1),
+            ' ',
+            (SELECT px.sabor FROM producto AS px WHERE px.codigoPadre = p.codigoPadre ORDER BY px.sabor DESC LIMIT 1)
+            ) AS nombreProducto
+        FROM producto AS p
+        WHERE p.idCeo = $idCeo
+        GROUP BY p.codigoPadre"));
+    }
     public static function ProductoListarActivos(Request $request)
     {
         $idCeo = $request->input('idCeo');
@@ -245,7 +261,7 @@ class Producto extends Model
                 foreach ($dt as $dtx) {
                     $idLinea = "";
                     $obj = Producto::where('idCeo', $dtx['idCeo'])->where('sku', str_pad(trim($dtx['sku']), 3, '0', STR_PAD_LEFT))->first();
-                    $objLinea = Linea::where('idCeo', $dtx['idCeo'])->where('nombre', str_pad(trim($dtx['sku']), 3, '0', STR_PAD_LEFT))->first();
+                    $objLinea = Linea::where('idCeo', $dtx['idCeo'])->where('nombre', str_pad(trim($dtx['nombreLinea']), 3, '0', STR_PAD_LEFT))->first();
                     if ($objLinea != null) {
                         $idLinea = $objLinea->idLinea;
                     } else {
@@ -314,22 +330,16 @@ class Producto extends Model
     public static function ProductoCodigoPadreDetalle($codigoPadre, $idCeo)
     {
         return collect(DB::select(DB::raw("SELECT
-            p.idProducto,
-            l.nombre AS nombreLinea,
-            p.sku,
-            p.nombre AS nombreProducto,
-            p.marca,
-            p.formato,
-            p.sabor,
-            p.unidadxCaja AS caja,
-            p.unidadxPaquete AS paquete,
-            p.cajaxpaquete,
             p.codigoPadre,
-            p.codigoHijo,
-            p.estado,
-            IF(p.estado = 1,'ACTIVO','INACTIVO') as estadoNombre
+            CONCAT(
+            (SELECT px.marca FROM producto AS px WHERE px.codigoPadre = p.codigoPadre ORDER BY px.marca DESC LIMIT 1),
+            ' ',
+            (SELECT px.formato FROM producto AS px WHERE px.codigoPadre = p.codigoPadre ORDER BY px.formato DESC LIMIT 1),
+            ' ',
+            (SELECT px.sabor FROM producto AS px WHERE px.codigoPadre = p.codigoPadre ORDER BY px.sabor DESC LIMIT 1)
+            ) AS nombreProducto
         FROM producto AS p
-        INNER JOIN linea AS l ON l.idLinea = p.idLinea
-        WHERE p.codigoPadre = $codigoPadre AND p.idCeo = $idCeo")))->first();
+        WHERE p.idCeo = $idCeo AND p.codigoPadre = '$codigoPadre'
+        GROUP BY p.codigoPadre")))->first();
     }
 }

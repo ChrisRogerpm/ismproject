@@ -176,7 +176,8 @@ class Pedido extends Model
         $ListaPedidosRaw = [];
         foreach ($DataCLIENTEPEDIDO as $cp) {
             //Ruta y Modulo están
-            $Cli = $DataDATA_CLI->where('nroDocumento', $cp['NRO_DOC'])->first();
+            $nroDocumentoLimpio = str_replace("* ", "", $cp['NRO_DOC']);
+            $Cli = $DataDATA_CLI->where('nroDocumento', $nroDocumentoLimpio)->first();
             $nuevaDataImportarDataPEDIDO = $DataPEDIDO->where('NROPEDIDO', $cp['NROPEDIDO']);
             $listaCodigoProducto = $nuevaDataImportarDataPEDIDO->map(function ($item, $key) {
                 return $item['CODALT'];
@@ -188,8 +189,8 @@ class Pedido extends Model
                     return trim($item['codigo']);
                 })->unique();
             }
-            $tipoDocumento = strlen($cp['NRO_DOC']) <= 8 ? 0 : 1;
-            $nroDocumento = $tipoDocumento == 1 ? $cp['NRO_DOC'] : Excel::CompletadorCerosDNI($cp['NRO_DOC']);
+            $tipoDocumento = strlen($nroDocumentoLimpio) <= 8 ? 0 : 1;
+            $nroDocumento = $tipoDocumento == 1 ? $nroDocumentoLimpio : Excel::CompletadorCerosDNI($nroDocumentoLimpio);
             $listaPDVNueva = [];
             foreach ($listaPDV as $pdv) {
                 $listaPDVNueva[] = $pdv;

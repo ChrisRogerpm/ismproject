@@ -39,6 +39,18 @@ class ProductoController extends Controller
         }
         return response()->json(['data' => $data, 'mensaje' => $mensaje]);
     }
+    // ProductoCodigoPadreListar
+    public function ProductoCodigoPadreListarJson(Request $request)
+    {
+        $data = "";
+        $mensaje = "";
+        try {
+            $data = Producto::ProductoCodigoPadreListar($request);
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['data' => $data, 'mensaje' => $mensaje]);
+    }
     public function ProductoRegistrarJson(Request $request)
     {
         $respuesta = false;

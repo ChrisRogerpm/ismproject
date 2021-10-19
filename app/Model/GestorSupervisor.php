@@ -35,7 +35,9 @@ class GestorSupervisor extends Model
         return DB::select(DB::raw("SELECT
             gs.idGestorSupervisor,
             gs.idGestor,
-            s.nombre
+            gs.idSupervisor,
+            s.nombre,
+            0 as estadoEliminar
         FROM gestorsupervisor AS gs
         INNER JOIN supervisor AS s ON s.idSupervisor = gs.idSupervisor
         WHERE gs.idGestor = $idGestor"));
@@ -56,10 +58,7 @@ class GestorSupervisor extends Model
     public static function GestorSupervisorEliminar(Request $request)
     {
         $ListaSupervisorsEliminar = $request->input('ListaSupervisorsEliminar');
-        foreach ($ListaSupervisorsEliminar as $lista) {
-            $data = GestorSupervisor::findOrfail($lista);
-            $data->delete();
-        }
+        GestorSupervisor::whereIn('idSupervisor', $ListaSupervisorsEliminar)->where('idGestor', $request->input('idGestor'))->delete();
     }
     public static function GestorSupervisorSupervisorConcatenado($idGestor)
     {

@@ -53,17 +53,19 @@ let BonificacionListar = (function () {
                 }
             });
         });
-        $(document).on('click', '#GenerarExcel', function () {
-            let objBonificacionActiva = ListadeBonificacions.find(ele => parseInt(ele.estado) == 1);
+        $(document).on("click", "#GenerarExcel", function () {
+            let objBonificacionActiva = ListadeBonificacions.find(
+                (ele) => parseInt(ele.estado) == 1
+            );
             if (objBonificacionActiva != null) {
                 let idCeo = $("#CbidCeo").val();
                 let url = `${basePathApi}BonificacionesDownload?idCeo=${idCeo}`;
                 window.open(url, "_blank");
             } else {
                 ShowAlert({
-                    type: 'warning',
-                    message: 'NO SE HA ENCONTRADO BONIFICACIÓN ACTIVA'
-                })
+                    type: "warning",
+                    message: "NO SE HA ENCONTRADO BONIFICACIÓN ACTIVA",
+                });
             }
         });
     };
@@ -91,12 +93,33 @@ let BonificacionListar = (function () {
             ajaxUrl: "BonificacionListarJson",
             table: "#table",
             ajaxDataSend: options.data,
+            tableOrdering: false,
             tableColumns: [
                 { data: "nombreBonificacion", title: "NOMBRE" },
-                { data: "fechaInicio", title: "FECHA DE INICIO" },
-                { data: "fechaFin", title: "FECHA FIN" },
-                { data: "diasBonificar", title: "DÍAS A BONIFICAR" },
-                { data: "estadoNombre", title: "ESTADO" },
+                {
+                    data: "fechaInicio",
+                    title: "FECHA DE INICIO",
+                    className: "text-center",
+                    width: "13%",
+                },
+                {
+                    data: "fechaFin",
+                    title: "FECHA FIN",
+                    className: "text-center",
+                    width: "13%",
+                },
+                {
+                    data: "diasBonificar",
+                    title: "DÍAS A BONIFICAR",
+                    className: "text-center",
+                    width: "13%",
+                },
+                {
+                    data: "estadoNombre",
+                    title: "ESTADO",
+                    class: "text-center",
+                    width: "13%",
+                },
                 {
                     data: null,
                     title: "OPCIONES",
@@ -119,14 +142,28 @@ let BonificacionListar = (function () {
             tabledrawCallback: function () {
                 $(".btnEditar").tooltip();
             },
+            tablerowCallback: function (row, data, index) {
+                if (data.estadoNombre == "ACTIVO") {
+                    $(row)
+                        .find("td:eq(4)")
+                        .css({ color: "white", "background-color": "#E53935" });
+                } else {
+                    $(row)
+                        .find("td:eq(4)")
+                        .css({ color: "white", "background-color": "#7CB342" });
+                }
+            },
             callBackSuccess: function (response) {
                 ListadeBonificacions = response.data;
-                let verificarBonificacionActiva = ListadeBonificacions.find(ele => parseInt(ele.estado) == 1);
+                let verificarBonificacionActiva = ListadeBonificacions.find(
+                    (ele) => parseInt(ele.estado) == 1
+                );
                 if (verificarBonificacionActiva == null) {
                     ShowAlert({
-                        type: 'warning',
-                        message: 'NO SE HA ENCONTRADO NINGUNA BONIFICACION ACTIVO'
-                    })
+                        type: "warning",
+                        message:
+                            "NO SE HA ENCONTRADO NINGUNA BONIFICACION ACTIVO",
+                    });
                 }
             },
         });

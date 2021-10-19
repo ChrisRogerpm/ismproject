@@ -90,12 +90,12 @@ class Comision extends Model
             if ($objProducto != null) {
                 $ListaDetalle[] = [
                     'codigoPadre' => trim($data['codigoPadre']),
-                    'idProducto' => $objProducto->idProducto,
                     'nombreProducto' => $objProducto->nombreProducto,
                     'condicion' => $data['condicion'],
                     'cantidadValor' => $data['cantidadValor'],
                     'comisionPtoVenta' => str_replace(',', '.', $data['comisionPtoVenta']),
-                    'comisionDistribuidor' => str_replace(',', '.', $data['comisionDistribuidor'])
+                    'comisionDistribuidor' => str_replace(',', '.', $data['comisionDistribuidor']),
+                    'estadoEliminar' => 0
                 ];
             }
         }

@@ -28,11 +28,17 @@ class MesaSupervisor extends Model
     }
     public static function MesaSupervisorRegistrar(Request $request)
     {
-        $data = new MesaSupervisor();
-        $data->idMesa = $request->input('idMesa');
-        $data->idSupervisor = $request->input('idSupervisor');
-        $data->save();
-        return $data;
+        $ListaSupervisorsRegistrados = $request->input('ListaSupervisorsRegistrados');
+        foreach ($ListaSupervisorsRegistrados as $lista) {
+            $obj = MesaSupervisor::where('idSupervisor', $lista['idSupervisor'])
+                ->where('idMesa', $request->input('idMesa'))->first();
+            if ($obj == null) {
+                $data = new MesaSupervisor();
+                $data->idMesa = $request->input('idMesa');
+                $data->idSupervisor = $lista['idSupervisor'];
+                $data->save();
+            }
+        }
     }
     public static function MesaSupervisorEliminar(Request $request)
     {

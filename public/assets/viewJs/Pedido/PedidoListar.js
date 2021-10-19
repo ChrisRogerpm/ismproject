@@ -4,6 +4,9 @@ let PedidoListar = (function () {
             fncListarPedidos({
                 data: $("#frmNuevo").serializeFormJSON(),
             });
+            fncMostrarDataGestoresBonificaciones({
+                idCeo: $("#CbidCeo").val(),
+            });
         });
         $(document).on("change", "#archivoPedido", function (e) {
             const files = e.target.files;
@@ -26,7 +29,7 @@ let PedidoListar = (function () {
                         $(`.custom-file-label`).text("Elegir archivo...");
                         LimpiarFormulario({
                             formulario: "#frmImportarPedido",
-                            nameVariable: "frmImportarPedido"
+                            nameVariable: "frmImportarPedido",
                         });
                         let urlExcel = `${basePath}Excels/${response}`;
                         window.open(urlExcel, "_blank");
@@ -35,8 +38,8 @@ let PedidoListar = (function () {
                 });
             }
         });
-        $(document).on('click', '.btnVerDetalle', function () {
-            let nroPedido = $(this).data('id');
+        $(document).on("click", ".btnVerDetalle", function () {
+            let nroPedido = $(this).data("id");
             let idCeo = $("#CbidCeo").val();
             fncListarPedidoDetalle({
                 data: {
@@ -47,10 +50,10 @@ let PedidoListar = (function () {
                     $("#ModalPedidoDetalle").modal({
                         keyboard: false,
                         backdrop: "static",
-                    })
-                }
+                    });
+                },
             });
-        })
+        });
     };
     const fncInicializarData = () => {
         CargarDataSelect({
@@ -63,13 +66,35 @@ let PedidoListar = (function () {
                 fncListarPedidos({
                     data: $("#frmNuevo").serializeFormJSON(),
                 });
+                fncMostrarDataGestoresBonificaciones({
+                    idCeo: $("#CbidCeo").val(),
+                });
+            },
+        });
+    };
+    const fncMostrarDataGestoresBonificaciones = (obj) => {
+        let objeto = {
+            idCeo: 0,
+        };
+        let options = $.extend({}, objeto, obj);
+        CargarDataGET({
+            url: "ReporteGestoresBonificacionCentroOperativoJson",
+            dataForm: {
+                idCeo: options.idCeo,
+            },
+            callBackSuccess: function (response) {
+                console.log(response);
+                $("#MontoTotalGestoresActivos").text(response.GestoresVigentes);
+                $("#FechaVigenciaBonificacion").text(
+                    response.BonificacionVigente
+                );
             },
         });
     };
     const fncListarPedidoDetalle = function (obj) {
         let objeto = {
             data: {},
-            callBackSuccess: function () { }
+            callBackSuccess: function () {},
         };
         let options = $.extend({}, objeto, obj);
         CargarTablaDatatable({
@@ -88,13 +113,12 @@ let PedidoListar = (function () {
                 { data: "descuento", title: "DESCUENTO" },
                 { data: "tdocto", title: "TDOCTO" },
             ],
-            tabledrawCallback: function () {
-            },
+            tabledrawCallback: function () {},
             callBackSuccess: function () {
                 options.callBackSuccess();
-            }
+            },
         });
-    }
+    };
     const fncListarPedidos = function (obj) {
         let objeto = {
             data: $("#frmNuevo").serializeFormJSON(),
@@ -116,7 +140,9 @@ let PedidoListar = (function () {
                 { data: "modulo", title: "MODULO" },
                 { data: "nombreGestor", title: "GESTOR" },
                 {
-                    data: null, title: "OPCIONES", render: function (value) {
+                    data: null,
+                    title: "OPCIONES",
+                    render: function (value) {
                         let ver = `<a class="dropdown-item btnVerDetalle" data-id="${value.nroPedido}" href="javascript:void(0)"><i class="fa fa-eye"></i> VER DETALLE</a>`;
                         return `<span class="dropdown">
                                     <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="false">
@@ -125,8 +151,9 @@ let PedidoListar = (function () {
                                     ${ver}
                                     </div>
                                 </span>`;
-                    }, className: "text-center"
-                }
+                    },
+                    className: "text-center",
+                },
             ],
         });
     };

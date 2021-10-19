@@ -84,4 +84,18 @@ class Reporte extends Model
         }
         return $ListaGestores;
     }
+    public static function ReporteGestoresBonificacionCentroOperativo(Request $request)
+    {
+        $GestoresVigentes = count(Gestor::where('idCeo', $request->input('idCeo'))->where('estado', 1)->get());
+        $BonificacionVigente = Bonificacion::where('idCeo', $request->input('idCeo'))->where('estado', 1)->first();
+        if ($BonificacionVigente != null) {
+            $BonificacionVigente = $BonificacionVigente->fechaInicio . ' / ' . $BonificacionVigente->fechaFin . ' / ' . $BonificacionVigente->diasBonificar . ' DIA(S)';
+        } else {
+            $BonificacionVigente = "--";
+        }
+        return [
+            'GestoresVigentes' => $GestoresVigentes,
+            'BonificacionVigente' => $BonificacionVigente,
+        ];
+    }
 }

@@ -197,21 +197,37 @@ let GestorListar = (function () {
                 {
                     data: null,
                     title: "",
-                    width: "10%",
+                    width: "5%",
                     sortable: false,
                     render: function (value) {
                         return `<div class="icheck-inline text-center"><input type="checkbox" value="${value.idGestor}" data-checkbox="icheckbox_square-blue"></div>`;
                     },
                     class: "text-center",
                 },
-                { data: "codigoGestor", title: "CODIGO" },
+                {
+                    data: "codigoGestor",
+                    title: "CODIGO",
+                    class: "text-center",
+                    width: "5%",
+                },
                 { data: "nombre", title: "NOMBRE" },
-                { data: "telefono", title: "TELEFONO" },
-                { data: "nroDocumento", title: "DNI" },
+                {
+                    data: "telefono",
+                    title: "TELEFONO",
+                    class: "text-center",
+                    width: "10%",
+                },
+                {
+                    data: "nroDocumento",
+                    title: "DNI",
+                    class: "text-center",
+                    width: "10%",
+                },
                 {
                     data: null,
                     title: "ESTADO",
-                    className: "text-center",
+                    class: "text-center",
+                    width: "10%",
                     render: function (value) {
                         return value.estado == 1 ? "ACTIVO" : "INACTIVO";
                     },
@@ -219,6 +235,7 @@ let GestorListar = (function () {
                 {
                     data: null,
                     title: "OPCIONES",
+                    width: "10%",
                     render: function (value) {
                         let editar = `<a class="dropdown-item btnEditar" data-id="${value.idGestor}" href="javascript:void(0)"><i class="fa fa-edit"></i> EDITAR</a>`;
                         let bloquear = `<a class="dropdown-item btnBloquear" data-id="${value.idGestor}" href="javascript:void(0)"><i class="fa fa-lock"></i> BLOQUEAR</a>`;

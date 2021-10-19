@@ -16,6 +16,7 @@ ListaSupervisorsEliminar = [];
 
 let ProductoRegistrar = (function () {
     const fncAcciones = () => {
+        //#region GENERAL
         $(document).on("click", ".btnVolver", function () {
             RedirigirUrl(`Gestor`);
         });
@@ -125,6 +126,7 @@ let ProductoRegistrar = (function () {
                 lista: filtroLista,
             });
         });
+        //#endregion
         //#region MODAL PRODUCTO
         $(document).on("click", "#btnModalProducto", function () {
             ListaProductosTabla = [];
@@ -137,12 +139,19 @@ let ProductoRegistrar = (function () {
                         return arg.idProducto === ele.idProducto;
                     });
                 });
-                ListaProductosRegistrados =
+                let NuevaListaProductosRegistrados =
                     ListaProductosRegistrados.concat(ProductosFiltrados);
+                NuevaListaProductosRegistrados =
+                    NuevaListaProductosRegistrados.map((ele) => ({
+                        estadoEliminar: 0,
+                        ...ele,
+                    }));
                 fncListaProductosRegistrados({
-                    lista: ListaProductosRegistrados,
+                    lista: NuevaListaProductosRegistrados,
                     callBackSuccess: function () {
                         $("#ModalProducto").modal("hide");
+                        ListaProductosRegistrados =
+                            NuevaListaProductosRegistrados;
                     },
                 });
             } else {
@@ -210,6 +219,10 @@ let ProductoRegistrar = (function () {
             function () {
                 let idProducto = $(this).val();
                 ListaProductosEliminar.push(parseInt(idProducto));
+                let obj = ListaProductosRegistrados.find((ele) => {
+                    return parseInt(ele.idProducto) == parseInt(idProducto);
+                });
+                obj.estadoEliminar = 1;
             }
         );
         $(document).on(
@@ -220,6 +233,10 @@ let ProductoRegistrar = (function () {
                 ListaProductosEliminar = ListaProductosEliminar.filter(
                     (item) => item != parseInt(idProducto)
                 );
+                let obj = ListaProductosRegistrados.find((ele) => {
+                    return parseInt(ele.idProducto) == parseInt(idProducto);
+                });
+                obj.estadoEliminar = 0;
             }
         );
         //#endregion
@@ -235,12 +252,19 @@ let ProductoRegistrar = (function () {
                         return arg.idRuta === ele.idRuta;
                     });
                 });
-                ListaRutasRegistrados =
+                let NuevaListaRutasRegistrados =
                     ListaRutasRegistrados.concat(RutasFiltrados);
+                NuevaListaRutasRegistrados = NuevaListaRutasRegistrados.map(
+                    (ele) => ({
+                        estadoEliminar: 0,
+                        ...ele,
+                    })
+                );
                 fncListaRutasRegistrados({
-                    lista: ListaRutasRegistrados,
+                    lista: NuevaListaRutasRegistrados,
                     callBackSuccess: function () {
                         $("#ModalRuta").modal("hide");
+                        ListaRutasRegistrados = NuevaListaRutasRegistrados;
                     },
                 });
             } else {
@@ -312,6 +336,10 @@ let ProductoRegistrar = (function () {
             function () {
                 let idRuta = $(this).val();
                 ListaRutasEliminar.push(parseInt(idRuta));
+                let obj = ListaRutasRegistrados.find((ele) => {
+                    return parseInt(ele.idRuta) == parseInt(idRuta);
+                });
+                obj.estadoEliminar = 1;
             }
         );
         $(document).on(
@@ -322,6 +350,10 @@ let ProductoRegistrar = (function () {
                 ListaRutasEliminar = ListaRutasEliminar.filter(
                     (item) => item != parseInt(idRuta)
                 );
+                let obj = ListaRutasRegistrados.find((ele) => {
+                    return parseInt(ele.idRuta) == parseInt(idRuta);
+                });
+                obj.estadoEliminar = 1;
             }
         );
         //#endregion
@@ -339,12 +371,19 @@ let ProductoRegistrar = (function () {
                         });
                     }
                 );
-                ListaSupervisorsRegistrados =
+                let NuevaListaSupervisorsRegistrados =
                     ListaSupervisorsRegistrados.concat(SupervisorsFiltrados);
+                NuevaListaSupervisorsRegistrados =
+                    NuevaListaSupervisorsRegistrados.map((ele) => ({
+                        estadoEliminar: 0,
+                        ...ele,
+                    }));
                 fncListaSupervisorsRegistrados({
-                    lista: ListaSupervisorsRegistrados,
+                    lista: NuevaListaSupervisorsRegistrados,
                     callBackSuccess: function () {
                         $("#ModalSupervisor").modal("hide");
+                        ListaSupervisorsRegistrados =
+                            NuevaListaSupervisorsRegistrados;
                     },
                 });
             } else {
@@ -411,6 +450,10 @@ let ProductoRegistrar = (function () {
             function () {
                 let idSupervisor = $(this).val();
                 ListaSupervisorsEliminar.push(parseInt(idSupervisor));
+                let obj = ListaSupervisorsRegistrados.find((ele) => {
+                    return parseInt(ele.idSupervisor) == parseInt(idSupervisor);
+                });
+                obj.estadoEliminar = 1;
             }
         );
         $(document).on(
@@ -421,6 +464,10 @@ let ProductoRegistrar = (function () {
                 ListaSupervisorsEliminar = ListaSupervisorsEliminar.filter(
                     (item) => item != parseInt(idSupervisor)
                 );
+                let obj = ListaSupervisorsRegistrados.find((ele) => {
+                    return parseInt(ele.idSupervisor) == parseInt(idSupervisor);
+                });
+                obj.estadoEliminar = 0;
             }
         );
         //#endregion
@@ -456,7 +503,11 @@ let ProductoRegistrar = (function () {
                 <td>${ele.sabor}</td>
                 <td class="text-center">
                     <div class="icheck-inline-producto text-center">
-                        <input type="checkbox" value="${ele.idProducto}" data-checkbox="icheckbox_square-blue">
+                        <input
+                        type="checkbox"
+                        value="${ele.idProducto}"
+                        ${ele.estadoEliminar == 0 ? "" : "checked"}
+                        data-checkbox="icheckbox_square-blue">
                     </div>
                 </td>
                 </tr>`);
@@ -493,7 +544,12 @@ let ProductoRegistrar = (function () {
                     <td>${ele.descripcion}</td>
                     <td class="text-center">
                         <div class="icheck-inline-ruta text-center">
-                            <input type="checkbox" value="${ele.idRuta}" data-checkbox="icheckbox_square-blue">
+                            <input
+                            type="checkbox"
+                            value="${ele.idRuta}"
+                            ${ele.estadoEliminar == 0 ? "" : "checked"}
+                            data-checkbox="icheckbox_square-blue"
+                            >
                         </div>
                     </td>
                 </tr>`);
@@ -530,7 +586,12 @@ let ProductoRegistrar = (function () {
                     <td>${ele.nombre}</td>
                     <td class="text-center">
                         <div class="icheck-inline-supervisor text-center">
-                            <input type="checkbox" value="${ele.idSupervisor}" data-checkbox="icheckbox_square-blue">
+                            <input
+                            type="checkbox"
+                            value="${ele.idSupervisor}"
+                            ${ele.estadoEliminar == 0 ? "" : "checked"}
+                            ata-checkbox="icheckbox_square-blue"
+                            >
                         </div>
                     </td>
                 </tr>`);

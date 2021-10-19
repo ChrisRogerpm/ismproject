@@ -32,7 +32,9 @@ class Bonificacion extends Model
         b.estado,
         IF(b.estado = 1,'ACTIVO','INACTIVO') as estadoNombre
         FROM bonificacion as b
-        WHERE b.idCeo = $idCeo"));
+        WHERE b.idCeo = $idCeo
+        ORDER BY b.estado DESC
+        "));
     }
     public static function BonificacionRegistrar(Request $request)
     {
@@ -151,6 +153,7 @@ class Bonificacion extends Model
                     'nroBotellasBonificar' => str_replace(',', '.', $data['nroBotellasBonificar']),
                     'marcaFormatoBonificar' => $objProductoBonificar == null ? '' : $objProductoBonificar->marca . '/' . $objProductoBonificar->formato,
                     'idProductoBonificar' => $objProductoBonificar == null ? '' : $objProductoBonificar->idProducto,
+                    'estadoEliminar' => 0
                 ];
             }
         }

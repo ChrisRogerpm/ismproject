@@ -23,11 +23,7 @@ let ProductoEditar = (function () {
                     EnviarDataPost({
                         url: "ComisionEditarJson",
                         data: dataForm,
-                        callBackSuccess: function () {
-                            setTimeout(function () {
-                                RedirigirUrl(`Comision`);
-                            }, 1100);
-                        },
+                        callBackSuccess: function () {},
                     });
                 } else {
                     ShowAlert({
@@ -36,6 +32,56 @@ let ProductoEditar = (function () {
                     });
                 }
             }
+        });
+        $(document).on("input", "#inputBuscadorProducto", function () {
+            let buscando = $(this).val().toLowerCase();
+            let filtroLista = [];
+            if (buscando == "") {
+                filtroLista = ListaProductosRegistrados;
+            } else {
+                filtroLista = ListaProductosRegistrados.filter((ele) => {
+                    return (
+                        ele.nombreProducto.toLowerCase().includes(buscando) ||
+                        ele.codigoPadre.toLowerCase().includes(buscando)
+                    );
+                });
+            }
+            fncListaProductosRegistrados({
+                buscador: true,
+                lista: filtroLista,
+            });
+        });
+        $(document).on("change", ".CbCondicion", function () {
+            let condicion = $(this).val();
+            let codigoPadre = $(this).data("codigo");
+            let obj = ListaProductosRegistrados.find((ele) => {
+                return ele.codigoPadre == codigoPadre;
+            });
+            obj.condicion = condicion;
+        });
+        $(document).on("input", ".cantidadValor", function () {
+            let cantidadValor = $(this).val();
+            let codigoPadre = $(this).data("codigo");
+            let obj = ListaProductosRegistrados.find((ele) => {
+                return ele.codigoPadre == codigoPadre;
+            });
+            obj.cantidadValor = cantidadValor;
+        });
+        $(document).on("input", ".comisionPtoVenta", function () {
+            let comisionPtoVenta = $(this).val();
+            let codigoPadre = $(this).data("codigo");
+            let obj = ListaProductosRegistrados.find((ele) => {
+                return ele.codigoPadre == codigoPadre;
+            });
+            obj.comisionPtoVenta = comisionPtoVenta;
+        });
+        $(document).on("input", ".comisionDistribuidor", function () {
+            let comisionDistribuidor = $(this).val();
+            let codigoPadre = $(this).data("codigo");
+            let obj = ListaProductosRegistrados.find((ele) => {
+                return ele.codigoPadre == codigoPadre;
+            });
+            obj.comisionDistribuidor = comisionDistribuidor;
         });
         $(document).on("click", "#btnEliminarProductos", function () {
             if (ListaProductosEliminar.length > 0) {
@@ -55,10 +101,22 @@ let ProductoEditar = (function () {
                             url: "ComisionDetalleEliminarJson",
                             data: {
                                 ListaProductosEliminar: ListaProductosEliminar,
+                                idComision: Comision.idComision,
                             },
                             callBackSuccess: function () {
+                                ListaProductosRegistrados =
+                                    ListaProductosRegistrados.filter((ele) => {
+                                        return !ListaProductosEliminar.find(
+                                            (arg) => {
+                                                return ele.codigoPadre == arg;
+                                            }
+                                        );
+                                    });
                                 ListaProductosEliminar = [];
-                                fncListaProductosRegistrados();
+                                fncListaProductosRegistrados({
+                                    buscador: true,
+                                    lista: ListaProductosRegistrados,
+                                });
                             },
                         });
                     }
@@ -75,18 +133,26 @@ let ProductoEditar = (function () {
             "ifChecked",
             "#tablaProductoRegistrado input:checkbox",
             function () {
-                let idComisionDetalle = $(this).val();
-                ListaProductosEliminar.push(parseInt(idComisionDetalle));
+                let codigoPadre = $(this).val();
+                ListaProductosEliminar.push(codigoPadre);
+                let obj = ListaProductosRegistrados.find((ele) => {
+                    return ele.codigoPadre == codigoPadre;
+                });
+                obj.estadoEliminar = 1;
             }
         );
         $(document).on(
             "ifUnchecked",
             "#tablaProductoRegistrado input:checkbox",
             function () {
-                let idComisionDetalle = $(this).val();
+                let codigoPadre = $(this).val();
                 ListaProductosEliminar = ListaProductosEliminar.filter(
-                    (item) => item != parseInt(idComisionDetalle)
+                    (item) => item != codigoPadre
                 );
+                let obj = ListaProductosRegistrados.find((ele) => {
+                    return ele.codigoPadre == codigoPadre;
+                });
+                obj.estadoEliminar = 0;
             }
         );
         //#region MODAL PRODUCTO
@@ -96,18 +162,31 @@ let ProductoEditar = (function () {
         });
         $(document).on("click", "#btnAgregarProducto", function () {
             if (ListaProductosTabla.length > 0) {
-                EnviarDataPost({
-                    url: "ComisionDetalleRegistrarJson",
-                    data: {
-                        ListaProductosComision: ListaProductosTabla,
-                        idComision: Comision.idComision,
-                    },
-                    callBackSuccess: function (response) {
-                        fncListaProductosRegistrados({
-                            callBackSuccess: function () {
-                                $("#ModalProducto").modal("hide");
-                            },
-                        });
+                let ProductosFiltrados = ListaProductosTabla.filter((ele) => {
+                    return !ListaProductosRegistrados.find((arg) => {
+                        return arg.codigoPadre == ele.codigoPadre;
+                    });
+                });
+
+                let NuevaListaProductosRegistrados =
+                    ListaProductosRegistrados.concat(ProductosFiltrados);
+                NuevaListaProductosRegistrados =
+                    NuevaListaProductosRegistrados.map((ele) => ({
+                        condicion: null,
+                        cantidadValor: 0,
+                        comisionPtoVenta: 0,
+                        comisionDistribuidor: 0,
+                        estadoEliminar: 0,
+                        ...ele,
+                    }));
+
+                fncListaProductosRegistrados({
+                    lista: NuevaListaProductosRegistrados,
+                    buscador: true,
+                    callBackSuccess: function () {
+                        $("#ModalProducto").modal("hide");
+                        ListaProductosRegistrados =
+                            NuevaListaProductosRegistrados;
                     },
                 });
             } else {
@@ -121,9 +200,9 @@ let ProductoEditar = (function () {
             "ifChecked",
             "#tableProductos input:checkbox",
             function () {
-                let idProducto = $(this).val();
+                let codigoPadre = $(this).val();
                 let objProducto = ListaProductos.find(
-                    (ele) => ele.idProducto == idProducto
+                    (ele) => ele.codigoPadre == codigoPadre
                 );
                 ListaProductosTabla.push(objProducto);
             }
@@ -132,53 +211,12 @@ let ProductoEditar = (function () {
             "ifUnchecked",
             "#tableProductos input:checkbox",
             function () {
-                let idProducto = $(this).val();
+                let codigoPadre = $(this).val();
                 ListaProductosTabla = ListaProductosTabla.filter(
-                    (item) => item.idProducto != parseInt(idProducto)
+                    (item) => item.codigoPadre != codigoPadre
                 );
             }
         );
-        //#endregion
-        //#region IMPORTAR DATA
-        $(document).on("click", "#btnImportarComisionModal", function () {
-            LimpiarFormulario({
-                formulario: "frmImportarComision",
-                nameVariable: "frmImportarComision",
-            });
-            $(`.custom-file-label`).text("Elegir archivo...");
-            $("#ModalImportarComision").modal({
-                keyboard: false,
-                backdrop: "static",
-            });
-        });
-        $(document).on("change", "#archivoComision", function (e) {
-            const files = e.target.files;
-            if (files[0] === undefined) {
-                $(`.custom-file-label`).text("Elegir archivo...");
-            } else {
-                $(`.custom-file-label`).text(files[0].name);
-            }
-        });
-        $(document).on("click", "#btnImportarComision", function () {
-            $("#frmImportarComision").submit();
-            if (_objetoForm_frmImportarComision.valid()) {
-                let dataForm = new FormData($("#frmImportarComision")[0]);
-                dataForm.append("idCeo", idCeo);
-                EnviarDataPost({
-                    url: "ComisionImportarDataJson",
-                    data: dataForm,
-                    callBackSuccess: function (response) {
-                        ListaProductosRegistrados = response;
-                        fncListaProductosRegistrados({
-                            lista: response,
-                            callBackSuccess: function () {
-                                $("#ModalImportarComision").modal("hide");
-                            },
-                        });
-                    },
-                });
-            }
-        });
         //#endregion
     };
     const fncInicializarData = () => {
@@ -189,130 +227,154 @@ let ProductoEditar = (function () {
     };
     const fncListaProductosRegistrados = (obj) => {
         let objeto = {
+            buscador: false,
             callBackSuccess: function () {},
         };
         let options = $.extend({}, objeto, obj);
-        CargarDataGET({
-            url: "ComisionDetalleListarJson",
-            dataForm: {
-                idComision: Comision.idComision,
-            },
-            callBackSuccess: function (response) {
-                let contenedor = $("#tablaProductoRegistrado tbody");
-                contenedor.html("");
-                if (response.length > 0) {
-                    response.map((ele) => {
-                        contenedor.append(`
-                        <tr class="Fila${ele.codigoPadre}" data-id="${
-                            ele.idProducto
-                        }" data-codigopadre="${ele.codigoPadre}" data-key="${
-                            ele.idComisionDetalle
+        if (options.buscador == false) {
+            CargarDataGET({
+                url: "ComisionDetalleListarJson",
+                dataForm: {
+                    idComision: Comision.idComision,
+                },
+                callBackSuccess: function (response) {
+                    ListaProductosRegistrados = response;
+                    fncVisualizarProductos({
+                        lista: response,
+                        callBackSuccess: function () {
+                            options.callBackSuccess();
+                        },
+                    });
+                },
+            });
+        } else {
+            fncVisualizarProductos({
+                lista: options.lista,
+                callBackSuccess: function () {
+                    options.callBackSuccess();
+                },
+            });
+        }
+    };
+    const fncVisualizarProductos = (obj) => {
+        let objeto = {
+            lista: [],
+            callBackSuccess: function () {},
+        };
+        let options = $.extend({}, objeto, obj);
+        let contenedor = $("#tablaProductoRegistrado tbody");
+        contenedor.html("");
+        if (options.lista.length > 0) {
+            options.lista.map((ele) => {
+                contenedor.append(`<tr
+                class="Fila${ele.codigoPadre}"
+                data-codigopadre="${ele.codigoPadre}">
+                    <td class="text-center">${ele.codigoPadre}</td>
+                    <td class="text-left">${ele.nombreProducto}</td>
+                    <td>
+                        <select
+                            class="form-control CbCondicion"
+                            style="width:100%;"
+                            data-codigo="${ele.codigoPadre}"
+                        >
+                            <option value="">-- Seleccione --</option>
+                            <option
+                            value="CAJA" ${
+                                ele.condicion == "CAJA" ? "selected" : ""
+                            }>CAJA</option>
+                            <option value="PAQUETE" ${
+                                ele.condicion == "PAQUETE" ? "selected" : ""
+                            }>PAQUETE</option>
+                            <option value="UNIDAD" ${
+                                ele.condicion == "UNIDAD" ? "selected" : ""
+                            }>UNIDAD</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input
+                        type="number"
+                        class="form-control text-center cantidadValor"
+                        data-codigo="${ele.codigoPadre}"
+                        value="${
+                            ele.cantidadValor == undefined
+                                ? 0
+                                : ele.cantidadValor
                         }">
-                            <td class="text-center">${ele.codigoPadre}</td>
-                            <td class="text-left">${ele.nombreProducto}</td>
-                            <td>
-                                <select class="form-control CbCondicion" style="width:100%;">
-                                    <option value="">-- Seleccione --</option>
-                                    <option value="CAJA" ${
-                                        ele.condicion == "CAJA"
-                                            ? "selected"
-                                            : ""
-                                    }>CAJA</option>
-                                    <option value="PAQUETE" ${
-                                        ele.condicion == "PAQUETE"
-                                            ? "selected"
-                                            : ""
-                                    }>PAQUETE</option>
-                                    <option value="UNIDAD" ${
-                                        ele.condicion == "UNIDAD"
-                                            ? "selected"
-                                            : ""
-                                    }>UNIDAD</option>
-                                </select>
-                            </td>
-                            <td><input type="number" class="form-control text-center cantidadValor" value="${
-                                ele.cantidadValor == undefined
-                                    ? 0
-                                    : ele.cantidadValor
-                            }"></td>
-                            <td><input type="number" class="form-control text-center comisionPtoVenta" value="${
-                                ele.comisionPtoVenta == undefined
-                                    ? 0
-                                    : ele.comisionPtoVenta
-                            }"></td>
-                            <td><input type="number" class="form-control text-center comisionDistribuidor" value="${
-                                ele.comisionDistribuidor == undefined
-                                    ? 0
-                                    : ele.comisionDistribuidor
-                            }"></td>
-                            <td class="text-center" style="padding-top: 12px">
-                                <div class="icheck-inline-producto text-center">
-                                    <input type="checkbox" value="${
-                                        ele.idComisionDetalle
-                                    }" data-checkbox="icheckbox_square-blue">
-                                </div>
-                            </td>
-                        </tr>`);
-                    });
-                    $(".icheck-inline-producto").iCheck({
-                        checkboxClass: "icheckbox_square-blue",
-                        radioClass: "iradio_square-red",
-                        increaseArea: "25%",
-                    });
-                    $("#txtTituloProductos").text(
-                        `PRODUCTOS : SELECCIONADO(S) ${response.length}`
-                    );
-                } else {
-                    $("#txtTituloProductos").text(`PRODUCTOS`);
-                    contenedor.append(
-                        `<tr><td colspan="7" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
-                    );
-                }
-                $(".CbCondicion").select2();
-                options.callBackSuccess();
-            },
-        });
+                    </td>
+                    <td>
+                        <input
+                        type="number"
+                        class="form-control text-center comisionPtoVenta"
+                        data-codigo="${ele.codigoPadre}"
+                        value="${
+                            ele.comisionPtoVenta == undefined
+                                ? 0
+                                : ele.comisionPtoVenta
+                        }">
+                    </td>
+                    <td>
+                        <input
+                        type="number"
+                        class="form-control text-center comisionDistribuidor"
+                        data-codigo="${ele.codigoPadre}"
+                        value="${
+                            ele.comisionDistribuidor == undefined
+                                ? 0
+                                : ele.comisionDistribuidor
+                        }">
+                    </td>
+                    <td class="text-center" style="padding-top:12px;">
+                        <div class="icheck-inline-producto text-center">
+                            <input
+                            type="checkbox"
+                            value="${ele.codigoPadre}"
+                            ${ele.estadoEliminar == 0 ? "" : "checked"}
+                            data-checkbox="icheckbox_square-blue">
+                        </div>
+                    </td>
+                </tr>`);
+            });
+            $(".icheck-inline-producto").iCheck({
+                checkboxClass: "icheckbox_square-blue",
+                radioClass: "iradio_square-red",
+                increaseArea: "25%",
+            });
+            $("#txtTituloProductos").text(
+                `PRODUCTOS : SELECCIONADO(S) ${options.lista.length}`
+            );
+        } else {
+            $("#txtTituloProductos").text(`PRODUCTOS`);
+            contenedor.append(
+                `<tr><td colspan="7" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
+            );
+        }
+        $(".CbCondicion").select2();
+        options.callBackSuccess();
     };
     const fncListarProductos = function () {
         CargarTablaDatatable({
             uniform: true,
-            ajaxUrl: "ProductoListarJson",
+            ajaxUrl: "ProductoCodigoPadreListarJson",
             table: "#tableProductos",
             ajaxDataSend: {
                 idCeo: idCeo,
             },
             tableColumns: [
-                { data: "sku", title: "SKU" },
                 { data: "nombreProducto", title: "PRODUCTO" },
-                { data: "caja", title: "CAJA", className: "text-center" },
-                { data: "paquete", title: "PAQUETE", className: "text-center" },
-                {
-                    data: "cajaxpaquete",
-                    title: "CAJAXPAQUETE",
-                    className: "text-center",
-                },
                 {
                     data: "codigoPadre",
                     title: "CODIGO PADRE",
-                    className: "text-center",
-                },
-                {
-                    data: "codigoHijo",
-                    title: "CODIGO HIJO",
-                    className: "text-center",
-                },
-                {
-                    data: "nombreLinea",
-                    title: "LINEA",
-                    className: "text-center",
+                    class: "text-center",
+                    width: "10%",
                 },
                 {
                     data: null,
                     title: "OPCION",
+                    width: "10%",
                     render: function (value) {
                         return `
                         <div class="icheck-inline text-center">
-                            <input type="checkbox" id="CheckTicket" value="${value.idProducto}" data-checkbox="icheckbox_square-blue">
+                            <input type="checkbox" id="CheckTicket" value="${value.codigoPadre}" data-checkbox="icheckbox_square-blue">
                         </div>`;
                     },
                     class: "text-center",

@@ -72,17 +72,27 @@
                 </div>
                 <div class="kt-portlet__head-toolbar">
                     <div class="kt-portlet__head-actions">
-                        <a href="javascript:void(0)" id="btnModalProducto" class="btn btn-primary">
-                            <i class="fa fa-plus-square mr-1"></i>ABRIR PRODUCTOS
-                        </a>
-                        <a href="javascript:void(0)" id="btnEliminarProductos" class="btn btn-danger">
-                            <i class="fa fa-trash-alt mr-1"></i>ELIMINAR PRODUCTOS
-                        </a>
+                        <button type="button" class="btn btn-primary btn-icon" id="btnModalProducto" data-skin="dark" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="AGREGAR PRODUCTOS">
+                            <i class="fa fa-plus-square mr-1"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-icon" id="btnEliminarProductos" data-skin="dark" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="ELIMINAR PRODUCTOS">
+                            <i class="fa fa-trash mr-1"></i>
+                        </button>
                     </div>
                 </div>
             </div>
             <div class="kt-portlet__body">
                 <div class="row">
+                    <div class="col-xl-2 col-md-3 ml-auto pb-4">
+                        <form autocomplete="off">
+                            <div class="form-group row">
+                                <label class="col-2 col-form-label">Buscar:</label>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" placeholder="Buscar..." id="inputBuscadorProducto">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div class="col-lg-12">
                         <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaProductoRegistrado">
                             <thead>
@@ -116,6 +126,7 @@
     idCeo = @json($idCeo);
     nombreCeo = @json($nombreCeo);
     Comision = @json($Comision);
+
 </script>
 <script src="{{asset('assets/viewJs/Comision/ComisionEditar.js')}}"></script>
 @endpush

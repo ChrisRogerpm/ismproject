@@ -40,6 +40,7 @@ Route::post('GestorEliminarJson', 'GestorController@GestorEliminarJson');
 #endregion
 #region PRODUCTO
 Route::get('ProductoListarJson', 'ProductoController@ProductoListarJson');
+Route::get('ProductoCodigoPadreListarJson', 'ProductoController@ProductoCodigoPadreListarJson');
 Route::post('ProductoRegistrarJson', 'ProductoController@ProductoRegistrarJson');
 Route::post('ProductoEditarJson', 'ProductoController@ProductoEditarJson');
 Route::post('ProductoBloquearJson', 'ProductoController@ProductoBloquearJson');
@@ -76,6 +77,7 @@ Route::post('MesaRutaEliminarJson', 'MesaRutaController@MesaRutaEliminarJson');
 #region MESA_SUPERVISOR
 Route::get('MesaSupervisorListarJson', 'MesaSupervisorController@MesaSupervisorListarJson');
 Route::post('MesaSupervisorEliminarJson', 'MesaSupervisorController@MesaSupervisorEliminarJson');
+Route::post('MesaSupervisorRegistrarJson', 'MesaSupervisorController@MesaSupervisorRegistrarJson');
 #endregion
 #region GESTOR_PRODUCTO
 Route::get('GestorProductoListarJson', 'GestorProductoController@GestorProductoListarJson');
@@ -124,12 +126,14 @@ Route::get('GestoresDownload', 'ExcelController@GestoresDownload');
 Route::get('BonificacionesDownload', 'ExcelController@BonificacionesDownload');
 Route::get('GestorExcelDownload', 'ExcelController@GestorExcelDownload');
 Route::get('PedidoMasVendidoDownload', 'ExcelController@PedidoMasVendidoDownload');
+Route::get('ProductoDownload', 'ExcelController@ProductoDownload');
 #endregion
 #region Reporte
 Route::get('ReporteProductoListarJson', 'ReportesController@ReporteProductoListarJson');
 Route::get('ReporteNroPedidoListarJson', 'ReportesController@ReporteNroPedidoListarJson');
 Route::get('ReporteComisionesGestoresJson', 'ReportesController@ReporteComisionesGestoresJson');
 Route::get('PedidoDetalleListarProductosGestorJson', 'ReportesController@PedidoDetalleListarProductosGestorJson');
+Route::get('ReporteGestoresBonificacionCentroOperativoJson', 'ReportesController@ReporteGestoresBonificacionCentroOperativoJson');
 #endregion
 #region COMISION
 Route::get('ComisionListarJson', 'ComisionController@ComisionListarJson');
@@ -141,4 +145,5 @@ Route::post('ComisionImportarDataJson', 'ComisionController@ComisionImportarData
 #region COMISION DETALLE
 Route::post('ComisionDetalleRegistrarJson', 'ComisionDetalleController@ComisionDetalleRegistrarJson');
 Route::get('ComisionDetalleListarJson', 'ComisionDetalleController@ComisionDetalleListarJson');
+Route::post('ComisionDetalleEliminarJson', 'ComisionDetalleController@ComisionDetalleEliminarJson');
 #endregion

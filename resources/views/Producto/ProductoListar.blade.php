@@ -14,8 +14,11 @@
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <a class="dropdown-item btnNuevo" href="javascript:void(0)"><i class="fa fa-plus-square"></i>NUEVO PRODUCTO</a>
-                    <a class="dropdown-item btnImportarExcel" href="javascript:void(0)"><i class="fa fa-file-excel"></i>IMPORTAR EXCEL</a>
                     <a class="dropdown-item btnBuscar" href="javascript:void(0)"><i class="fa fa-search"></i>BUSCAR</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item btnImportarExcel" href="javascript:void(0)"><i class="fa fa-file-excel"></i>IMPORTAR EXCEL</a>
+                    <a class="dropdown-item btnExportarExcel" href="javascript:void(0)"><i class="fa fa-file-excel"></i>EXPORTAR EXCEL</a>
+
                 </div>
             </div>
         </div>

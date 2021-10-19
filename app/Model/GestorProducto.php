@@ -61,7 +61,8 @@ class GestorProducto extends Model
             p.cajaxpaquete,
             p.codigoPadre,
             p.codigoHijo,
-            p.estado
+            p.estado,
+            0 as estadoEliminar
         FROM gestorproducto AS gp
         INNER JOIN producto AS p ON p.idProducto = gp.idProducto
         INNER JOIN linea AS l ON l.idLinea = p.idLinea
@@ -70,10 +71,7 @@ class GestorProducto extends Model
     public static function GestorProductoEliminar(Request $request)
     {
         $ListaProductosEliminar = $request->input("ListaProductosEliminar");
-        foreach ($ListaProductosEliminar as $lista) {
-            $data = GestorProducto::findOrfail($lista);
-            $data->delete();
-        }
+        GestorProducto::whereIn('idProducto', $ListaProductosEliminar)->where('idGestor', $request->input('idGestor'))->delete();
     }
     public static function GestorProductoMarcasConcatenadas($idGestor)
     {
