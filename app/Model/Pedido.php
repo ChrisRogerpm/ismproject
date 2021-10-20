@@ -440,4 +440,14 @@ class Pedido extends Model
         }
         return collect($nuevaData);
     }
+    public static function PedidoProcesarNroPedidosGestorNull(Request $request)
+    {
+        $PedidosNull = Pedido::whereNull('idGestor')->where('idCeo', $request->input('idCeo'))->get();
+        $DataGGVVRUTA = collect(Gestor::GestorListarData($request));
+        $DataDATA_CLI = collect(Cliente::ClienteListar($request));
+        // $PedidoDetalle = PedidoDetalle
+        foreach ($PedidosNull as $pedido) {
+            $Cli = $DataDATA_CLI->where('nroDocumento', $pedido->nroDocumentoCliente)->first();
+        }
+    }
 }

@@ -496,6 +496,7 @@ let ProductoRegistrar = (function () {
         if (options.lista.length > 0) {
             options.lista.map((ele) => {
                 contenedor.append(`<tr class="Fila${ele.idProducto}">
+                <td class="text-center">${ele.nombreLinea}</td>
                 <td class="text-center">${ele.sku}</td>
                 <td>${ele.nombreProducto}</td>
                 <td>${ele.marca}</td>
@@ -523,7 +524,7 @@ let ProductoRegistrar = (function () {
         } else {
             $("#txtTituloProductos").text(`PRODUCTOS`);
             contenedor.append(
-                `<tr><td colspan="6" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
+                `<tr><td colspan="7" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td></tr>`
             );
         }
         options.callBackSuccess();

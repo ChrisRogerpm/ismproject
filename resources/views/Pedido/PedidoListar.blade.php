@@ -45,7 +45,7 @@
     </div>
     <div class="col-md-12">
         <div class="kt-portlet kt-portlet--mobile">
-            <div class="kt-portlet__head">
+            {{-- <div class="kt-portlet__head">
                 <div class="kt-portlet__head-label">
                     <h3 class="kt-portlet__head-title" id="txtTituloProductos"></h3>
                 </div>
@@ -57,7 +57,7 @@
                         </button>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <div class="kt-portlet__body">
                 <form id="frmNuevo">
                     <div class="row">
