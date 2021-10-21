@@ -81,6 +81,7 @@ let ReporteComisionesListar = (function () {
                     data: "montoComision",
                     title: "COMISIÓN",
                     className: "text-center",
+                    width: "10%",
                 },
             ],
             tablefooterCallback: function () {
