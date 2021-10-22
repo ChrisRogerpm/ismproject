@@ -57,6 +57,7 @@ Route::post('ClienteImportarDataJson', 'ClienteController@ClienteImportarDataJso
 #region MESA
 Route::get('MesaListarJson', 'MesaController@MesaListarJson');
 Route::post('MesaRegistrarJson', 'MesaController@MesaRegistrarJson');
+Route::post('MesaEditarJson', 'MesaController@MesaEditarJson');
 #endregion
 #region RUTA
 Route::get('RutaListarJson', 'RutaController@RutaListarJson');
