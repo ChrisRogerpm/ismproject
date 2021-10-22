@@ -91,9 +91,14 @@ class BonificacionController extends Controller
         $data = "";
         $mensaje = "";
         try {
-            $data = Bonificacion::BonificacionImportarData($request);
-            $respuesta = true;
-            $mensaje = "Se ha importado la data exitosamente";
+            $extension = $request->file('archivoBonificacion')->extension();
+            if ($extension == "txt") {
+                $data = Bonificacion::BonificacionImportarData($request);
+                $respuesta = true;
+                $mensaje = "Se ha importado la data exitosamente";
+            } else {
+                $mensaje = "El formato del archivo no es CSV";
+            }
         } catch (Exception $ex) {
             $mensaje = $ex->getMessage();
         }

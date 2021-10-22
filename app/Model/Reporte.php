@@ -28,7 +28,7 @@ class Reporte extends Model
             ),3) AS cantidadPaquetes,
             ROUND((pd.precio * (SELECT SUM(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.sku = pd.sku AND pdx.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pdx.idCeo = $idCeo)),3) as total
         FROM pedidodetalle AS pd
-        WHERE pd.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pd.idCeo = $idCeo
+        WHERE pd.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pd.idCeo = $idCeo AND pd.tdocto = '2MI'
         GROUP BY pd.sku,pd.precio
         ORDER BY (SELECT SUM(pdx.cantidad) FROM pedidodetalle AS pdx WHERE pdx.sku = pd.sku AND pdx.fechaVenta BETWEEN '$fechaInicio' AND '$fechaFin' AND pdx.idCeo = $idCeo) DESC
         "));

@@ -57,9 +57,10 @@ class PedidoDetalle extends Model
         $lista = [];
         $codigoPadres = $data->groupBy('codigoPadre')->keys()->toArray();
         foreach ($codigoPadres as $codigo) {
+            $marcaPro = Producto::where('codigoPadre', $codigo)->where('idCeo', $idCeo)->first();
             $lista[] = [
                 'codigoPadre' => $codigo,
-                'marca' => Producto::where('codigoPadre', $codigo)->where('idCeo', $idCeo)->first()->marca,
+                'marca' => $marcaPro == null ? '' : $marcaPro->marca, //Producto::where('codigoPadre', $codigo)->where('idCeo', $idCeo)->first()->marca,
                 'cantidad' => $data->where('codigoPadre', $codigo)->sum('cantidad')
             ];
         }

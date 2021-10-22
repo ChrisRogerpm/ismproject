@@ -121,6 +121,7 @@
                                 <table class="table table-striped table-sm table-bordered table-hover table-checkable" id="tablaProductoRegistrado">
                                     <thead>
                                         <tr>
+                                            <th class="text-center">LINEA</th>
                                             <th class="text-center">CODALT</th>
                                             <th>PRODUCTO</th>
                                             <th>MARCA</th>
@@ -131,7 +132,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td colspan="6" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td>
+                                            <td colspan="7" class="text-center">NO SE HA REGISTRADO PRODUCTOS</td>
                                         </tr>
                                     </tbody>
                                 </table>

@@ -199,20 +199,13 @@ class Excel
             )
         ];
         $colorFondoCabecera = "F7CAAC";
-        $Titulo1 = "LISTA DE BONIFICACIONES";
         $sheet = $spreadsheet->getDefaultStyle()->getFont()->setSize(11);
         $sheet = $spreadsheet->getDefaultStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF');
         $sheet = $spreadsheet->getActiveSheet();
 
-        $sheet->mergeCells('A1:N1')->setCellValue('A1', $Titulo1);
-        $sheet->getStyle('A1:N1')->applyFromArray($styleArray);
-        $sheet->getStyle('A1')->getAlignment()->setHorizontal('center');
-        $sheet->getStyle('A1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
-        $sheet->getStyle('A1')->getFont()->setBold(true);
-
         $TituloCabecera = ['C.O', 'NRO DE LINEA', 'MARCA', 'FORMATO', 'COD', 'CAJA X', 'CONDICIÓN AT', 'SKU', 'BONIF(BOTELLAS)', 'MARCA/FORMATO BONIFICAR', 'SABOR A BONIFICAR', '#DÍAS A BONIFICAR', 'DEL', 'AL'];
         $data1 = Bonificacion::BonificacionListarProcesado($request);
-        $fila = 2;
+        $fila = 1;
         foreach ($TituloCabecera as $i => $d) {
             $sheet->setCellValue(Excel::Columnas[$i] . $fila, ucwords($TituloCabecera[$i]))->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
             $valor = Excel::Columnas[$i] . $fila;
@@ -473,7 +466,7 @@ class Excel
         $sheet = $spreadsheet->getDefaultStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF');
         $sheet = $spreadsheet->getActiveSheet();
         $TituloCabecera = [
-            'CODATL',
+            'CODALT',
             'PRODUCTO',
             'MARCA',
             'FORMATO',
