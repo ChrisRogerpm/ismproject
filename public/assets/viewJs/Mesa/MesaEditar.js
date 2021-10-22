@@ -16,16 +16,15 @@ let MesaEditar = (function () {
             if (_objetoForm_frmNuevo.valid()) {
                 let dataForm = $("#frmNuevo").serializeFormJSON();
                 dataForm = Object.assign(dataForm, { idMesa: Mesa.idMesa });
-                console.log(dataForm);
-                // EnviarDataPost({
-                //     url: "MesaEditarJson",
-                //     data: dataForm,
-                //     callBackSuccess: function () {
-                //         setTimeout(function () {
-                //             RefrescarVentana();
-                //         }, 1100);
-                //     },
-                // });
+                EnviarDataPost({
+                    url: "MesaEditarJson",
+                    data: dataForm,
+                    callBackSuccess: function () {
+                        setTimeout(function () {
+                            RefrescarVentana();
+                        }, 1100);
+                    },
+                });
             }
         });
         //#region MODAL RUTAS
