@@ -3,7 +3,7 @@
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 <head>
     <meta charset="utf-8" />
-    <title>PORTAL DE TRAMITE PRÁCTICAS PRE PROFESIONALES Y TESIS</title>
+    <title>Industria San Miguel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!--begin::Fonts -->
     <link rel="stylesheet" href="{{asset('fonts/fonts-google.css')}}">
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{{asset('assets/css/skins/header/menu/light.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/skins/brand/dark.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/skins/aside/dark.css')}}">
-    <link href="{{asset('assets/media/logos/logo_fau_ico.png')}}" rel="icon">
+    <link href="{{asset('assets/media/logos/iconn.ico')}}" rel="icon">
     <link rel="stylesheet" href="{{asset('fonts/fontstyle.css')}}">
     @stack('css')
 </head>
@@ -28,12 +28,12 @@
                 <div class="kt-grid__item  kt-grid__item--order-tablet-and-mobile-2  kt-grid kt-grid--hor kt-login__aside">
                     @yield('content')
                 </div>
-                <div class="kt-grid__item kt-grid__item--fluid kt-grid__item--center kt-grid kt-grid--ver kt-login__content" style="background-image: url({{asset('assets/media/bg/bg-4.png')}});">
+                <div class="kt-grid__item kt-grid__item--fluid kt-grid__item--center kt-grid kt-grid--ver kt-login__content" style="background-image: url({{asset('assets/media/bg/bg-4.jpg')}});">
                     <div class="kt-login__section">
                         <div class="kt-login__block">
-                            <h3 class="kt-login__title text-center">FACULTAD DE ARQUITECTURA</h3>
+                            <h3 class="kt-login__title text-center">INDUSTRIAS SAN MIGUEL</h3>
                             <div class="kt-login__desc text-center">
-                                PORTAL DE TRAMITE PRÁCTICAS PRE PROFESIONALES Y TESIS
+                                EMPRESA DE JORGE AÑAÑOS JERÍ
                             </div>
                         </div>
                     </div>

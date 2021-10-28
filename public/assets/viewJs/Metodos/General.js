@@ -1,5 +1,5 @@
 basePath = document.location.origin + "/";
-basePathApi = document.location.origin + "/api/";
+basePathApi = document.location.origin + "/"; //api/";
 basePathTramite = basePath + "assets/viewJs/Archivos/PDF/";
 basePathImagen = basePath + "assets/viewJs/Archivos/Imagenes/Perfiles/";
 basePathSeguimiento = basePath + "assets/viewJs/Archivos/Seguimiento";
@@ -253,7 +253,7 @@ const simpleDataTable = (obj) => {
         tabledrawCallback: "",
         tablerowCallback: "",
         tablefooterCallback: "",
-        tablepageLength: 10
+        tablepageLength: 10,
     };
     let opciones = $.extend({}, defaults, obj);
     let objt = "_objetoDatatable";
@@ -277,8 +277,8 @@ const simpleDataTable = (obj) => {
                 if (opciones.tableHeaderCheck) {
                     $(api.column(0).header()).html(
                         '<input type="checkbox" name="header_chk_all" data-children="' +
-                        opciones.table +
-                        '" class="form-check-input-styled-info chk_all text-center">'
+                            opciones.table +
+                            '" class="form-check-input-styled-info chk_all text-center">'
                     );
                 }
             },
@@ -301,7 +301,7 @@ const CargarDataSelect = (obj) => {
         disabledall: false,
         withoutplaceholder: false,
         parameter: {},
-        callBackSuccess: function () { },
+        callBackSuccess: function () {},
     };
     let options = $.extend({}, objeto, obj);
     $(options.idSelect).empty();
@@ -325,8 +325,8 @@ const CargarDataSelect = (obj) => {
                         .empty()
                         .append(
                             '<option value="0">-- ' +
-                            options.alldataTitulo +
-                            " --</option>"
+                                options.alldataTitulo +
+                                " --</option>"
                         );
                 } else {
                     $(options.idSelect)
@@ -367,14 +367,14 @@ const CargarDataSelect = (obj) => {
 
                     $(options.idSelect).append(
                         "<option " +
-                        selected +
-                        ' value="' +
-                        value[options.dataId] +
-                        '" ' +
-                        parameterdata +
-                        ">" +
-                        value[options.dataValor] +
-                        "</option>"
+                            selected +
+                            ' value="' +
+                            value[options.dataId] +
+                            '" ' +
+                            parameterdata +
+                            ">" +
+                            value[options.dataValor] +
+                            "</option>"
                     );
                 });
                 $(options.idSelect).select2();
@@ -422,7 +422,7 @@ const CargarTablaDatatable = (obj) => {
         tableColumns: [],
         loader: false,
         tableHeaderCheck: false,
-        callBackSuccess: function () { },
+        callBackSuccess: function () {},
     };
     let opciones = $.extend({}, defaults, obj);
     if (opciones.ajaxUrl == null) {
@@ -692,8 +692,8 @@ const EnviarDataPost = (obj) => {
         limpiarform: "",
         showMessag: true,
         showMessagError: true,
-        callBackSuccess: function () { },
-        callBackError: function () { },
+        callBackSuccess: function () {},
+        callBackError: function () {},
     };
 
     let opciones = $.extend({}, defaults, obj);
@@ -750,28 +750,17 @@ const EnviarDataPost = (obj) => {
                 opciones.callBackError(response);
             }
         })
-        // .catch(function (error) {
-        //     $('.modal').modal('hide');
-        //     let statusCode = error.response.status;
-        //     if (statusCode == 401) {
-        //         swal.fire({
-        //             title: 'LA SESIÓN HA EXPIRADO',
-        //             text: "VUELVA A INICIAR SESIÓN NUEVAMENTE",
-        //             type: 'warning',
-        //             confirmButtonColor: '#FC8004',
-        //             confirmButtonText: 'OK',
-        //             allowOutsideClick: false
-        //         }).then((result) => {
-        //             if (result.value) {
-
-        //                 $("#modalRenovarSessionToken").modal({
-        //                     backdrop: 'static',
-        //                     keyboard: false
-        //                 })
-        //             }
-        //         })
-        //     }
-        // })
+        .catch(function (error) {
+            $(".modal").modal("hide");
+            let statusCode = error.response.status;
+            if (statusCode == 401) {
+                let mensaje = error.response.data.mensaje;
+                ShowAlert({
+                    type: "error",
+                    message: mensaje,
+                });
+            }
+        })
         .finally(function () {
             if (opciones.loader) {
                 $.LoadingOverlay("hide");
@@ -782,7 +771,7 @@ const LimpiarFormulario = (obj) => {
     let objeto = {
         formulario: null,
         nameVariable: null,
-        callBackSuccess: function () { },
+        callBackSuccess: function () {},
     };
     let options = $.extend({}, objeto, obj);
     $(options.formulario).trigger("reset");
@@ -797,7 +786,7 @@ const CargarDataGET = (obj) => {
     let objeto = {
         url: null,
         dataForm: [],
-        callBackSuccess: function () { },
+        callBackSuccess: function () {},
         loading: "",
     };
     let options = $.extend({}, objeto, obj);
@@ -881,8 +870,8 @@ const EnviarDataPostWithOutApi = (obj) => {
         limpiarform: "",
         showMessag: true,
         showMessagError: true,
-        callBackSuccess: function () { },
-        callBackError: function () { },
+        callBackSuccess: function () {},
+        callBackError: function () {},
     };
 
     let opciones = $.extend({}, defaults, obj);

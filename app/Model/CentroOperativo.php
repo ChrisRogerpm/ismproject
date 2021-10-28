@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 class CentroOperativo extends Model
@@ -54,6 +55,8 @@ class CentroOperativo extends Model
     }
     public static function CentroOperativoListarActivos()
     {
+        $usuario = Auth::user();
+        $whereAdicional = $usuario->idCeo == 0 ? '' : 'AND co.idCeo =' . $usuario->idCeo;
         return DB::select(DB::raw("SELECT
             co.idCeo,
             co.nombreCeo,
@@ -62,7 +65,7 @@ class CentroOperativo extends Model
             co.lugar,
             co.estado
         FROM centrooperativo AS co
-        WHERE co.estado = 1
+        WHERE co.estado = 1 $whereAdicional
         ORDER BY co.idCeo DESC"));
     }
     public static function CentroOperativoBloquear(Request $request)

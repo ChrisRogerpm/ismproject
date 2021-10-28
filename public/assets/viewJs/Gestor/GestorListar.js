@@ -285,12 +285,13 @@ let GestorListar = (function () {
         });
     };
     const fncActividadButtonEliminar = () => {
-        let buttonEliminar = $("#btnContenedorEliminar");
-        if (ListaGestoresEliminar.length > 0) {
-            buttonEliminar.show();
-        } else {
-            buttonEliminar.hide();
-        }
+        // let buttonEliminar = $("#btnContenedorEliminar");
+        // buttonEliminar.show();
+        // if (ListaGestoresEliminar.length > 0) {
+        //     buttonEliminar.show();
+        // } else {
+        //     buttonEliminar.hide();
+        // }
     };
     return {
         init: function () {

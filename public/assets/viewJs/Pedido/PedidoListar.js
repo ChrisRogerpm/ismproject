@@ -83,7 +83,6 @@ let PedidoListar = (function () {
                 idCeo: options.idCeo,
             },
             callBackSuccess: function (response) {
-                console.log(response);
                 $("#MontoTotalGestoresActivos").text(response.GestoresVigentes);
                 $("#FechaVigenciaBonificacion").text(
                     response.BonificacionVigente

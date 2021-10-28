@@ -57,38 +57,38 @@
                         <div class="kt-header__topbar-item kt-header__topbar-item--user">
                             <div class="kt-header__topbar-wrapper" data-toggle="dropdown" data-offset="0px,0px">
                                 <div class="kt-header__topbar-user">
-                                    <span class="kt-header__topbar-welcome kt-hidden-mobile">ISM</span>
+                                    <span class="kt-header__topbar-welcome kt-hidden-mobile">{{Auth::user()->nombreApellido}}</span>
                                     <span class="kt-header__topbar-username kt-hidden-mobile"></span>
                                     {{-- <img class="kt-hidden" alt="Pic" src="{{asset('assets/media/users/300_25.jpg')}}" /> --}}
-                                    <span class="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold">I</span>
+                                    <span class="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold">{{Auth::user()->nombreApellido[0]}}</span>
                                 </div>
                             </div>
-                            {{-- <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl"> --}}
-                            {{-- <div class="kt-notification"> --}}
-                            {{-- <a href="" class="kt-notification__item">
+                            <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
+                                <div class="kt-notification">
+                                    <a href="" class="kt-notification__item">
                                         <div class="kt-notification__item-icon"> <i class="fa fa-user-alt kt-font-success"></i> </div>
                                         <div class="kt-notification__item-details">
                                             <div class="kt-notification__item-title kt-font-bold">MI PERFIL</div>
                                             <div class="kt-notification__item-time"> Configuraciones de cuenta y más </div>
                                         </div>
-                                    </a> --}}
-                            {{-- <a href="{{route('CambiarContrasenia')}}" class="kt-notification__item">
-                            <div class="kt-notification__item-icon"> <i class="fa fa-lock kt-font-warning"></i> </div>
-                            <div class="kt-notification__item-details">
-                                <div class="kt-notification__item-title kt-font-bold"> CAMBIAR CONTRASEÑA </div>
-                                <div class="kt-notification__item-time"> Cambio de contraseña </div>
-                            </div>
-                            </a> --}}
-                            {{-- <a href="javascript:void(0)" class="kt-notification__item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    </a>
+                                    <a href="javascript:void(0)" class="kt-notification__item">
+                                        <div class="kt-notification__item-icon"> <i class="fa fa-lock kt-font-warning"></i> </div>
+                                        <div class="kt-notification__item-details">
+                                            <div class="kt-notification__item-title kt-font-bold"> CAMBIAR CONTRASEÑA </div>
+                                            <div class="kt-notification__item-time"> Cambio de contraseña </div>
+                                        </div>
+                                    </a>
+                                    <a href="javascript:void(0)" class="kt-notification__item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         <div class="kt-notification__item-icon"> <i class="fa fa-power-off kt-font-dark"></i> </div>
                                         <div class="kt-notification__item-details">
                                             <div class="kt-notification__item-title kt-font-bold"> CERRAR SESIÓN </div>
                                             <div class="kt-notification__item-time"> Cierre total del sistema </div>
                                         </div>
                                         <form id="logout-form" action="{{route('CerrarSesion')}}" method="POST" style="display: none;">{{csrf_field()}}</form>
-                            </a> --}}
-                            {{-- </div> --}}
-                            {{-- </div> --}}
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -137,6 +137,15 @@
     <script src="{{asset('assets/js/pages/crud/forms/widgets/bootstrap-datetimepicker.js')}}"></script>
     <script src="{{asset('assets/js/pages/crud/forms/widgets/bootstrap-datepicker.js')}}"></script>
     <script src="{{asset('assets/plugins/global/validation/validate.min.js')}}"></script>
+    @if(session()->has('message'))
+        <script>
+            let mensaje = @json(session()->get('message'));
+            ShowAlert({
+                type: 'warning',
+                message: @json(session()->get('message'))
+            });
+        </script>
+    @endif
     @stack('js')
 </body>
 </html>

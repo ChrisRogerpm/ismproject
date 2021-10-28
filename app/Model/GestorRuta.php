@@ -66,16 +66,14 @@ class GestorRuta extends Model
     }
     public static function GestorRutaRutasConcatenadas($idGestor)
     {
-        $data = collect(DB::select(DB::raw("SELECT
-        r.descripcion
-        FROM gestorruta AS gr
-        INNER JOIN ruta AS r ON r.idRuta = gr.idRuta
-        WHERE gr.idGestor = $idGestor
-        GROUP BY r.descripcion")));
+        $data = collect(DB::select(DB::raw("SELECT r.descripcion FROM gestorruta AS gr INNER JOIN ruta AS r ON r.idRuta = gr.idRuta WHERE gr.idGestor = $idGestor GROUP BY r.descripcion")));
+
         $data = $data->map(function ($item, $key) {
             return $item->descripcion;
         })->toArray();
+
         $data = implode("-", $data);
+
         return $data;
     }
 }

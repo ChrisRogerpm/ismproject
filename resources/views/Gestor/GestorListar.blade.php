@@ -40,9 +40,11 @@
                         </div>
                     </div>
                 </form>
-                <div class="row pb-3" id="btnContenedorEliminar" style="display:none">
-                    <div class="col-xl-1 col-md-2 ml-auto">
-                        <button type="button" class="btn btn-danger btn-block" id="btnElimnar"><i class="fa fa-trash mr-1"></i> ELIMINAR</button>
+                <div class="row pb-3" id="btnContenedorEliminar">
+                    <div class="col-xl-1 col-md-2">
+                        <button type="button" class="btn btn-danger btn-icon" id="btnElimnar" data-skin="dark" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="ELIMINAR GESTOR">
+                            <i class="fa fa-trash mr-1"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="row">

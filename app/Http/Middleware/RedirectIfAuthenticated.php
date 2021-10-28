@@ -2,9 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Providers\RouteServiceProvider;
 use Closure;
+use App\Model\Rol;
+use App\Model\Permiso;
 use Illuminate\Support\Facades\Auth;
+use App\Providers\RouteServiceProvider;
 
 class RedirectIfAuthenticated
 {
@@ -19,7 +21,16 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            return redirect(RouteServiceProvider::HOME);
+            $usuario = Auth::user();
+            $paginaInicioRedireccion = "";
+            if ($usuario->idRol == 1) {
+                $paginaInicioRedireccion = "Pedido";
+            } else {
+                $rol = Rol::findOrfail($usuario->idRol);
+                $objPermiso = Permiso::where('modulo', $rol->paginaInicio)->first();
+                $paginaInicioRedireccion = $objPermiso->nombrePermiso;
+            }
+            return redirect($paginaInicioRedireccion);
         }
 
         return $next($request);
