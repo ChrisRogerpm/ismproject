@@ -4,7 +4,7 @@
 <div class="kt-subheader   kt-grid__item" id="kt_subheader">
     <div class="kt-container  kt-container--fluid ">
         <div class="kt-subheader__main">
-            <h3 class="kt-subheader__title">REGISTRAR MESA </h3>
+            <h3 class="kt-subheader__title">EDITAR MESA </h3>
             <span class="kt-subheader__separator kt-hidden"></span>
         </div>
         <div class="kt-subheader__toolbar">

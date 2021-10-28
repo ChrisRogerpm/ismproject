@@ -57,17 +57,29 @@ class MesaController extends Controller
                 MesaRuta::MesaRutaRegistrar($req);
             }
             foreach ($ListaSupervisorsRegistrados as $ls) {
-                $req = new Request([
-                    'idMesa' => $data->idMesa,
-                    'idSupervisor' => $ls['idSupervisor'],
-                ]);
-                MesaSupervisor::MesaSupervisorRegistrar($req);
+                $data = new MesaSupervisor();
+                $data->idMesa =  $data->idMesa;
+                $data->idSupervisor = $ls['idSupervisor'];
+                $data->save();
             }
             $respuesta = true;
             $mensaje = "Se ha registrado una Mesa exitosamente";
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje]);
+    }
+    public function MesaEditarJson(Request $request)
+    {
+        $respuesta = false;
+        $mensaje = "";
+        try {
+            Mesa::MesaEditar($request);
+            $respuesta = true;
+            $mensaje = "Se ha editado la mesa exitosamente";
+        } catch (Exception $ex) {
             $mensaje = $ex->getMessage();
         }
         return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje]);
