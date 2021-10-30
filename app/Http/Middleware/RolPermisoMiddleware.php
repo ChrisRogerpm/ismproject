@@ -26,11 +26,20 @@ class RolPermisoMiddleware
                 $rol = Rol::findOrfail(Auth::user()->idRol);
                 $objPermiso = Permiso::where('modulo', $rol->paginaInicio)->first();
                 $paginaInicioRedireccion = $objPermiso->nombrePermiso;
-                return redirect($paginaInicioRedireccion)->with('message', 'NO TIENE AUTORIZACIÓN PARA INGRESAR A ESE SECTOR DEL SISTEMA!');
+                $ruta = Route::current()->uri();
+                $moduloPermiso = Permiso::where('nombrePermiso', $ruta)->first();
+                return redirect($paginaInicioRedireccion)->with('message', "NO TIENE AUTORIZACIÓN PARA INGRESAR AL MODULO $moduloPermiso->modulo DEL SISTEMA!");
             } else {
+
+                $rol = Rol::findOrfail(Auth::user()->idRol);
+                $objPermiso = Permiso::where('modulo', $rol->paginaInicio)->first();
+                $paginaInicioRedireccion = $objPermiso->nombrePermiso;
+                $ruta = Route::current()->uri();
+                $moduloPermiso = Permiso::where('nombrePermiso', $ruta)->first();
+
                 return response()->json(
                     [
-                        'mensaje' => 'NO TIENE PERMISO PARA USAR ESTE MÓDULO.',
+                        'mensaje' => "NO TIENE AUTORIZACIÓN PARA HACER USO DEL MODULO $moduloPermiso->modulo DEL SISTEMA!.",
                         'respuesta' => false
                     ],
                     401

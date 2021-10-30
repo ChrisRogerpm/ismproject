@@ -90,6 +90,43 @@ let ProductoEditar = (function () {
         });
         //#endregion
         //#region MODAL PRODUCTO
+        $(document).on("click", "#btnAgregarTodoProducto", function () {
+            Swal.fire({
+                title: `ESTA SEGURO DE AGREGAR TODO LOS PRODUCTOS?`,
+                text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "SI, AGREGAR!",
+                cancelButtonText: "NO, CANCELAR!",
+                allowOutsideClick: false,
+            }).then((result) => {
+                if (result.value) {
+                    let ProductosFiltrados = ListaProductos.filter((ele) => {
+                        return !ListaProductosRegistrados.find((arg) => {
+                            return arg.idProducto === ele.idProducto;
+                        });
+                    });
+                    let NuevaListaProductosRegistrados =
+                        ListaProductosRegistrados.concat(ProductosFiltrados);
+                    NuevaListaProductosRegistrados =
+                        NuevaListaProductosRegistrados.map((ele) => ({
+                            estadoEliminar: 0,
+                            ...ele,
+                        }));
+                    fncListaProductosRegistrados({
+                        lista: NuevaListaProductosRegistrados,
+                        buscador: true,
+                        callBackSuccess: function () {
+                            $("#ModalProducto").modal("hide");
+                            ListaProductosRegistrados =
+                                NuevaListaProductosRegistrados;
+                        },
+                    });
+                }
+            });
+        });
         $(document).on("click", "#btnModalProducto", function () {
             ListaProductosTabla = [];
             fncListarProductos();

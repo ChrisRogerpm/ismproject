@@ -88,7 +88,7 @@
             <span class="kt-menu__link-text">ROLES</span></a>
     </li>
     @endif
-    @if(ValidarModuloPermiso("ROL"))
+    @if(ValidarModuloPermiso("REPORTES"))
     <li class="kt-menu__item  kt-menu__item--submenu">
         <a href="javascript:;" class="kt-menu__link kt-menu__toggle">
             <i class="kt-menu__link-icon la fas fa-table"></i>

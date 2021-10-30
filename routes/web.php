@@ -17,13 +17,9 @@ Route::middleware(['guest'])->group(function () {
     Route::get('/', 'AutenticacionController@LoginVista')->name('login');
     Route::post('ValidarLoginJson', 'AutenticacionController@ValidarLoginJson');
 });
-
-
-
 // Route::get('/', 'ReportesController@ReportePedidosListarVista')->name('Conversion.Pedido');
-
 Route::post('CerrarSesionJson', 'AutenticacionController@CerrarSesionJson')->name('CerrarSesion');
-
+#region VISTA
 Route::middleware(['auth', 'rolpermisos.middleware'])->group(function () {
     Route::get('ReporteProducto', 'ReportesController@ReporteProductoMasVendidoVista')->name('Reporte.ProductoMasVendido');
     Route::get('ReporteNroPedido', 'ReportesController@ReporteNroPedidoMasVendidoVista')->name('Reporte.NroPedidoMasVendido');
@@ -80,8 +76,7 @@ Route::middleware(['auth', 'rolpermisos.middleware'])->group(function () {
     Route::get('RegistrarRol', 'RolController@RolRegistrarVista');
     Route::get('EditarRol/{idRol}', 'RolController@RolEditarVista');
 });
-
-
+#end
 Route::middleware(['auth', 'rolpermisos.middleware'])->group(function () {
     #region POST
     Route::post('ReportImportarExcelsJson', 'ReportesController@ReportImportarExcelsJson');
@@ -115,6 +110,7 @@ Route::middleware(['auth', 'rolpermisos.middleware'])->group(function () {
     #endregion
     #region MESA
     Route::post('MesaRegistrarJson', 'MesaController@MesaRegistrarJson');
+    Route::post('MesaEditarJson', 'MesaController@MesaEditarJson');
     #endregion
     #region RUTA
     Route::post('RutaActualizarJson', 'RutaController@RutaActualizarJson');
@@ -134,6 +130,7 @@ Route::middleware(['auth', 'rolpermisos.middleware'])->group(function () {
     Route::post('MesaSupervisorRegistrarJson', 'MesaSupervisorController@MesaSupervisorRegistrarJson');
     #endregion
     #region GESTOR_PRODUCTO
+    Route::get('GestorProductoListarJson', 'GestorProductoController@GestorProductoListarJson');
     Route::post('GestorProductoRegistrarJson', 'GestorProductoController@GestorProductoRegistrarJson');
     Route::post('GestorProductoEliminarJson', 'GestorProductoController@GestorProductoEliminarJson');
     Route::post('ProductoImportarDataJson', 'ProductoController@ProductoImportarDataJson');
@@ -188,9 +185,8 @@ Route::middleware(['auth', 'rolpermisos.middleware'])->group(function () {
     Route::post('RolEliminarJson', 'RolController@RolEliminarJson');
     #endregion
     #endregion
-
 });
-#region GET
+#region JSON GET
 #region CENTRO OPERATIVO
 Route::get('CentroOperativoListarJson', 'CentroOperativoController@CentroOperativoListarJson');
 Route::get('CentroOperativoListarActivosJson', 'CentroOperativoController@CentroOperativoListarActivosJson');

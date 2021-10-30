@@ -40,7 +40,7 @@
                         </div>
                     </div>
                 </form>
-                <div class="row pb-3" id="btnContenedorEliminar">
+                <div class="row pb-3 ml-auto" id="btnContenedorEliminar">
                     <div class="col-xl-1 col-md-2">
                         <button type="button" class="btn btn-danger btn-icon" id="btnElimnar" data-skin="dark" data-toggle="kt-tooltip" data-placement="top" title="" data-original-title="ELIMINAR GESTOR">
                             <i class="fa fa-trash mr-1"></i>

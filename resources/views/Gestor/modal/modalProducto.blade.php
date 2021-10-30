@@ -16,6 +16,8 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-window-close"></i>CERRAR
                 </button>
+                <button type="button" class="btn btn-dark" id="btnAgregarTodoProducto"><i class="fa fa-plus-square"></i>AGREGAR TODO LOS PRODUCTOS
+                </button>
                 <button type="button" class="btn btn-primary" id="btnAgregarProducto"><i class="fa fa-plus-square"></i>AGREGAR PRODUCTO
                 </button>
             </div>

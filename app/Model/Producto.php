@@ -261,7 +261,7 @@ class Producto extends Model
                 foreach ($dt as $dtx) {
                     $idLinea = "";
                     $obj = Producto::where('idCeo', $dtx['idCeo'])->where('sku', str_pad(trim($dtx['sku']), 3, '0', STR_PAD_LEFT))->first();
-                    $objLinea = Linea::where('idCeo', $dtx['idCeo'])->where('nombre', str_pad(trim($dtx['nombreLinea']), 3, '0', STR_PAD_LEFT))->first();
+                    $objLinea = Linea::where('idCeo', $dtx['idCeo'])->where('nombre', trim($dtx['nombreLinea']))->first();
                     if ($objLinea != null) {
                         $idLinea = $objLinea->idLinea;
                     } else {

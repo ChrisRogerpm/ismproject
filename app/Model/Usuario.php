@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -31,7 +32,7 @@ class Usuario extends Authenticatable implements JWTSubject
             u.idUsuario,
             ceo.nombreCeo,
             r.nombreRol,
-            u.nombreApellido,
+            UPPER(u.nombreApellido) AS nombreApellido,
             u.nroDocumento,
             u.email,
             IF(u.estado = 1,'ACTIVO','INACTIVO') AS estado,
@@ -45,14 +46,15 @@ class Usuario extends Authenticatable implements JWTSubject
     public static function UsuarioRegistrar(Request $request)
     {
         $data = new Usuario();
+        $data->idCeo = $request->input('idCeo');
         $data->idRol = $request->input('idRol');
         $data->nombre = $request->input('nombre');
         $data->apellido = $request->input('apellido');
-        $data->nombreApellido = $request->input('nombreApellido');
+        $data->nombreApellido = $request->input('nombre') . ' ' . $request->input('apellido');
         $data->nroDocumento = $request->input('nroDocumento');
         $data->email = $request->input('email');
-        $data->password = bcrypt($request->input('password'));
-        $data->fechaRegistro = $request->input('fechaRegistro');
+        $data->password = bcrypt($request->input('nroDocumento'));
+        $data->fechaRegistro = Carbon::now()->toDateString();
         $data->estado = 1;
         $data->save();
         return $data;
