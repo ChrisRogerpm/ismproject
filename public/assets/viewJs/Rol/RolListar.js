@@ -10,29 +10,36 @@ let RolListar = (function () {
             RedirigirUrl("EditarRol/" + idRol);
         });
         $(document).on("click", "#btnEliminarRoles", function () {
-            Swal.fire({
-                title: `ESTA SEGURO DE ELIMINAR LOS ROLES  SELECCIONADOS?`,
-                text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "SI, ELIMINAR!",
-                cancelButtonText: "NO, CANCELAR!",
-                allowOutsideClick: false,
-            }).then((result) => {
-                if (result.value) {
-                    EnviarDataPost({
-                        url: "RolEliminarJson",
-                        data: {
-                            ListaRolesEliminar: ListaRolesEliminar,
-                        },
-                        callBackSuccess: function () {
-                            fncListarRols();
-                        },
-                    });
-                }
-            });
+            if (ListaRolesEliminar.length > 0) {
+                Swal.fire({
+                    title: `ESTA SEGURO DE ELIMINAR LOS ROLES  SELECCIONADOS?`,
+                    text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "SI, ELIMINAR!",
+                    cancelButtonText: "NO, CANCELAR!",
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.value) {
+                        EnviarDataPost({
+                            url: "RolEliminarJson",
+                            data: {
+                                ListaRolesEliminar: ListaRolesEliminar,
+                            },
+                            callBackSuccess: function () {
+                                fncListarRols();
+                            },
+                        });
+                    }
+                });
+            } else {
+                ShowAlert({
+                    type: "warning",
+                    message: "No se ha seleccionado roles a eliminar",
+                });
+            }
         });
         $(document).on("ifChecked", "#table input:checkbox", function () {
             let idRol = $(this).val();

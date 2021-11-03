@@ -51,7 +51,7 @@ let UsuarioEditar = (function () {
                 idRol: { required: true },
                 email: { required: true },
                 nombre: { required: true },
-                apellido: { required: true },
+                nroDocumento: { required: true, minlength: 8, maxlength: 11 },
             },
 
             messages: {
@@ -60,7 +60,13 @@ let UsuarioEditar = (function () {
                 idRol: { required: "El campo es requerido" },
                 email: { required: "El campo es requerido" },
                 nombre: { required: "El campo es requerido" },
-                apellido: { required: "El campo es requerido" },
+                nroDocumento: {
+                    required: "El campo es requerido",
+                    minlength:
+                        "El campo no puede contener menos de 8 caracteres",
+                    maxlength:
+                        "El campo no puede contener más de 11 caracteres",
+                },
             },
         });
     };

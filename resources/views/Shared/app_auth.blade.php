@@ -38,6 +38,7 @@
                         </div>
                     </div>
                 </div>
+                <input type="hidden" id="valueMessage" value="{{session()->get('message')}}">
             </div>
         </div>
     </div>
@@ -79,6 +80,14 @@
     <script src="{{asset('assets/js/pages/components/extended/sweetalert2.js')}}"></script>
     <script src="{{asset('assets/plugins/global/axios/axios.min.js')}}"></script>
     <script src="{{asset('assets/viewJs/Metodos/General-Auth.js')}}"></script>
+    <script>
+        let mensaje = $("#valueMessage").val();
+        ShowAlert({
+            type: 'warning'
+            , message: mensaje
+        });
+
+    </script>
     @stack('js')
 </body>
 </html>

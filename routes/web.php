@@ -19,6 +19,11 @@ Route::middleware(['guest'])->group(function () {
 });
 // Route::get('/', 'ReportesController@ReportePedidosListarVista')->name('Conversion.Pedido');
 Route::post('CerrarSesionJson', 'AutenticacionController@CerrarSesionJson')->name('CerrarSesion');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('CambiarContrasenia', 'AutenticacionController@CambiarContraseniaVista')->name('CambiarContrasenia.Listar');
+    Route::post('PerfilCambiarContraseniaJson', 'AutenticacionController@PerfilCambiarContraseniaJson');
+});
 #region VISTA
 Route::middleware(['auth', 'rolpermisos.middleware'])->group(function () {
     Route::get('ReporteProducto', 'ReportesController@ReporteProductoMasVendidoVista')->name('Reporte.ProductoMasVendido');
@@ -77,16 +82,17 @@ Route::middleware(['auth', 'rolpermisos.middleware'])->group(function () {
     Route::get('EditarRol/{idRol}', 'RolController@RolEditarVista');
 });
 #end
+#region JSON POST
 Route::middleware(['auth', 'rolpermisos.middleware'])->group(function () {
-    #region POST
+    #region PEDIDO
     Route::post('ReportImportarExcelsJson', 'ReportesController@ReportImportarExcelsJson');
+    #endregion
     #region CENTRO OPERATIVO
     Route::post('CentroOperativoRegistrarJson', 'CentroOperativoController@CentroOperativoRegistrarJson');
     Route::post('CentroOperativoEditarJson', 'CentroOperativoController@CentroOperativoEditarJson');
     Route::post('CentroOperativoBloquearJson', 'CentroOperativoController@CentroOperativoBloquearJson');
     Route::post('CentroOperativoRestablecerJson', 'CentroOperativoController@CentroOperativoRestablecerJson');
     #endregion
-
     #region GESTOR
     Route::post('GestorRegistrarJson', 'GestorController@GestorRegistrarJson');
     Route::post('GestorEditarJson', 'GestorController@GestorEditarJson');
@@ -155,7 +161,6 @@ Route::middleware(['auth', 'rolpermisos.middleware'])->group(function () {
     Route::post('BonificacionActivarJson', 'BonificacionController@BonificacionActivarJson');
     Route::post('BonificacionImportarDataJson', 'BonificacionController@BonificacionImportarDataJson');
     #endregion
-
     #region BONIFICACION_DETALLE
     Route::post('BonificacionDetalleEliminarJson', 'BonificacionDetalleController@BonificacionDetalleEliminarJson');
     Route::post('BonificacionDetalleRegistrarJson', 'BonificacionDetalleController@BonificacionDetalleRegistrarJson');
@@ -184,8 +189,8 @@ Route::middleware(['auth', 'rolpermisos.middleware'])->group(function () {
     Route::post('RolEditarJson', 'RolController@RolEditarJson');
     Route::post('RolEliminarJson', 'RolController@RolEliminarJson');
     #endregion
-    #endregion
 });
+#endregion
 #region JSON GET
 #region CENTRO OPERATIVO
 Route::get('CentroOperativoListarJson', 'CentroOperativoController@CentroOperativoListarJson');

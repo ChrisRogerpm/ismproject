@@ -64,6 +64,7 @@ class Usuario extends Authenticatable implements JWTSubject
     {
         $data = Usuario::findOrfail($request->input('idUsuario'));
         $data->idRol = $request->input('idRol');
+        $data->idCeo = $request->input('idCeo');
         $data->nombre = $request->input('nombre');
         $data->apellido = $request->input('apellido');
         $data->nombreApellido = $request->input('nombre') . ' ' . $request->input('apellido');
@@ -83,6 +84,14 @@ class Usuario extends Authenticatable implements JWTSubject
         $data = Usuario::findOrfail($request->input('idUsuario'));
         $data->estado = 1;
         $data->save();
+    }
+
+    public static function UsuarioPerfilCambiarContrasenia(Request $request)
+    {
+        $data = Usuario::findOrfail($request->input('idUsuario'));
+        $data->password = bcrypt($request->input('NuevaContrasenia'));
+        $data->save();
+        return $data;
     }
 
     public function getJWTIdentifier()

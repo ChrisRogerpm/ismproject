@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
 <head>
     <meta charset="utf-8" />
     <title>Industria San Miguel</title>
@@ -17,6 +18,7 @@
     <link href="{{asset('assets/css/skins/aside/dark.css')}}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{{asset('fonts/fontstyle.css')}}"> @stack('css')
 </head>
+
 <body class="kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--fixed kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-aside--minimize">
     {{-- <body class="kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--fixed kt-subheader--solid kt-aside--enabled kt-aside--fixed kt-page--loading"> --}}
     <div id="kt_header_mobile" class="kt-header-mobile kt-header-mobile--fixed ">
@@ -65,14 +67,7 @@
                             </div>
                             <div class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
                                 <div class="kt-notification">
-                                    <a href="" class="kt-notification__item">
-                                        <div class="kt-notification__item-icon"> <i class="fa fa-user-alt kt-font-success"></i> </div>
-                                        <div class="kt-notification__item-details">
-                                            <div class="kt-notification__item-title kt-font-bold">MI PERFIL</div>
-                                            <div class="kt-notification__item-time"> Configuraciones de cuenta y más </div>
-                                        </div>
-                                    </a>
-                                    <a href="javascript:void(0)" class="kt-notification__item">
+                                    <a href="{{route('CambiarContrasenia.Listar')}}" class="kt-notification__item">
                                         <div class="kt-notification__item-icon"> <i class="fa fa-lock kt-font-warning"></i> </div>
                                         <div class="kt-notification__item-details">
                                             <div class="kt-notification__item-title kt-font-bold"> CAMBIAR CONTRASEÑA </div>
@@ -94,6 +89,7 @@
                 </div>
                 <div class="kt-content kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor" id="kt_content" style="background-color: #D8D8D8"> @yield('header') <div class="kt-container kt-container--fluid kt-grid__item kt-grid__item--fluid"> @yield('content') </div>
                 </div>
+                <input type="hidden" id="valueMessage" value="{{session()->get('message')}}">
             </div>
         </div>
     </div>
@@ -138,14 +134,16 @@
     <script src="{{asset('assets/js/pages/crud/forms/widgets/bootstrap-datepicker.js')}}"></script>
     <script src="{{asset('assets/plugins/global/validation/validate.min.js')}}"></script>
     @if(session()->has('message'))
-        <script>
-            let mensaje = @json(session()->get('message'));
-            ShowAlert({
-                type: 'warning',
-                message: @json(session()->get('message'))
-            });
-        </script>
+    <script>
+        let mensaje = $("#valueMessage").val();
+        ShowAlert({
+            type: 'warning'
+            , message: mensaje
+        });
+
+    </script>
     @endif
     @stack('js')
 </body>
+
 </html>

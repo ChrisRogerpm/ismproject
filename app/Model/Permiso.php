@@ -25,16 +25,15 @@ class Permiso extends Model
         UPPER(p.modulo) AS modulo
         FROM permiso as p
         GROUP BY p.modulo
-        ORDER BY p.idPermiso ASC
         "));
     }
     public static function ValidarPermisoRol(Request $request)
     {
         $respuesta = false;
         $usuarioLogeado = Auth::user();
-        if($usuarioLogeado->idRol == 1){
+        if ($usuarioLogeado->idRol == 1) {
             $respuesta = true;
-        }else{
+        } else {
             $RolPermiso = RolPermiso::where('idRol', $usuarioLogeado->idRol)->get();
             $RolPermiso = $RolPermiso->map(function ($item) {
                 return $item->permisoModulo;

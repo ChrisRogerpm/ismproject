@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Permiso;
+use Exception;
 use App\Model\Rol;
+use App\Model\Permiso;
 use App\Model\Usuario;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -19,6 +20,43 @@ class AutenticacionController extends Controller
     public function LoginVista()
     {
         return view('Autenticacion.Login');
+    }
+    public function CambiarContraseniaVista()
+    {
+        return view('Perfil.CambiarContrasenia');
+    }
+    public function PerfilCambiarContraseniaJson(Request $request)
+    {
+        $respuesta = false;
+        $mensaje = "";
+        try {
+            $usuario = Auth::user();
+            if ($usuario != null) {
+                $password = $request->input('password');
+                $NuevaContrasenia = $request->input('NuevaContrasenia');
+                $VerificarContrasenia = $request->input('VerificarContrasenia');
+                $usuario_data = Usuario::findorfail($usuario->idUsuario);
+                if ($usuario_data != null) {
+                    if (Hash::check($password, $usuario_data->password)) {
+                        if ($NuevaContrasenia == $VerificarContrasenia) {
+                            $request->request->add(['idUsuario' => $usuario->idUsuario]);
+                            Usuario::UsuarioPerfilCambiarContrasenia($request);
+                            $respuesta = true;
+                            $mensaje = "Se ha cambiado la contraseña exitosamente";
+                        } else {
+                            $mensaje = "La nueva contraseña no coincide";
+                        }
+                    } else {
+                        $mensaje = 'La contraseña anterior ingresada es erronea';
+                    }
+                }
+            } else {
+                $mensaje = "Se ha producido un error,cierre sesion y vuelva a ingresar.";
+            }
+        } catch (Exception $ex) {
+            $mensaje = $ex->getMessage();
+        }
+        return response()->json(['respuesta' => $respuesta, 'mensaje' => $mensaje]);
     }
 
     public function ValidarLoginJson(Request $request)
@@ -38,10 +76,9 @@ class AutenticacionController extends Controller
                     if (!$token = JWTAuth::attempt($credenciales)) {
                         return response()->json(['error' => 'credenciales invalidas'], 400);
                     } else {
-                        $objSession = Auth::attempt($credenciales);
+                        Auth::attempt($credenciales);
                         $respuesta = true;
                         $mensaje = 'Bienvenido ' . $usuario_data->nombre . ' ' . $usuario_data->apellido;
-                        // Auth::login($usuario_data, true);
                     }
                 }
             } else {
