@@ -80,6 +80,7 @@
     <script src="{{asset('assets/js/pages/components/extended/sweetalert2.js')}}"></script>
     <script src="{{asset('assets/plugins/global/axios/axios.min.js')}}"></script>
     <script src="{{asset('assets/viewJs/Metodos/General-Auth.js')}}"></script>
+    @if(session()->has('message'))
     <script>
         let mensaje = $("#valueMessage").val();
         ShowAlert({
@@ -88,6 +89,7 @@
         });
 
     </script>
+    @endif
     @stack('js')
 </body>
 </html>
