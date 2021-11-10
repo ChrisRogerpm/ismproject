@@ -78,21 +78,42 @@ class ComisionDetalle extends Model
     public static function ComisionDetalleListar(Request $request)
     {
         $idComision = $request->input('idComision');
+        $idCeo = $request->input('idCeo');
         return DB::select(DB::raw("SELECT
             cd.idComisionDetalle,
             cd.codigoPadre,
-            CONCAT(
-            (SELECT px.marca FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre ORDER BY px.marca DESC LIMIT 1),
+            IFNULL(CONCAT(
+            (SELECT px.marca FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre AND px.idCeo = $idCeo ORDER BY px.marca DESC LIMIT 1),
             ' ',
-            (SELECT px.formato FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre ORDER BY px.formato DESC LIMIT 1),
+            (SELECT px.formato FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre AND px.idCeo = $idCeo ORDER BY px.formato DESC LIMIT 1),
             ' ',
-            (SELECT px.sabor FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre ORDER BY px.sabor DESC LIMIT 1)
-            ) AS nombreProducto,
+            (SELECT px.sabor FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre AND px.idCeo = $idCeo ORDER BY px.sabor DESC LIMIT 1)
+            ),'') AS nombreProducto,
             cd.condicion,
             cd.cantidadValor,
             cd.comisionPtoVenta,
             cd.comisionDistribuidor,
             0 as estadoEliminar
+        FROM comisiondetalle AS cd
+        WHERE cd.idComision = $idComision"));
+    }
+    public static function ComisionDetalleListarExcel(Request $request)
+    {
+        $idComision = $request->input('idComision');
+        $idCeo = $request->input('idCeo');
+        return DB::select(DB::raw("SELECT
+            cd.codigoPadre,
+            IFNULL(CONCAT(
+            (SELECT px.marca FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre AND px.idCeo = $idCeo ORDER BY px.marca DESC LIMIT 1),
+            ' ',
+            (SELECT px.formato FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre AND px.idCeo = $idCeo ORDER BY px.formato DESC LIMIT 1),
+            ' ',
+            (SELECT px.sabor FROM producto AS px WHERE px.codigoPadre = cd.codigoPadre AND px.idCeo = $idCeo ORDER BY px.sabor DESC LIMIT 1)
+            ),'') AS nombreProducto,
+            cd.condicion,
+            cd.cantidadValor,
+            cd.comisionPtoVenta,
+            cd.comisionDistribuidor
         FROM comisiondetalle AS cd
         WHERE cd.idComision = $idComision"));
     }

@@ -11,6 +11,7 @@ use App\Model\Liquidacion;
 use App\Model\Bonificacion;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Model\ComisionDetalle;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -516,6 +517,80 @@ class Excel
         } else {
             $sheet->mergeCells('A' . $fila . ':K' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
             $sheet->getStyle('A' . $fila . ':K' . $fila . '')->applyFromArray($styleArray);
+            $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
+        }
+        return $spreadsheet;
+    }
+    public static function GenerarExcelComision(Request $request)
+    {
+        $spreadsheet = new Spreadsheet();
+
+        $styleArray = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+        ];
+        $styleArrayTitulo = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+            'font' => array(
+                'name'      =>  'Calibri',
+                'color' => ['argb' => '000000'],
+                'bold' => true
+            )
+        ];
+        $colorFondoCabecera = "F7CAAC";
+        $sheet = $spreadsheet->getDefaultStyle()->getFont()->setSize(11);
+        $sheet = $spreadsheet->getDefaultStyle()->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF');
+        $sheet = $spreadsheet->getActiveSheet();
+        $TituloCabecera = [
+            'CODIGO PADRE',
+            'PRODUCTO',
+            'CONDICION',
+            'VALOR',
+            'COM.PVTA',
+            'COM.DIST'
+        ];
+        $data1 = ComisionDetalle::ComisionDetalleListarExcel($request);
+        $fila = 1;
+        foreach ($TituloCabecera as $i => $d) {
+            $sheet->setCellValue(Excel::Columnas[$i] . $fila, ucwords($TituloCabecera[$i]))->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+            $valor = Excel::Columnas[$i] . $fila;
+            $sheet->getStyle($valor)->applyFromArray($styleArrayTitulo);
+            $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+            $sheet->getStyle($valor)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB($colorFondoCabecera);
+            $sheet->getStyle($valor)->getFont()->setBold(true);
+        }
+        $fila++;
+        $arrayData1 = [
+            'codigoPadre',
+            'nombreProducto',
+            'condicion',
+            'cantidadValor',
+            'comisionPtoVenta',
+            'comisionDistribuidor',
+        ];
+        if (count($data1) > 0) {
+            for ($x = 0; $x < count($data1); $x++) {
+                for ($i = 0; $i < count($arrayData1); $i++) {
+                    $nombreKey = $arrayData1[$i];
+                    $sheet->setCellValue(Excel::Columnas[$i] . $fila, $data1[$x]->$nombreKey)->getColumnDimension(Excel::Columnas[$i])->setAutoSize(true);
+                    $valor = Excel::Columnas[$i] . $fila;
+                    $sheet->getStyle($valor)->applyFromArray($styleArray);
+                    $sheet->getStyle($valor)->getAlignment()->setHorizontal('center');
+                }
+                $fila++;
+            }
+        } else {
+            $sheet->mergeCells('A' . $fila . ':G' . $fila)->setCellValue('A' . $fila, "NO HAY DATA QUE MOSTRAR");
+            $sheet->getStyle('A' . $fila . ':G' . $fila . '')->applyFromArray($styleArray);
             $sheet->getStyle('A' . $fila)->getAlignment()->setHorizontal('center');
         }
         return $spreadsheet;

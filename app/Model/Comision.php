@@ -69,10 +69,10 @@ class Comision extends Model
         $max = $spreadSheet->getActiveSheet()->getHighestRow();
         $columns = [
             "A" => "codigoPadre",
-            "D" => "condicion",
-            "E" => "cantidadValor",
-            "F" => "comisionPtoVenta",
-            "G" => "comisionDistribuidor"
+            "C" => "condicion",
+            "D" => "cantidadValor",
+            "E" => "comisionPtoVenta",
+            "F" => "comisionDistribuidor"
         ];
         $dataImportada = [];
         for ($i = $startRow; $i <= $max; $i++) {

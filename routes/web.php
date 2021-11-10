@@ -252,6 +252,7 @@ Route::get('BonificacionesDownload', 'ExcelController@BonificacionesDownload');
 Route::get('GestorExcelDownload', 'ExcelController@GestorExcelDownload');
 Route::get('PedidoMasVendidoDownload', 'ExcelController@PedidoMasVendidoDownload');
 Route::get('ProductoDownload', 'ExcelController@ProductoDownload');
+Route::get('ComisionDownload', 'ExcelController@ComisionDownload');
 #endregion
 #region Reporte
 Route::get('ReporteProductoListarJson', 'ReportesController@ReporteProductoListarJson');

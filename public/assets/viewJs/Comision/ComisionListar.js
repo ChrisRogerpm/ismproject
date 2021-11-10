@@ -26,7 +26,9 @@ let ComisionListar = (function () {
         });
         $(document).on("click", ".btnActivar", function () {
             let idComision = $(this).data("id");
-            let objComision = ListadeComisions.find((ele) => ele.idComision == idComision);
+            let objComision = ListadeComisions.find(
+                (ele) => ele.idComision == idComision
+            );
             Swal.fire({
                 title: `ESTA SEGURO DE ACTIVAR LA COMISIÓN : ${objComision.nombre.toUpperCase()}?`,
                 text: "CONSIDERE LO NECESARIO PARA REALIZAR ESTA ACCIÓN!",
@@ -50,6 +52,22 @@ let ComisionListar = (function () {
                     });
                 }
             });
+        });
+        $(document).on("click", "#GenerarExcel", function () {
+            let objComisionActiva = ListadeComisions.find(
+                (ele) => parseInt(ele.estado) == 1
+            );
+            if (objComisionActiva != null) {
+                let idCeo = $("#CbidCeo").val();
+                let idComision = objComisionActiva.idComision;
+                let url = `${basePathApi}ComisionDownload?idCeo=${idCeo}&idComision=${idComision}`;
+                window.open(url, "_blank");
+            } else {
+                ShowAlert({
+                    type: "warning",
+                    message: "NO SE HA ENCONTRADO COMISIÓN ACTIVA",
+                });
+            }
         });
     };
     const fncInicializarData = () => {
@@ -76,10 +94,21 @@ let ComisionListar = (function () {
             ajaxUrl: "ComisionListarJson",
             table: "#table",
             ajaxDataSend: options.data,
+            tableOrdering: false,
             tableColumns: [
                 { data: "nombre", title: "NOMBRE" },
-                { data: "fecha", title: "FECHA" },
-                { data: "estadoNombre", title: "ESTADO" },
+                {
+                    data: "fecha",
+                    title: "FECHA",
+                    width: "10%",
+                    class: "text-center",
+                },
+                {
+                    data: "estadoNombre",
+                    title: "ESTADO",
+                    width: "10%",
+                    class: "text-center",
+                },
                 {
                     data: null,
                     title: "OPCIONES",
@@ -99,14 +128,27 @@ let ComisionListar = (function () {
                     class: "text-center",
                 },
             ],
+            tablerowCallback: function (row, data, index) {
+                if (data.estadoNombre == "ACTIVO") {
+                    $(row)
+                        .find("td:eq(2)")
+                        .css({ color: "white", "background-color": "#E53935" });
+                } else {
+                    $(row)
+                        .find("td:eq(2)")
+                        .css({ color: "white", "background-color": "#7CB342" });
+                }
+            },
             callBackSuccess: function (response) {
                 ListadeComisions = response.data;
-                let verificarComisionActiva = ListadeComisions.find(ele => parseInt(ele.estado) == 1);
+                let verificarComisionActiva = ListadeComisions.find(
+                    (ele) => parseInt(ele.estado) == 1
+                );
                 if (verificarComisionActiva == null) {
                     ShowAlert({
-                        type: 'warning',
-                        message: 'NO SE HA ENCONTRADO NINGUNA Comision ACTIVO'
-                    })
+                        type: "warning",
+                        message: "NO SE HA ENCONTRADO NINGUNA COMISIÓN ACTIVO",
+                    });
                 }
             },
         });

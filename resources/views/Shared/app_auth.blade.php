@@ -32,9 +32,9 @@
                     <div class="kt-login__section">
                         <div class="kt-login__block">
                             <h3 class="kt-login__title text-center">INDUSTRIAS SAN MIGUEL</h3>
-                            <div class="kt-login__desc text-center">
-                                EMPRESA DE JORGE AÑAÑOS JERÍ
-                            </div>
+                            {{-- <div class="kt-login__desc text-center">
+                                EMPRESA
+                            </div> --}}
                         </div>
                     </div>
                 </div>

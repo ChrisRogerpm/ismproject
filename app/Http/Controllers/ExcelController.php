@@ -58,5 +58,15 @@ class ExcelController extends Controller
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
     }
+    public function ComisionDownload(Request $request)
+    {
+        $randomTime = time();
+        $spreadsheet = Excel::GenerarExcelComision($request);
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="Comisiones_' . $randomTime . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+    }
     // GenerarExcelBonificacion
 }

@@ -236,6 +236,7 @@ let ProductoEditar = (function () {
                 url: "ComisionDetalleListarJson",
                 dataForm: {
                     idComision: Comision.idComision,
+                    idCeo: Comision.idCeo,
                 },
                 callBackSuccess: function (response) {
                     ListaProductosRegistrados = response;

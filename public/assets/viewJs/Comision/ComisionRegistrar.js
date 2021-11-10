@@ -8,7 +8,7 @@ ListaProductosEliminar = [];
 let ProductoRegistrar = (function () {
     const fncAcciones = () => {
         $(document).on("click", ".btnVolver", function () {
-            RedirigirUrl(`Bonificacion`);
+            RedirigirUrl(`Comision`);
         });
         $(document).on("click", ".btnGuardar", function () {
             $("#frmNuevo").submit();
@@ -92,7 +92,7 @@ let ProductoRegistrar = (function () {
                 ListaProductosRegistrados = ListaProductosRegistrados.filter(
                     (ele) => {
                         return !ListaProductosEliminar.find((arg) => {
-                            return arg === parseInt(ele.codigoPadre);
+                            return arg == ele.codigoPadre;
                         });
                     }
                 );
