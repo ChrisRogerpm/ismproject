@@ -48,14 +48,20 @@ class GestorController extends Controller
         $respuesta = false;
         $mensaje = "";
         try {
-            DB::beginTransaction();
-            $data = Gestor::GestorRegistrar($request);
-            GestorProducto::GestorProductoRegistrarLista($request, $data);
-            GestorRuta::GestorRutaRegistrarLista($request, $data);
-            GestorSupervisor::GestorSupervisorRegistrarLista($request, $data);
-            $respuesta = true;
-            $mensaje = "Se ha registrado un Gestor exitosamente";
-            DB::commit();
+
+            $validacionCodigoGestor = Gestor::where('idCeo', $request->input('idCeo'))->where('codigoGestor', $request->input('codigoGestor'))->first();
+            if ($validacionCodigoGestor != null) {
+                $mensaje = "El codigo ingresado ya está registrado";
+            } else {
+                DB::beginTransaction();
+                $data = Gestor::GestorRegistrar($request);
+                GestorProducto::GestorProductoRegistrarLista($request, $data);
+                GestorRuta::GestorRutaRegistrarLista($request, $data);
+                GestorSupervisor::GestorSupervisorRegistrarLista($request, $data);
+                $respuesta = true;
+                $mensaje = "Se ha registrado un Gestor exitosamente";
+                DB::commit();
+            }
         } catch (Exception $ex) {
             DB::rollBack();
             $mensaje = $ex->getMessage();
@@ -67,12 +73,26 @@ class GestorController extends Controller
         $respuesta = false;
         $mensaje = "";
         try {
-            Gestor::GestorEditar($request);
-            GestorProducto::GestorProductoRegistrar($request);
-            GestorRuta::GestorRutaRegistrar($request);
-            GestorSupervisor::GestorSupervisorRegistrar($request);
-            $respuesta = true;
-            $mensaje = "Se ha editado el Gestor exitosamente";
+            $validacionCodigoGestor = Gestor::where('codigoGestor', $request->input('codigoGestor'))->first();
+            if ($validacionCodigoGestor != null) {
+                if ($validacionCodigoGestor->idGestor == $request->input('idGestor')) {
+                    Gestor::GestorEditar($request);
+                    GestorProducto::GestorProductoRegistrar($request);
+                    GestorRuta::GestorRutaRegistrar($request);
+                    GestorSupervisor::GestorSupervisorRegistrar($request);
+                    $respuesta = true;
+                    $mensaje = "Se ha editado el Gestor exitosamente";
+                } else {
+                    $mensaje = "El codigo ingresado ya está registrado";
+                }
+            } else {
+                Gestor::GestorEditar($request);
+                GestorProducto::GestorProductoRegistrar($request);
+                GestorRuta::GestorRutaRegistrar($request);
+                GestorSupervisor::GestorSupervisorRegistrar($request);
+                $respuesta = true;
+                $mensaje = "Se ha editado el Gestor exitosamente";
+            }
         } catch (Exception $ex) {
             $mensaje = $ex->getMessage();
         }
