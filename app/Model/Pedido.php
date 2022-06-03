@@ -415,7 +415,7 @@ class Pedido extends Model
                             'PRECIO' => 0,
                             'PDSCTO' => 0,
                             'DESCTO' => 0,
-                            'TDOCTO' => 207,
+                            'TDOCTO' => 218,
                         ];
                         $nuevaDataSinConvertir[] = [
                             'idCeo' => $CentroOperativo->idCeo,
@@ -427,7 +427,7 @@ class Pedido extends Model
                             'precio' => 0,
                             'precioDescuento' => 0,
                             'descuento' => 0,
-                            'tdocto' => 207,
+                            'tdocto' => 218,
                         ];
                     }
                 }
