@@ -60,7 +60,7 @@ class GestorRuta extends Model
     {
         $ListaRutasEliminar = $request->input('ListaRutasEliminar');
         foreach ($ListaRutasEliminar as $lista) {
-            $data = GestorRuta::findOrfail($lista);
+            $data = GestorRuta::where('idRuta', $lista)->first();
             $data->delete();
         }
     }
