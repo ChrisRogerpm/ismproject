@@ -60,12 +60,7 @@ class GestorRuta extends Model
     {
         $ListaRutasEliminar = $request->input('ListaRutasEliminar');
         $idGestor = $request->input('idGestor');
-        foreach ($ListaRutasEliminar as $lista) {
-            $data = GestorRuta::where('idRuta', $lista)
-                ->where('idGestor', $idGestor)
-                ->first();
-            $data->delete();
-        }
+        GestorRuta::whereIn('idRuta', $ListaRutasEliminar)->where('idGestor', $idGestor)->delete();        
     }
     public static function GestorRutaRutasConcatenadas($idGestor)
     {
