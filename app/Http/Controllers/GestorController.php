@@ -73,7 +73,9 @@ class GestorController extends Controller
         $respuesta = false;
         $mensaje = "";
         try {
-            $validacionCodigoGestor = Gestor::where('codigoGestor', $request->input('codigoGestor'))->first();
+            $validacionCodigoGestor = Gestor::where('codigoGestor', $request->input('codigoGestor'))
+                ->where('idCeo', $request->input('idCeo'))
+                ->first();
             if ($validacionCodigoGestor != null) {
                 if ($validacionCodigoGestor->idGestor == $request->input('idGestor')) {
                     Gestor::GestorEditar($request);
