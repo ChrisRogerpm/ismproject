@@ -58,6 +58,13 @@ class GestorSupervisor extends Model
     public static function GestorSupervisorEliminar(Request $request)
     {
         $ListaSupervisorsEliminar = $request->input('ListaSupervisorsEliminar');
+        $idGestor = $request->input('idGestor');
+        foreach ($ListaSupervisorsEliminar as $supervisor) {
+            $data = GestorSupervisor::where('idSupervisor', $supervisor)
+                ->where('idGestor', $idGestor)
+                ->first();
+            $data->delete();
+        }
         GestorSupervisor::whereIn('idSupervisor', $ListaSupervisorsEliminar)->where('idGestor', $request->input('idGestor'))->delete();
     }
     public static function GestorSupervisorSupervisorConcatenado($idGestor)

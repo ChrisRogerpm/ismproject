@@ -59,8 +59,11 @@ class GestorRuta extends Model
     public static function GestorRutaEliminar(Request $request)
     {
         $ListaRutasEliminar = $request->input('ListaRutasEliminar');
+        $idGestor = $request->input('idGestor');
         foreach ($ListaRutasEliminar as $lista) {
-            $data = GestorRuta::where('idRuta', $lista)->first();
+            $data = GestorRuta::where('idRuta', $lista)
+                ->where('idGestor', $idGestor)
+                ->first();
             $data->delete();
         }
     }
