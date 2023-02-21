@@ -79,7 +79,7 @@ class Cliente extends Model
     }
     public static function ClienteEditar(Request $request)
     {
-        $data = Cliente::findOrfail('idCliente');
+        $data = Cliente::findOrfail($request->input('idCliente'));
         $data->nroDocumento = $request->input('nroDocumento');
         $data->ruta = $request->input('ruta');
         $data->modulo = $request->input('modulo');
